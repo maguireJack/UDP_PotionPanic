@@ -72,6 +72,13 @@ namespace GDLibrary
             return false;
         }
 
+        public void CycleActiveCamera()
+        {
+            this.activeCameraIndex++;
+            this.activeCameraIndex %= this.list.Count;
+        }
+
+
         public override void Update(GameTime gameTime)
         {
             foreach(Camera3D camera in this.list)

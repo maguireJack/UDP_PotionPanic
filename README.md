@@ -6,12 +6,14 @@
 - [ ] Explain effect of SamplerState on on-screen aliasing
 - [ ] Explain and use VertexFactory
 - [ ] Explain new input manager classes (MouseManager, KeyboardManager, GamePadManager)
-- [ ] Explain and use IController and the classes which implement it.
+- [x] Explain and use IController and the classes which implement it.
 - [x] Create a simple enum using 2^N values on the enum values and demonstrate bitwise operators.
+- [ ] Explain ModelObject
 
 ### Refactor for Efficiency
 - [ ] Improve efficiency of ProjectionParameters::Projection property by adding isDirty flag
 - [ ] Improve efficiency of Transform3D::World property by adding isDirty flag
+- [ ] Improve efficiency of Camera3D::View property by adding isDirty flag
 - [ ] Add validation to appropriate set properties
 
 ### Tasks - Week 2 
@@ -44,8 +46,11 @@
 - [x] Added use of input managers (mouse, keyboard)
 - [x] Re-factor IActor::Draw and ObjectManager to use CameraManager
 - [x] Use StatusType in ObjectManager Update and Draw
-- [ ] Added subfolders to Actor folder for drawn and camera actors
+- [x] Added subfolders to Actor folder for drawn and camera actors
 - [ ] Add ContentDictionary
 - [ ] Add tiling functionality (see grass plane)
-- [ ] Add IController and ControllerList to Actor
-- [ ] Add 1st, Flight, Security, 3rd, and Rail camera controllers
+- [x] Add IController and ControllerList to Actor
+- [ ] Add 1st, Flight, Pan (Security), 3rd, and Rail camera controllers
+- [ ] Add ModelObject
+- [ ] Add GDConstants and move "magic-number" hard-coded values
+- [ ] Remove hard-coded (512, 384) in Controller and replace with screenCentre

@@ -28,25 +28,39 @@ namespace GDLibrary
 
             if(parent != null)
             {
-                if (this.keyboardManager.IsKeyDown(Keys.W))
-                    parent.Transform3D.TranslateBy(parent.Transform3D.Look * this.moveSpeed);
-                else if (this.keyboardManager.IsKeyDown(Keys.S))
-                    parent.Transform3D.TranslateBy(parent.Transform3D.Look * -this.moveSpeed);
-                
-                //ASD
-
-                if (this.keyboardManager.IsKeyDown(Keys.A))
-                    parent.Transform3D.TranslateBy(parent.Transform3D.Right * -this.strafeSpeed);
-                else if (this.keyboardManager.IsKeyDown(Keys.D))
-                    parent.Transform3D.TranslateBy(parent.Transform3D.Right * this.strafeSpeed);
-
-                Vector2 mouseDelta = this.mouseManager.GetDeltaFromCentre(new Vector2(512, 384));
-                mouseDelta *= this.rotationSpeed * gameTime.ElapsedGameTime.Milliseconds;
-
-                if(mouseDelta.Length() != 0)
-                    parent.Transform3D.RotateBy(new Vector3(-1 * mouseDelta, 0));
-  
+                HandleKeyboardInput(gameTime, parent);
+                HandleMouseInput(gameTime, parent);
             }
+        }
+
+        private void HandleKeyboardInput(GameTime gameTime, Actor3D parent)
+        {
+            Vector3 moveVector = Vector3.Zero;
+
+            if (this.keyboardManager.IsKeyDown(Keys.W))
+                moveVector = parent.Transform3D.Look * this.moveSpeed;
+            else if (this.keyboardManager.IsKeyDown(Keys.S))
+                moveVector = -1*parent.Transform3D.Look * this.moveSpeed;
+
+            if (this.keyboardManager.IsKeyDown(Keys.A))
+                moveVector -= parent.Transform3D.Right * this.strafeSpeed;
+            else if (this.keyboardManager.IsKeyDown(Keys.D))
+                moveVector += parent.Transform3D.Right * this.strafeSpeed;
+
+            //constrain movement in Y-axis
+            moveVector.Y = 0;
+
+            parent.Transform3D.TranslateBy(moveVector * gameTime.ElapsedGameTime.Milliseconds);
+        }
+
+        private void HandleMouseInput(GameTime gameTime, Actor3D parent)
+        {
+            Vector2 mouseDelta = this.mouseManager.GetDeltaFromCentre(new Vector2(512, 384));
+            mouseDelta *= this.rotationSpeed * gameTime.ElapsedGameTime.Milliseconds;
+
+            if (mouseDelta.Length() != 0)
+                parent.Transform3D.RotateBy(new Vector3(-1 * mouseDelta, 0));
+
         }
 
         public object Clone()

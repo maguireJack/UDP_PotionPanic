@@ -14,6 +14,7 @@ namespace GDLibrary
         private Vector3 originalLook;
         private Vector3 originalUp;
 
+        //add a clean/dirty flag later
         public Matrix World
         {
             get
@@ -137,9 +138,9 @@ namespace GDLibrary
             //explain: yaw, pitch, roll
             //create a new "XYZ" axis to rotate around using the (x,y,0) values from mouse and any current rotation
             Matrix rotMatrix = Matrix.CreateFromYawPitchRoll(
-                MathHelper.ToRadians(rotation.X),
-                MathHelper.ToRadians(rotation.Y),
-                MathHelper.ToRadians(rotation.Z));
+                MathHelper.ToRadians(rotation.X), //Pitch
+                MathHelper.ToRadians(rotation.Y), //Yaw
+                MathHelper.ToRadians(rotation.Z)); //Roll
 
             //update the look and up vector (i.e. rotate them both around this new "XYZ" axis)
             this.look = Vector3.Transform(this.originalLook, rotMatrix);

@@ -19,6 +19,7 @@ namespace GDLibrary
                 return this.projectionParameters.Projection;
             }
         }
+        //add a clean/dirty flag later
         public Matrix View
         {
             get
