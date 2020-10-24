@@ -120,6 +120,10 @@ namespace GDLibrary
 
             if (texture != null)
                 Texture = texture;
+            else
+            {
+                effect.TextureEnabled = false;
+            }
 
             DiffuseColor = diffuseColor;
 

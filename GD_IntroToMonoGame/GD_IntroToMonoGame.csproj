@@ -20,4 +20,8 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Game\Controller\" />
+    <Folder Include="Game\Objects\" />
+  </ItemGroup>
 </Project>

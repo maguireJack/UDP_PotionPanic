@@ -44,6 +44,7 @@ namespace GDLibrary
             : base(id, actorType, statusType, transform, effectParameters)
         {
             this.model = model;
+            
 
             InitializeBoneTransforms();
         }

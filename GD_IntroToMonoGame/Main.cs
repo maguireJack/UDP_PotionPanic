@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GD_IntroToMonoGame.GDLibrary.Actor.Drawn;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -18,6 +19,7 @@ namespace GDLibrary
         //eventually we will remove this content
         private VertexPositionColorTexture[] vertices;
         private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass;
+        private Model cargo;
         private PrimitiveObject archetypalTexturedQuad;
         private float worldScale = 3000;
         PrimitiveObject primitiveObject = null;
@@ -184,6 +186,11 @@ namespace GDLibrary
 
             this.grass
               = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/grass1");
+
+            this.cargo 
+              = Content.Load<Model>("Assets/Models/Cargo");
+
+
         }
         #endregion
 
@@ -229,6 +236,24 @@ namespace GDLibrary
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, model);
             this.objectManager.Add(archetypalBoxObject);
+
+
+            //Cargo**
+            Transform3D transform3D1 = new Transform3D(new Vector3(0, 5, 0),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(10, 10, 10),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);
+            EffectParameters effectParameters1 = new EffectParameters(modelEffect, null, Color.White, 1);
+
+
+
+            MoveableObject mo = new MoveableObject("cargo", ActorType.Player, StatusType.Drawn | StatusType.Update,
+                transform3D1, effectParameters1, cargo, null);
+
+            this.objectManager.Add(mo);
+
+
         }
 
         private void InitVertices()
