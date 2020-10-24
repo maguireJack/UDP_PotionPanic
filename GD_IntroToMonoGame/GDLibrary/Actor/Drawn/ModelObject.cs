@@ -44,10 +44,15 @@ namespace GDLibrary
             : base(id, actorType, statusType, transform, effectParameters)
         {
             this.model = model;
-            
+
 
             InitializeBoneTransforms();
         }
+
+        public ModelObject(ModelObject modelObject) :
+            this(modelObject.ID, modelObject.ActorType, modelObject.StatusType,
+                modelObject.Transform3D, modelObject.EffectParameters, modelObject.model)
+        { }
 
         /// <summary>
         /// 3DS Max models contain meshes(e.g.a table might have 5 meshes i.e.a top and 4 legs) and each mesh contains a bone.

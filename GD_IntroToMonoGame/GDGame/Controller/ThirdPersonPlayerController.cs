@@ -1,28 +1,32 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
+using GDLibrary;
 
-namespace GDLibrary
+namespace GDGame
 {
-    public class ThirdPersonCameraController : IController
+    public class ThirdPersonPlayerController : IController
     {
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
+        private Camera3D camera3D;
         private float moveSpeed, strafeSpeed, rotationSpeed;
-        private Vector3 playerPosition;
+        private Keys[] moveKeys;
 
-        public ThirdPersonCameraController(KeyboardManager keyboardManager,
+        public ThirdPersonPlayerController(KeyboardManager keyboardManager,
             MouseManager mouseManager,
-            float moveSpeed,
-            float strafeSpeed, float rotationSpeed,
-            Vector3 playerPosition)
+            Camera3D camera3D,
+            float moveSpeed, float strafeSpeed, float rotationSpeed,
+            Keys[] moveKeys
+            )
         {
             this.keyboardManager = keyboardManager;
             this.mouseManager = mouseManager;
+            this.camera3D = camera3D;
             this.moveSpeed = moveSpeed;
             this.strafeSpeed = strafeSpeed;
             this.rotationSpeed = rotationSpeed;
-            this.playerPosition = playerPosition;
+            this.moveKeys = moveKeys;
         }
 
         public void Update(GameTime gameTime, IActor actor)
@@ -31,29 +35,35 @@ namespace GDLibrary
 
             if (parent != null)
             {
-                HandleKeyboardInput(gameTime, parent);
-                HandleMouseInput(gameTime, parent);
+                HandleInput(gameTime, parent);
                 HandleCameraFollow(gameTime, parent);
             }
         }
 
+        private void HandleInput(GameTime gameTime, Actor3D parent)
+        {
+            HandleKeyboardInput(gameTime, parent);
+            HandleMouseInput(gameTime, parent);
+            HandleCameraFollow(gameTime, parent);
+        }
+
         private void HandleCameraFollow(GameTime gameTime, Actor3D parent)
         {
-            parent.Transform3D.Translation = playerPosition;
+
         }
 
         private void HandleKeyboardInput(GameTime gameTime, Actor3D parent)
         {
             Vector3 moveVector = Vector3.Zero;
 
-            if (this.keyboardManager.IsKeyDown(Keys.W))
+            if (this.keyboardManager.IsKeyDown(moveKeys[0]))
                 moveVector = parent.Transform3D.Look * this.moveSpeed;
-            else if (this.keyboardManager.IsKeyDown(Keys.S))
+            else if (this.keyboardManager.IsKeyDown(moveKeys[1]))
                 moveVector = -1 * parent.Transform3D.Look * this.moveSpeed;
 
-            if (this.keyboardManager.IsKeyDown(Keys.A))
+            if (this.keyboardManager.IsKeyDown(moveKeys[2]))
                 moveVector -= parent.Transform3D.Right * this.strafeSpeed;
-            else if (this.keyboardManager.IsKeyDown(Keys.D))
+            else if (this.keyboardManager.IsKeyDown(moveKeys[3]))
                 moveVector += parent.Transform3D.Right * this.strafeSpeed;
 
             //constrain movement in Y-axis

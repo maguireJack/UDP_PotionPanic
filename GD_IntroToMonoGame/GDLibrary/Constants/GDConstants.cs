@@ -4,6 +4,8 @@ namespace GDLibrary
 {
     public class GDConstants
     {
+        public static readonly float MAX_SPEED = 10f;
+
         #region Camera
         private static readonly float angularSpeedMultiplier = 10;
         public static readonly float lowAngularSpeed = 10;

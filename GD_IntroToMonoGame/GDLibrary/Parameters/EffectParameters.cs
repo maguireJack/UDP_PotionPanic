@@ -119,7 +119,10 @@ namespace GDLibrary
             this.Effect = effect;
 
             if (texture != null)
+            {
+                effect.TextureEnabled = true;
                 Texture = texture;
+            }
             else
             {
                 effect.TextureEnabled = false;

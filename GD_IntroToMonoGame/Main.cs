@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
+using GDGame;
 
 namespace GDLibrary
 {
@@ -86,6 +86,19 @@ namespace GDLibrary
         {
             Transform3D transform3D = null;
             Camera3D camera3D = null;
+
+            #region Camera - Third Person Player Camera
+            transform3D = new Transform3D(new Vector3(
+                0,
+                GConstants.PlayerCamOffsetY,
+                GConstants.PlayerCamOffsetZ),
+                new Vector3(0, 0, -1), Vector3.UnitY);
+
+            camera3D = new Camera3D("3rd person player",
+                ActorType.Camera3D, StatusType.Update, transform3D,
+                ProjectionParameters.StandardDeepSixteenTen);
+            this.cameraManager.Add(camera3D);
+            #endregion
 
             #region Camera - First Person
             transform3D = new Transform3D(new Vector3(10, 10, 20),
@@ -212,6 +225,41 @@ namespace GDLibrary
             //models
             InitStaticModels();
 
+            InitPlayer();
+        }
+
+        private void InitPlayer()
+        {
+            //transform
+            Transform3D transform3D = new Transform3D(new Vector3(0, 0, 0),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(1, 1, 1),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            //effectparameters
+            EffectParameters effectParameters = new EffectParameters(modelEffect,
+                null,
+                Color.White, 1);
+
+            //model
+            Model model = Content.Load<Model>("Assets/Models/wizard");
+
+            //model object
+            ModelObject playerObject = new ModelObject("Wizard", ActorType.Player,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, model);
+
+            ThirdPersonPlayerController controller = new ThirdPersonPlayerController(
+                keyboardManager, mouseManager, cameraManager.ActiveCamera,
+                GConstants.PlayerMoveSpeed,
+                GConstants.PlayerStrafeSpeed,
+                GConstants.PlayerRotateSpeed,
+                GConstants.PlayerMoveKeysOne);
+
+            Player player = new Player(playerObject, controller);
+
+            this.objectManager.Add(player);
         }
 
         private void InitStaticModels()
@@ -230,29 +278,6 @@ namespace GDLibrary
 
             //model
             Model model = Content.Load<Model>("Assets/Models/box2");
-
-            //model object
-            ModelObject archetypalBoxObject = new ModelObject("car", ActorType.Player,
-                StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, model);
-            this.objectManager.Add(archetypalBoxObject);
-
-            //Cargo**
-            Transform3D transform3D1 = new Transform3D(new Vector3(0, 5, 0),
-                                new Vector3(0, 0, 0),       //rotation
-                                new Vector3(10, 10, 10),        //scale
-                                    -Vector3.UnitZ,         //look
-                                    Vector3.UnitY);
-            EffectParameters effectParameters1 = new EffectParameters(modelEffect,
-                null,
-                Color.White, 1);
-
-
-
-            MoveableObject mo = new MoveableObject("wizard", ActorType.Player, StatusType.Drawn | StatusType.Update,
-                transform3D1, effectParameters1, wizard, null);
-
-            this.objectManager.Add(mo);
         }
 
         private void InitVertices()

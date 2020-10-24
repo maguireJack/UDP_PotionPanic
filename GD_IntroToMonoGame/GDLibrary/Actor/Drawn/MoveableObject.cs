@@ -1,5 +1,4 @@
-﻿using GDLibrary;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
@@ -7,6 +6,17 @@ namespace GDLibrary
 {
     public class MoveableObject : ModelObject, ICloneable
     {
+        #region Fields
+        //Body, wait for engine updates
+        #endregion
+
+        #region Constructors
+        public MoveableObject(ModelObject modelObject, IController controller) : 
+            base(modelObject)
+        {
+            ControllerList.Add(controller);
+        }
+
         public MoveableObject(string id,
             ActorType actorType,
             StatusType statusType,
@@ -16,16 +26,9 @@ namespace GDLibrary
             IController controller) :
             base(id, actorType, statusType, transform, effectParameters, model) 
         {
-
-            //ControllerList.Add(controller);
+            ControllerList.Add(controller);
 
         }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-            Vector3 movement = new Vector3(.1f, .1f, 0);
-            this.Transform3D.TranslateBy(movement);
-        }
+        #endregion
     }
 }
