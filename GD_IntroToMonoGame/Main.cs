@@ -1,5 +1,4 @@
-﻿using GD_IntroToMonoGame.GDLibrary.Actor.Drawn;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -19,7 +18,7 @@ namespace GDLibrary
         //eventually we will remove this content
         private VertexPositionColorTexture[] vertices;
         private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass;
-        private Model cargo;
+        private Model cargo, wizard;
         private PrimitiveObject archetypalTexturedQuad;
         private float worldScale = 3000;
         PrimitiveObject primitiveObject = null;
@@ -61,7 +60,7 @@ namespace GDLibrary
             InitDrawnContent();
 
             InitGraphics(1024, 768);
-           
+
             base.Initialize();
         }
 
@@ -105,7 +104,7 @@ namespace GDLibrary
 
             #region Camera - Flight
             transform3D = new Transform3D(new Vector3(0, 10, 10),
-                        new Vector3(0, 0, -1), 
+                        new Vector3(0, 0, -1),
                         Vector3.UnitY);
 
             camera3D = new Camera3D("flight person",
@@ -128,7 +127,7 @@ namespace GDLibrary
                 ActorType.Camera3D, StatusType.Update, transform3D,
             ProjectionParameters.StandardDeepSixteenTen);
 
-            camera3D.ControllerList.Add(new PanController(new Vector3(1, 1, 0), 
+            camera3D.ControllerList.Add(new PanController(new Vector3(1, 1, 0),
                                             30, GDConstants.mediumAngularSpeed, 0));
             this.cameraManager.Add(camera3D);
             #endregion
@@ -187,10 +186,11 @@ namespace GDLibrary
             this.grass
               = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/grass1");
 
-            this.cargo 
+            this.cargo
               = Content.Load<Model>("Assets/Models/Cargo");
 
-
+            this.wizard
+              = Content.Load<Model>("Assets/Models/wizard");
         }
         #endregion
 
@@ -237,23 +237,22 @@ namespace GDLibrary
                 effectParameters, model);
             this.objectManager.Add(archetypalBoxObject);
 
-
             //Cargo**
             Transform3D transform3D1 = new Transform3D(new Vector3(0, 5, 0),
                                 new Vector3(0, 0, 0),       //rotation
                                 new Vector3(10, 10, 10),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);
-            EffectParameters effectParameters1 = new EffectParameters(modelEffect, null, Color.White, 1);
+            EffectParameters effectParameters1 = new EffectParameters(modelEffect,
+                null,
+                Color.White, 1);
 
 
 
-            MoveableObject mo = new MoveableObject("cargo", ActorType.Player, StatusType.Drawn | StatusType.Update,
-                transform3D1, effectParameters1, cargo, null);
+            MoveableObject mo = new MoveableObject("wizard", ActorType.Player, StatusType.Drawn | StatusType.Update,
+                transform3D1, effectParameters1, wizard, null);
 
             this.objectManager.Add(mo);
-
-
         }
 
         private void InitVertices()
@@ -313,7 +312,7 @@ namespace GDLibrary
                                     out primitiveType, out primitiveCount);
 
             //step 2 - make vertex data that provides Draw()
-            IVertexData vertexData = new VertexData<VertexPositionColor>(vertices, 
+            IVertexData vertexData = new VertexData<VertexPositionColor>(vertices,
                                     primitiveType, primitiveCount);
 
             //step 3 - make the primitive object
@@ -333,10 +332,10 @@ namespace GDLibrary
         }
 
         private void InitSkybox()
-        { 
+        {
             //back
             primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
-          //  primitiveObject.StatusType = StatusType.Off; //Experiment of the effect of StatusType
+            //  primitiveObject.StatusType = StatusType.Off; //Experiment of the effect of StatusType
             primitiveObject.ID = "sky back";
             primitiveObject.EffectParameters.Texture = this.backSky;
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
@@ -361,14 +360,14 @@ namespace GDLibrary
             primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
             this.objectManager.Add(primitiveObject);
 
-             
+
             //top
             primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "sky top";
             primitiveObject.EffectParameters.Texture = this.topSky;
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
             primitiveObject.Transform3D.RotationInDegrees = new Vector3(90, -90, 0);
-            primitiveObject.Transform3D.Translation = new Vector3(0 ,worldScale / 2.0f, 0);
+            primitiveObject.Transform3D.Translation = new Vector3(0, worldScale / 2.0f, 0);
             this.objectManager.Add(primitiveObject);
 
             //to do...front
@@ -437,12 +436,12 @@ namespace GDLibrary
 
             if (this.keyboardManager.IsFirstKeyPress(Keys.C))
                 this.cameraManager.CycleActiveCamera();
-               // this.cameraManager.ActiveCameraIndex++;
+            // this.cameraManager.ActiveCameraIndex++;
 
-                base.Update(gameTime);
+            base.Update(gameTime);
         }
 
-    
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);

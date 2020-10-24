@@ -2,14 +2,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace GD_IntroToMonoGame.GDLibrary.Actor.Drawn
+namespace GDLibrary
 {
     public class MoveableObject : ModelObject, ICloneable
     {
-        private IController controller;
         public MoveableObject(string id,
             ActorType actorType,
             StatusType statusType,
@@ -29,8 +26,6 @@ namespace GD_IntroToMonoGame.GDLibrary.Actor.Drawn
             base.Update(gameTime);
             Vector3 movement = new Vector3(.1f, .1f, 0);
             this.Transform3D.TranslateBy(movement);
-
-            
         }
     }
 }
