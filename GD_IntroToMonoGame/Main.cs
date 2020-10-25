@@ -156,7 +156,7 @@ namespace GDLibrary
             this.cameraManager.Add(camera3D);
             #endregion
 
-            this.cameraManager.ActiveCameraIndex = 1; //0, 1, 2, 3
+            this.cameraManager.ActiveCameraIndex = 0; //0, 1, 2, 3
 
         }
 
@@ -227,7 +227,7 @@ namespace GDLibrary
             //models
             InitStaticModels();
 
-           // InitPlayer();
+            InitPlayer();
             initProps();
         }
 
