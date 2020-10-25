@@ -228,15 +228,15 @@ namespace GDLibrary
             InitStaticModels();
 
             InitPlayer();
-            initProps();
+            InitProps();
         }
 
-        private void initProps() 
+        private void InitProps()
         {
             //transform 
-            Transform3D transform3D = new Transform3D(new Vector3(10, 10, 10),
+            Transform3D transform3D = new Transform3D(new Vector3(0, 0, -100),
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(1, 1, 1),        //scale
+                                new Vector3(2, 2, 2),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
@@ -249,11 +249,11 @@ namespace GDLibrary
             Model model = Content.Load<Model>("Assets/Models/potion1");
 
             //model object
-            ModelObject potionObject = new ModelObject("potion1", ActorType.Pickups,
+            ModelObject potionObject = new ModelObject("potion1", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, model);
 
-            InteractableObject potion1 = new InteractableObject(potionObject, "red Potion", 1f);
+            HandHeldPickup potion1 = new HandHeldPickup(potionObject, "Red Potion", 30f, GConstants.PotionRedPos);
             this.objectManager.Add(potion1);
         }
 
@@ -286,7 +286,7 @@ namespace GDLibrary
                 GConstants.PlayerRotateSpeed,
                 GConstants.PlayerMoveKeysOne);
 
-            Player player = new Player(playerObject, controller);
+            Player player = new Player(objectManager, keyboardManager, playerObject, controller);
 
             this.objectManager.Add(player);
         }
@@ -294,8 +294,8 @@ namespace GDLibrary
         private void InitStaticModels()
         {
             //transform
-            Transform3D transform3D = new Transform3D(new Vector3(0, 5, 0),
-                                new Vector3(0, 0, 45),       //rotation
+            Transform3D transform3D = new Transform3D(new Vector3(4, 18, -1.5f),
+                                new Vector3(0, 0, 0),       //rotation
                                 new Vector3(1, 1, 1),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
@@ -307,6 +307,9 @@ namespace GDLibrary
 
             //model
             Model model = Content.Load<Model>("Assets/Models/box2");
+            objectManager.Add(new ModelObject("box", ActorType.Decorator,
+                StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, model));
         }
 
         private void InitVertices()

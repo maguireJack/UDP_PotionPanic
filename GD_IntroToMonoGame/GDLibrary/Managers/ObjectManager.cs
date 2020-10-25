@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GDLibrary
 {
@@ -8,14 +9,16 @@ namespace GDLibrary
     {
         private CameraManager cameraManager;
         private List<DrawnActor3D> opaqueList, transparentList;
+        private int count;
 
-        public ObjectManager(Game game, 
+        public ObjectManager(Game game,
             int initialOpaqueDrawSize, int initialTransparentDrawSize,
             CameraManager cameraManager) : base(game)
         {
             this.cameraManager = cameraManager;
             this.opaqueList = new List<DrawnActor3D>(initialOpaqueDrawSize);
             this.transparentList = new List<DrawnActor3D>(initialTransparentDrawSize);
+            this.count = 0;
         }
 
         public void Add(DrawnActor3D actor)
@@ -24,12 +27,14 @@ namespace GDLibrary
                 this.transparentList.Add(actor);
             else
                 this.opaqueList.Add(actor);
+
+            count++;
         }
 
         public bool RemoveIf(Predicate<DrawnActor3D> predicate)
         {
 
-         //   RemoveIf(actor => actor.ID.Equals("dungeon powerup key"));
+            //   RemoveIf(actor => actor.ID.Equals("dungeon powerup key"));
 
             int position = this.opaqueList.FindIndex(predicate);
 
@@ -48,11 +53,29 @@ namespace GDLibrary
             return -1;
         }
 
+        public List<DrawnActor3D> GetActorList(ActorType actorType)
+        {
+            List<DrawnActor3D> list = new List<DrawnActor3D>();
+            foreach (DrawnActor3D actor in opaqueList)
+            {
+                if (actor.ActorType == actorType)
+                {
+                    list.Add(actor);
+                }
+            }
+            return list;
+        }
+
+        public int ListSize()
+        {
+            return count;
+        }
+
         public override void Update(GameTime gameTime)
         {
             foreach (DrawnActor3D actor in this.opaqueList)
             {
-                if((actor.StatusType & StatusType.Update) == StatusType.Update)
+                if ((actor.StatusType & StatusType.Update) == StatusType.Update)
                     actor.Update(gameTime);
             }
 
@@ -68,7 +91,7 @@ namespace GDLibrary
             foreach (DrawnActor3D actor in this.opaqueList)
             {
                 if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
-                    actor.Draw(gameTime, 
+                    actor.Draw(gameTime,
                        this.cameraManager.ActiveCamera,
                         this.GraphicsDevice);
             }
