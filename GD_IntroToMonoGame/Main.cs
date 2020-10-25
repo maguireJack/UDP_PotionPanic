@@ -18,7 +18,7 @@ namespace GDLibrary
         //eventually we will remove this content
         private VertexPositionColorTexture[] vertices;
         private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass;
-        private Model cargo, wizard;
+        private Model cargo, wizard, redPotion;
         private PrimitiveObject archetypalTexturedQuad;
         private float worldScale = 3000;
         PrimitiveObject primitiveObject = null;
@@ -156,7 +156,7 @@ namespace GDLibrary
             this.cameraManager.Add(camera3D);
             #endregion
 
-            this.cameraManager.ActiveCameraIndex = 0; //0, 1, 2, 3
+            this.cameraManager.ActiveCameraIndex = 1; //0, 1, 2, 3
 
         }
 
@@ -204,6 +204,8 @@ namespace GDLibrary
 
             this.wizard
               = Content.Load<Model>("Assets/Models/wizard");
+
+            this.redPotion = Content.Load<Model>("Assets/Models/potion1");
         }
         #endregion
 
@@ -225,7 +227,34 @@ namespace GDLibrary
             //models
             InitStaticModels();
 
-            InitPlayer();
+           // InitPlayer();
+            initProps();
+        }
+
+        private void initProps() 
+        {
+            //transform
+            Transform3D transform3D = new Transform3D(new Vector3(10, 10, 10),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(1, 1, 1),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            //effectparameters
+            EffectParameters effectParameters = new EffectParameters(modelEffect,
+                null,
+                Color.White, 1);
+
+            //model
+            Model model = Content.Load<Model>("Assets/Models/potion1");
+
+            //model object
+            ModelObject potionObject = new ModelObject("potion1", ActorType.Pickups,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, model);
+
+            InteractableObject potion1 = new InteractableObject(potionObject, "red Potion", 1f);
+            this.objectManager.Add(potion1);
         }
 
         private void InitPlayer()
