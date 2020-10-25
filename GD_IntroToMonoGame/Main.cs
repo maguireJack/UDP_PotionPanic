@@ -233,7 +233,7 @@ namespace GDLibrary
 
         private void initProps() 
         {
-            //transform
+            //transform 
             Transform3D transform3D = new Transform3D(new Vector3(10, 10, 10),
                                 new Vector3(0, 0, 0),       //rotation
                                 new Vector3(1, 1, 1),        //scale
