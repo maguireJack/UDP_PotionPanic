@@ -38,11 +38,11 @@ namespace GDLibrary.Parameters
             zCurve = new Curve1D(curveLoopType);
         }
 
-        public void Add(Vector3 value, float time)
+        public void Add(Vector3 value, int timeInMS)
         {
-            xCurve.Add(value.X, time);
-            yCurve.Add(value.Y, time);
-            zCurve.Add(value.Z, time);
+            xCurve.Add(value.X, timeInMS);
+            yCurve.Add(value.Y, timeInMS);
+            zCurve.Add(value.Z, timeInMS);
         }
 
         public void Clear()
@@ -52,11 +52,11 @@ namespace GDLibrary.Parameters
             zCurve.Clear();
         }
 
-        public Vector3 Evaluate(float timeInSecs, int decimalPrecision)
+        public Vector3 Evaluate(double timeInMS, int decimalPrecision)
         {
-            return new Vector3(xCurve.Evaluate(timeInSecs, decimalPrecision),
-                yCurve.Evaluate(timeInSecs, decimalPrecision),
-                 zCurve.Evaluate(timeInSecs, decimalPrecision));
+            return new Vector3(xCurve.Evaluate(timeInMS, decimalPrecision),
+                yCurve.Evaluate(timeInMS, decimalPrecision),
+                 zCurve.Evaluate(timeInMS, decimalPrecision));
         }
 
         #endregion Constructors & Core

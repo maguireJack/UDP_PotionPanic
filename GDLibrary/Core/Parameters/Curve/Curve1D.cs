@@ -49,10 +49,9 @@ namespace GDLibrary.Parameters
             curve.PostLoop = curveLookType;
         }
 
-        public void Add(float value, float timeInSecs)
+        public void Add(float value, int timeInMS)
         {
-            timeInSecs *= 1000; //convert to milliseconds
-            curve.Keys.Add(new CurveKey(timeInSecs, value));
+            curve.Keys.Add(new CurveKey(timeInMS, value));
             bSet = false;
         }
 
@@ -67,14 +66,12 @@ namespace GDLibrary.Parameters
             curve.Keys.Clear();
         }
 
-        public float Evaluate(float timeInSecs, int decimalPrecision)
+        public float Evaluate(double timeInMS, int decimalPrecision)
         {
             if (!bSet)
-            {
                 Set();
-            }
 
-            return (float)Math.Round(curve.Evaluate(timeInSecs), decimalPrecision);
+            return (float)Math.Round(curve.Evaluate((int)timeInMS), decimalPrecision);
         }
 
         private void SetTangents(Curve curve)

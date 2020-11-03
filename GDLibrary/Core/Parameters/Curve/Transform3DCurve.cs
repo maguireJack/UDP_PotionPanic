@@ -18,7 +18,7 @@ namespace GDLibrary.Parameters
 
         private Vector3 position, scale;
         private float rotation;
-        private float timeInSecs;
+        private int timeInMS;
 
         #endregion Fields
 
@@ -60,23 +60,11 @@ namespace GDLibrary.Parameters
             }
         }
 
-        public float TimeInSecs
-        {
-            get
-            {
-                return timeInSecs;
-            }
-            set
-            {
-                timeInSecs = value;
-            }
-        }
-
         public float TimeInMs
         {
             get
             {
-                return timeInSecs * 1000;
+                return timeInMS;
             }
         }
 
@@ -84,12 +72,13 @@ namespace GDLibrary.Parameters
 
         #region Constructors & Core
 
-        public Transform3DCurveOffsets(Vector3 position, Vector3 scale, float rotation, float timeInSecs)
+        public Transform3DCurveOffsets(Vector3 position, Vector3 scale, float rotation,
+            int timeInMS)
         {
             this.position = position;
             this.scale = scale;
             this.rotation = rotation;
-            this.timeInSecs = timeInSecs;
+            this.timeInMS = timeInMS;
         }
 
         public object Clone()
@@ -121,11 +110,11 @@ namespace GDLibrary.Parameters
             upCurve = new Curve3D(curveLoopType);
         }
 
-        public void Add(Vector3 translation, Vector3 look, Vector3 up, float timeInSecs)
+        public void Add(Vector3 translation, Vector3 look, Vector3 up, int timeInMS)
         {
-            translationCurve.Add(translation, timeInSecs);
-            lookCurve.Add(look, timeInSecs);
-            upCurve.Add(up, timeInSecs);
+            translationCurve.Add(translation, timeInMS);
+            lookCurve.Add(look, timeInMS);
+            upCurve.Add(up, timeInMS);
         }
 
         public void Clear()
@@ -136,12 +125,12 @@ namespace GDLibrary.Parameters
         }
 
         //See https://msdn.microsoft.com/en-us/library/t3c3bfhx.aspx for information on using the out keyword
-        public void Evalulate(float timeInSecs, int precision,
+        public void Evalulate(double timeInMS, int precision,
             out Vector3 translation, out Vector3 look, out Vector3 up)
         {
-            translation = translationCurve.Evaluate(timeInSecs, precision);
-            look = lookCurve.Evaluate(timeInSecs, precision);
-            up = upCurve.Evaluate(timeInSecs, precision);
+            translation = translationCurve.Evaluate(timeInMS, precision);
+            look = lookCurve.Evaluate(timeInMS, precision);
+            up = upCurve.Evaluate(timeInMS, precision);
         }
 
         #endregion Constructors & Core

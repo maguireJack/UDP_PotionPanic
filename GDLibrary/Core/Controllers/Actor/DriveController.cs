@@ -49,13 +49,13 @@ namespace GDLibrary.Controllers
 
             if (keyboardManager.IsKeyDown(Keys.H))
             {
-                //parent.Transform3D.RotateAroundUpBy(this.rotationSpeed * gameTime.ElapsedGameTime.Milliseconds);
-                parent.Transform3D.RotateBy(new Vector3(0, 45, 0));
+                parent.Transform3D.RotateAroundUpBy(this.rotationSpeed * gameTime.ElapsedGameTime.Milliseconds);
+                //parent.Transform3D.RotateBy(new Vector3(0, 45, 0));
             }
             else if (keyboardManager.IsKeyDown(Keys.K))
             {
-                //parent.Transform3D.RotateAroundUpBy(-1 * this.rotationSpeed * gameTime.ElapsedGameTime.Milliseconds);
-                parent.Transform3D.RotateBy(new Vector3(0, -45, 0));
+                parent.Transform3D.RotateAroundUpBy(-1 * this.rotationSpeed * gameTime.ElapsedGameTime.Milliseconds);
+                //parent.Transform3D.RotateBy(new Vector3(0, -45, 0));
             }
 
             //constrain movement in Y-axis to stop object moving up/down in space

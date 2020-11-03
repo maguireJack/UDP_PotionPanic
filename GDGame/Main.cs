@@ -9,6 +9,7 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace GDGame
 {
@@ -18,22 +19,42 @@ namespace GDGame
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private BasicEffect unlitTexturedEffect, unlitWireframeEffect;
+
+        //effects used by primitive objects (wireframe, lit, unlit) and model objects
+        private BasicEffect unlitTexturedEffect, unlitWireframeEffect, modelEffect;
+
+        //managers in the game
         private CameraManager<Camera3D> cameraManager;
         private ObjectManager objectManager;
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
 
+        //hashmap (Dictonary in C#) to store useful rails and curves
+        private Dictionary<string, Transform3DCurve> transform3DCurveDictionary;
+        private Dictionary<string, RailParameters> railDictionary;
+
+        //defines centre point for the mouse i.e. (w/2, h/2)
+        private Vector2 screenCentre;
+
+        //size of the skybox and ground plane
+        private float worldScale = 3000;
+
         private VertexPositionColorTexture[] vertices;
         private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, crate;
-        private Model box, wizard, redPotion;
-        private PrimitiveObject archetypalTexturedQuad;
-        private float worldScale = 3000;
-        private PrimitiveObject primitiveObject = null;
-        private Vector2 screenCentre;
-        private BasicEffect modelEffect;
+
+        //font used to show debug info
         private SpriteFont debugFont;
+
+        #region Demo
+
+        private PrimitiveObject archetypalTexturedQuad;
         private ModelObject carModelObject;
+        private Curve1D curve1D;
+
+        #endregion
+
+        private PrimitiveObject primitiveObject = null;
+        private Model box, wizard, redPotion;
 
         #endregion Fields
 
@@ -52,6 +73,10 @@ namespace GDGame
 
         protected override void Initialize()
         {
+            #region Demo
+            DemoCurve();
+            #endregion
+
             //set game title
             Window.Title = "My Amazing Game";
 
@@ -61,15 +86,22 @@ namespace GDGame
             //managers
             InitManagers();
 
+            //dictionaries
+            InitDictionaries();
+
             //resources and effects
             InitVertices();
             InitTextures();
             InitModels();
             InitFonts();
-            InitEffect();
+            InitEffects();
 
             //drawn content
             InitDrawnContent();
+
+            //curves and rails used by cameras
+            InitCurves();
+            InitRails();
 
             //cameras - notice we moved the camera creation BELOW where we created the drawn content - see DriveController
             InitCameras3D();
@@ -77,12 +109,49 @@ namespace GDGame
             InitPlayer();
 
             //graphic settings - see https://en.wikipedia.org/wiki/Display_resolution#/media/File:Vector_Video_Standards8.svg
-            InitGraphics(1440, 900);
+            InitGraphics(1024, 768);
 
             //debug info
             InitDebug();
 
             base.Initialize();
+        }
+
+        private void DemoCurve()
+        {
+            curve1D = new Curve1D(CurveLoopType.Oscillate);
+            curve1D.Add(100, 2);
+            curve1D.Add(250, 5);
+            curve1D.Add(1500, 8);
+        }
+
+        private void InitCurves()
+        {
+            //create the camera curve to be applied to the track controller
+            Transform3DCurve curveA = new Transform3DCurve(CurveLoopType.Oscillate); //experiment with other CurveLoopTypes
+            curveA.Add(new Vector3(0, 5, 100), -Vector3.UnitZ, Vector3.UnitY, 0); //start
+            curveA.Add(new Vector3(0, 5, 80), new Vector3(1, 0, -1), Vector3.UnitY, 1000); //start position
+            curveA.Add(new Vector3(0, 5, 50), -Vector3.UnitZ, Vector3.UnitY, 3000); //start position
+            curveA.Add(new Vector3(0, 5, 20), new Vector3(-1, 0, -1), Vector3.UnitY, 4000); //start position
+            curveA.Add(new Vector3(0, 5, 10), -Vector3.UnitZ, Vector3.UnitY, 6000); //start position
+
+            //add to the dictionary
+            transform3DCurveDictionary.Add("headshake1", curveA);
+        }
+
+        private void InitRails()
+        {
+            //create the track to be applied to the non-collidable track camera 1
+            railDictionary.Add("rail1", new RailParameters("rail1 - parallel to z-axis", new Vector3(20, 10, 50), new Vector3(20, 10, -50)));
+        }
+
+        private void InitDictionaries()
+        {
+            //curves - notice we use a basic Dictionary and not a ContentDictionary since curves and rails are NOT media content
+            transform3DCurveDictionary = new Dictionary<string, Transform3DCurve>();
+
+            //rails - store rails used by cameras
+            railDictionary = new Dictionary<string, RailParameters>();
         }
 
         private void InitManagers()
@@ -201,7 +270,7 @@ namespace GDGame
 
             #endregion Camera - Security
 
-            #region Camera - Giant
+            #region Camera - Rail
 
             transform3D = new Transform3D(new Vector3(0, 250, 100),
                        new Vector3(-1, 0, 0), //look
@@ -211,20 +280,42 @@ namespace GDGame
               ActorType.Camera3D, StatusType.Update, transform3D,
           ProjectionParameters.StandardDeepSixteenTen);
 
+            //camera3D.ControllerList.Add(new RailController("rail controller - final battle 1",
+            //    ControllerType.Rail,
+            //    this.carModelObject,
+            //    new RailParameters("bottom rail",
+            //    new Vector3(100, 10, 50), new Vector3(55, 10, -50))));
+
             camera3D.ControllerList.Add(new RailController("rail controller - final battle 1",
-                ControllerType.Rail,
-                this.carModelObject,
-                new RailParameters("bottom rail",
-                new Vector3(25, 10, 50), new Vector3(25, 10, -50))));
+           ControllerType.Rail,
+           carModelObject,
+           railDictionary["rail1"])); //use the rail dictionary to retrieve a rail by id
 
             cameraManager.Add(camera3D);
 
-            #endregion Camera - Giant
+            #endregion Camera - Rail
+
+            #region Camera - Curve3D
+
+            //notice that it doesnt matter what translation, look, and up are since curve will set these
+            transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, Vector3.Zero);
+
+            camera3D = new Camera3D("curve camera - main arena",
+              ActorType.Camera3D, StatusType.Update, transform3D,
+                        ProjectionParameters.StandardDeepSixteenTen);
+
+            camera3D.ControllerList.Add(new Curve3DController("main arena - fly through - 1",
+                ControllerType.Curve,
+                        transform3DCurveDictionary["headshake1"])); //use the curve dictionary to retrieve a transform3DCurve by id
+
+            cameraManager.Add(camera3D);
+
+            #endregion Camera - Curve3D
 
             cameraManager.ActiveCameraIndex = 0; //0, 1, 2, 3
         }
 
-        private void InitEffect()
+        private void InitEffects()
         {
             //to do...
             unlitTexturedEffect = new BasicEffect(_graphics.GraphicsDevice);
@@ -307,7 +398,7 @@ namespace GDGame
             //transform
             Transform3D transform3D = new Transform3D(new Vector3(0, 5, 0),
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(1, 1, 2),        //scale
+                                new Vector3(1, 1, 4),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
@@ -561,6 +652,12 @@ namespace GDGame
 
         protected override void Update(GameTime gameTime)
         {
+            #region Demo
+
+            System.Diagnostics.Debug.WriteLine("t in ms:" + gameTime.TotalGameTime.TotalMilliseconds + " v: " + curve1D.Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 2));
+
+            #endregion
+
             if (keyboardManager.IsFirstKeyPress(Keys.Escape))
             {
                 Exit();

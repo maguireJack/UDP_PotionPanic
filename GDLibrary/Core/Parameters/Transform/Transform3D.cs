@@ -134,10 +134,11 @@ namespace GDLibrary.Parameters
         public void RotateAroundUpBy(float magnitude)
         {
             //add to existing rotation
-            rotationInDegrees.Y += magnitude;
+            rotationInDegrees.Y += magnitude; //this is what orients model on the screen
 
             //transform the original look using this rotationInDegrees around UnitY and normalize
-            look = Vector3.Normalize(Vector3.Transform(originalLook, Matrix.CreateRotationY(MathHelper.ToRadians(rotationInDegrees.Y))));
+            look = Vector3.Normalize(Vector3.Transform(originalLook,
+                Matrix.CreateRotationY(MathHelper.ToRadians(rotationInDegrees.Y))));
         }
 
         public void RotateBy(Vector3 axisAndMagnitude)

@@ -18,7 +18,7 @@ namespace GDLibrary.Parameters
 
         private Vector2 translation, scale;
         private float rotation;
-        private float timeInSecs;
+        private int timeInMS;
 
         #endregion Fields
 
@@ -60,23 +60,15 @@ namespace GDLibrary.Parameters
             }
         }
 
-        public float TimeInSecs
+        public int TimeInMS
         {
             get
             {
-                return timeInSecs;
+                return timeInMS;
             }
             set
             {
-                timeInSecs = value;
-            }
-        }
-
-        public float TimeInMs
-        {
-            get
-            {
-                return timeInSecs * 1000;
+                timeInMS = value;
             }
         }
 
@@ -84,12 +76,12 @@ namespace GDLibrary.Parameters
 
         #region Constructors & Core
 
-        public Transform2DCurveOffsets(Vector2 translation, Vector2 scale, float rotation, float timeInSecs)
+        public Transform2DCurveOffsets(Vector2 translation, Vector2 scale, float rotation, int timeInMS)
         {
             this.translation = translation;
             this.scale = scale;
             this.rotation = rotation;
-            this.timeInSecs = timeInSecs;
+            this.timeInMS = timeInMS;
         }
 
         public object Clone()
@@ -121,11 +113,12 @@ namespace GDLibrary.Parameters
             rotationCurve = new Curve1D(curveLoopType);
         }
 
-        public void Add(Vector2 translation, Vector2 scale, float rotation, float timeInSecs)
+        public void Add(Vector2 translation, Vector2 scale, float rotation,
+            int timeInMS)
         {
-            translationCurve.Add(translation, timeInSecs);
-            scaleCurve.Add(scale, timeInSecs);
-            rotationCurve.Add(rotation, timeInSecs);
+            translationCurve.Add(translation, timeInMS);
+            scaleCurve.Add(scale, timeInMS);
+            rotationCurve.Add(rotation, timeInMS);
         }
 
         public void Clear()
@@ -136,11 +129,11 @@ namespace GDLibrary.Parameters
         }
 
         //See https://msdn.microsoft.com/en-us/library/t3c3bfhx.aspx for information on using the out keyword
-        public void Evalulate(float timeInSecs, int precision, out Vector2 translation, out Vector2 scale, out float rotation)
+        public void Evalulate(double timeInMS, int precision, out Vector2 translation, out Vector2 scale, out float rotation)
         {
-            translation = translationCurve.Evaluate(timeInSecs, precision);
-            scale = scaleCurve.Evaluate(timeInSecs, precision);
-            rotation = rotationCurve.Evaluate(timeInSecs, precision);
+            translation = translationCurve.Evaluate(timeInMS, precision);
+            scale = scaleCurve.Evaluate(timeInMS, precision);
+            rotation = rotationCurve.Evaluate(timeInMS, precision);
         }
 
         #endregion Constructors & Core

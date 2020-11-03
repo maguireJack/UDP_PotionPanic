@@ -52,7 +52,7 @@ namespace GDLibrary.Controllers
                 parent.Transform3D.Look = cameraToTarget;
             }
 
-            //   base.Update(gameTime, actor);
+            // base.Update(gameTime, actor);
         }
     }
 }

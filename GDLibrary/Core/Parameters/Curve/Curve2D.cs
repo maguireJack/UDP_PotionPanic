@@ -36,10 +36,10 @@ namespace GDLibrary.Parameters
             yCurve = new Curve1D(curveLoopType);
         }
 
-        public void Add(Vector2 value, float time)
+        public void Add(Vector2 value, int timeInMS)
         {
-            xCurve.Add(value.X, time);
-            yCurve.Add(value.Y, time);
+            xCurve.Add(value.X, timeInMS);
+            yCurve.Add(value.Y, timeInMS);
         }
 
         public void Clear()
@@ -48,9 +48,9 @@ namespace GDLibrary.Parameters
             yCurve.Clear();
         }
 
-        public Vector2 Evaluate(float timeInSecs, int decimalPrecision)
+        public Vector2 Evaluate(double timeInMS, int decimalPrecision)
         {
-            return new Vector2(xCurve.Evaluate(timeInSecs, decimalPrecision), yCurve.Evaluate(timeInSecs, decimalPrecision));
+            return new Vector2(xCurve.Evaluate(timeInMS, decimalPrecision), yCurve.Evaluate(timeInMS, decimalPrecision));
         }
 
         #endregion Constructors & Core
