@@ -1,0 +1,585 @@
+﻿using GDLibrary.Actors;
+using GDLibrary.Controllers;
+using GDLibrary.Debug;
+using GDLibrary.Enums;
+using GDLibrary.Factories;
+using GDLibrary.Interfaces;
+using GDLibrary.Managers;
+using GDLibrary.Parameters;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+
+namespace GDGame
+{
+    public class Main : Game
+    {
+        #region Fields
+
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+        private BasicEffect unlitTexturedEffect, unlitWireframeEffect;
+        private CameraManager<Camera3D> cameraManager;
+        private ObjectManager objectManager;
+        private KeyboardManager keyboardManager;
+        private MouseManager mouseManager;
+
+        private VertexPositionColorTexture[] vertices;
+        private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, crate;
+        private Model box, wizard, redPotion;
+        private PrimitiveObject archetypalTexturedQuad;
+        private float worldScale = 3000;
+        private PrimitiveObject primitiveObject = null;
+        private Vector2 screenCentre;
+        private BasicEffect modelEffect;
+        private SpriteFont debugFont;
+        private ModelObject carModelObject;
+
+        #endregion Fields
+
+        #region Constructors
+
+        public Main()
+        {
+            _graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+            IsMouseVisible = true;
+        }
+
+        #endregion Constructors
+
+        #region Initialization - Managers, Cameras, Effects, Textures
+
+        protected override void Initialize()
+        {
+            //set game title
+            Window.Title = "My Amazing Game";
+
+            //note that we moved this from LoadContent to allow InitDebug to be called in Initialize
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            //managers
+            InitManagers();
+
+            //resources and effects
+            InitVertices();
+            InitTextures();
+            InitModels();
+            InitFonts();
+            InitEffect();
+
+            //drawn content
+            InitDrawnContent();
+
+            //cameras - notice we moved the camera creation BELOW where we created the drawn content - see DriveController
+            InitCameras3D();
+
+            InitPlayer();
+
+            //graphic settings - see https://en.wikipedia.org/wiki/Display_resolution#/media/File:Vector_Video_Standards8.svg
+            InitGraphics(1440, 900);
+
+            //debug info
+            InitDebug();
+
+            base.Initialize();
+        }
+
+        private void InitManagers()
+        {
+            //camera
+            cameraManager = new CameraManager<Camera3D>(this);
+            Components.Add(cameraManager);
+
+            //keyboard
+            keyboardManager = new KeyboardManager(this);
+            Components.Add(keyboardManager);
+
+            //mouse
+            mouseManager = new MouseManager(this, false);
+            Components.Add(mouseManager);
+
+            //object
+            objectManager = new ObjectManager(this, 6, 10, cameraManager);
+            //set the object manager to be drawn BEFORE the debug drawer to the screen
+            objectManager.DrawOrder = 1;
+            Components.Add(objectManager);
+        }
+
+        private void InitDebug()
+        {
+            //create the debug drawer to draw debug info
+            DebugDrawer debugDrawer = new DebugDrawer(this, _spriteBatch, debugFont,
+                cameraManager, objectManager);
+
+            //set the debug drawer to be drawn AFTER the object manager to the screen
+            debugDrawer.DrawOrder = 2;
+
+            //add the debug drawer to the component list so that it will have its Update/Draw methods called each cycle.
+            Components.Add(debugDrawer);
+        }
+
+        private void InitFonts()
+        {
+            debugFont = Content.Load<SpriteFont>("Assets/Fonts/debug");
+        }
+
+        private void InitCameras3D()
+        {
+            Transform3D transform3D = null;
+            Camera3D camera3D = null;
+
+            #region Camera - Third Person Player Camera
+
+            transform3D = new Transform3D(new Vector3(
+                0,
+                GameConstants.playerCamOffsetY,
+                GameConstants.playerCamOffsetZ),
+                new Vector3(0, 0, -1), Vector3.UnitY);
+
+            camera3D = new Camera3D("3rd person player",
+                ActorType.Camera3D, StatusType.Update, transform3D,
+                ProjectionParameters.StandardDeepSixteenTen);
+            cameraManager.Add(camera3D);
+
+            #endregion
+
+            #region Camera - First Person
+
+            transform3D = new Transform3D(new Vector3(10, 10, 20),
+                new Vector3(0, 0, -1), Vector3.UnitY);
+
+            camera3D = new Camera3D("1st person",
+                ActorType.Camera3D, StatusType.Update, transform3D,
+                ProjectionParameters.StandardDeepSixteenTen);
+
+            //attach a controller
+            camera3D.ControllerList.Add(new FirstPersonController(
+                "1st person controller A", ControllerType.FirstPerson,
+                keyboardManager, mouseManager,
+                GameConstants.moveSpeed, GameConstants.strafeSpeed, GameConstants.rotateSpeed));
+            cameraManager.Add(camera3D);
+
+            #endregion Camera - First Person
+
+            #region Camera - Flight
+
+            transform3D = new Transform3D(new Vector3(0, 10, 10),
+                        new Vector3(0, 0, -1),
+                        Vector3.UnitY);
+
+            camera3D = new Camera3D("flight person",
+                ActorType.Camera3D, StatusType.Update, transform3D,
+                ProjectionParameters.StandardDeepSixteenTen);
+
+            //define move parameters
+            MoveParameters moveParameters = new MoveParameters(keyboardManager,
+                mouseManager, GameConstants.flightMoveSpeed, GameConstants.flightStrafeSpeed,
+                GameConstants.flightRotateSpeed, GameConstants.KeysOne);
+
+            //attach a controller
+            camera3D.ControllerList.Add(new FlightCameraController("flight controller",
+                                        ControllerType.FlightCamera, moveParameters));
+            cameraManager.Add(camera3D);
+
+            #endregion Camera - Flight
+
+            #region Camera - Security
+
+            transform3D = new Transform3D(new Vector3(10, 10, 50),
+                        new Vector3(0, 0, -1),
+                        Vector3.UnitY);
+
+            camera3D = new Camera3D("security",
+                ActorType.Camera3D, StatusType.Update, transform3D,
+            ProjectionParameters.StandardDeepSixteenTen);
+
+            camera3D.ControllerList.Add(new PanController(
+                "pan controller", ControllerType.Pan,
+                new Vector3(1, 1, 0), new TrigonometricParameters(30, GameConstants.mediumAngularSpeed, 0)));
+            cameraManager.Add(camera3D);
+
+            #endregion Camera - Security
+
+            #region Camera - Giant
+
+            transform3D = new Transform3D(new Vector3(0, 250, 100),
+                       new Vector3(-1, 0, 0), //look
+                       new Vector3(0, 1, 0)); //up
+
+            camera3D = new Camera3D("rail camera - final battle",
+              ActorType.Camera3D, StatusType.Update, transform3D,
+          ProjectionParameters.StandardDeepSixteenTen);
+
+            camera3D.ControllerList.Add(new RailController("rail controller - final battle 1",
+                ControllerType.Rail,
+                this.carModelObject,
+                new RailParameters("bottom rail",
+                new Vector3(25, 10, 50), new Vector3(25, 10, -50))));
+
+            cameraManager.Add(camera3D);
+
+            #endregion Camera - Giant
+
+            cameraManager.ActiveCameraIndex = 0; //0, 1, 2, 3
+        }
+
+        private void InitEffect()
+        {
+            //to do...
+            unlitTexturedEffect = new BasicEffect(_graphics.GraphicsDevice);
+            unlitTexturedEffect.VertexColorEnabled = true; //otherwise we wont see RGB
+            unlitTexturedEffect.TextureEnabled = true;
+
+            //wireframe primitives with no lighting and no texture
+            unlitWireframeEffect = new BasicEffect(_graphics.GraphicsDevice);
+            unlitWireframeEffect.VertexColorEnabled = true;
+
+            //model effect
+            //add a ModelObject
+            modelEffect = new BasicEffect(_graphics.GraphicsDevice);
+            modelEffect.TextureEnabled = true;
+            modelEffect.LightingEnabled = true;
+            modelEffect.PreferPerPixelLighting = true;
+            //   this.modelEffect.SpecularPower = 512;
+            //  this.modelEffect.SpecularColor = Color.Red.ToVector3();
+            modelEffect.EnableDefaultLighting();
+        }
+
+        private void InitTextures()
+        {
+            //step 1 - texture
+            backSky
+                = Content.Load<Texture2D>("Assets/Textures/Skybox/back");
+            leftSky
+               = Content.Load<Texture2D>("Assets/Textures/Skybox/left");
+            rightSky
+              = Content.Load<Texture2D>("Assets/Textures/Skybox/right");
+            frontSky
+              = Content.Load<Texture2D>("Assets/Textures/Skybox/front");
+            topSky
+              = Content.Load<Texture2D>("Assets/Textures/Skybox/sky");
+
+            grass
+              = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/grass1");
+
+            crate
+                = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
+        }
+
+        private void InitModels()
+        {
+            box
+                = Content.Load<Model>("Assets/Models/box2");
+
+            wizard
+              = Content.Load<Model>("Assets/Models/wizard");
+
+            redPotion
+                = Content.Load<Model>("Assets/Models/potion1");
+        }
+
+        #endregion Initialization - Managers, Cameras, Effects, Textures
+
+        #region Initialization - Vertices, Archetypes, Helpers, Drawn Content(e.g. Skybox)
+
+        private void InitDrawnContent() //formerly InitPrimitives
+        {
+            //add archetypes that can be cloned
+            InitPrimitiveArchetypes();
+
+            //adds origin helper etc
+            InitHelpers();
+
+            //add skybox
+            InitSkybox();
+
+            //add grass plane
+            InitGround();
+
+            //models
+            InitStaticModels();
+        }
+
+        private void InitStaticModels()
+        {
+            ////////BOX
+            //transform
+            Transform3D transform3D = new Transform3D(new Vector3(0, 5, 0),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(1, 1, 2),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            //effectparameters
+            EffectParameters effectParameters = new EffectParameters(modelEffect,
+                crate,
+                Color.White, 1);
+
+            //model object
+            carModelObject = new ModelObject("car", ActorType.Player,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, box);
+            objectManager.Add(carModelObject);
+
+            carModelObject.ControllerList.Add(new DriveController(
+                "fp - car - controller", ControllerType.FirstPerson,
+                keyboardManager,
+                GameConstants.carMoveSpeed,
+                GameConstants.carRotateSpeed));
+
+
+            ///////Potion1
+            //transform 
+            transform3D = new Transform3D(new Vector3(0, 0, -100),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(2, 2, 2),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            //effectparameters
+            effectParameters = new EffectParameters(modelEffect,
+                null,
+                Color.White, 1);
+
+            //model object
+            ModelObject potionObject = new ModelObject("potion1", ActorType.Interactable,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, redPotion);
+
+            HandHeldPickup potion1 = new HandHeldPickup(potionObject, "Red Potion", 30f, GameConstants.potionRedPos);
+            objectManager.Add(potion1);
+        }
+
+        private void InitPlayer()
+        {
+            //transform
+            Transform3D transform3D = new Transform3D(new Vector3(0, 0, 0),
+                                new Vector3(0, 45, 0),       //rotation
+                                new Vector3(1, 1, 1),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            //effectparameters
+            EffectParameters effectParameters = new EffectParameters(modelEffect,
+                null,
+                Color.White, 1);
+
+            //model object
+            ModelObject playerObject = new ModelObject("Wizard", ActorType.Player,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, wizard);
+
+            ThirdPersonPlayerController controller = new ThirdPersonPlayerController(
+                keyboardManager, mouseManager, cameraManager[0],
+                GameConstants.playerMoveSpeed,
+                GameConstants.playerStrafeSpeed,
+                GameConstants.playerRotateSpeed,
+                GameConstants.KeysOne);
+
+            Player player = new Player(objectManager, keyboardManager, playerObject, controller);
+
+            objectManager.Add(player);
+        }
+
+        private void InitVertices()
+        {
+            vertices
+                = new VertexPositionColorTexture[4];
+
+            float halfLength = 0.5f;
+            //TL
+            vertices[0] = new VertexPositionColorTexture(
+                new Vector3(-halfLength, halfLength, 0),
+                new Color(255, 255, 255, 255), new Vector2(0, 0));
+
+            //BL
+            vertices[1] = new VertexPositionColorTexture(
+                new Vector3(-halfLength, -halfLength, 0),
+                Color.White, new Vector2(0, 1));
+
+            //TR
+            vertices[2] = new VertexPositionColorTexture(
+                new Vector3(halfLength, halfLength, 0),
+                Color.White, new Vector2(1, 0));
+
+            //BR
+            vertices[3] = new VertexPositionColorTexture(
+                new Vector3(halfLength, -halfLength, 0),
+                Color.White, new Vector2(1, 1));
+        }
+
+        private void InitPrimitiveArchetypes() //formerly InitTexturedQuad
+        {
+            Transform3D transform3D = new Transform3D(Vector3.Zero, Vector3.Zero,
+               Vector3.One, Vector3.UnitZ, Vector3.UnitY);
+
+            EffectParameters effectParameters = new EffectParameters(unlitTexturedEffect,
+                grass, /*bug*/ Color.White, 1);
+
+            IVertexData vertexData = new VertexData<VertexPositionColorTexture>(
+                vertices, PrimitiveType.TriangleStrip, 2);
+
+            archetypalTexturedQuad = new PrimitiveObject("original texture quad",
+                ActorType.Decorator,
+                StatusType.Update | StatusType.Drawn,
+                transform3D, effectParameters, vertexData);
+        }
+
+        //VertexPositionColorTexture - 4 bytes x 3 (x,y,z) + 4 bytes x 3 (r,g,b) + 4bytes x 2 = 26 bytes
+        //VertexPositionColor -  4 bytes x 3 (x,y,z) + 4 bytes x 3 (r,g,b) = 24 bytes
+        private void InitHelpers()
+        {
+            //to do...add wireframe origin
+            PrimitiveType primitiveType;
+            int primitiveCount;
+
+            //step 1 - vertices
+            VertexPositionColor[] vertices = VertexFactory.GetVerticesPositionColorOriginHelper(
+                                    out primitiveType, out primitiveCount);
+
+            //step 2 - make vertex data that provides Draw()
+            IVertexData vertexData = new VertexData<VertexPositionColor>(vertices,
+                                    primitiveType, primitiveCount);
+
+            //step 3 - make the primitive object
+            Transform3D transform3D = new Transform3D(new Vector3(0, 20, 0),
+                Vector3.Zero, new Vector3(10, 10, 10),
+                Vector3.UnitZ, Vector3.UnitY);
+
+            EffectParameters effectParameters = new EffectParameters(unlitWireframeEffect,
+                null, Color.White, 1);
+
+            //at this point, we're ready!
+            PrimitiveObject primitiveObject = new PrimitiveObject("origin helper",
+                ActorType.Helper, StatusType.Drawn, transform3D, effectParameters, vertexData);
+
+            objectManager.Add(primitiveObject);
+        }
+
+        private void InitSkybox()
+        {
+            //back
+            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            //  primitiveObject.StatusType = StatusType.Off; //Experiment of the effect of StatusType
+            primitiveObject.ID = "sky back";
+            primitiveObject.EffectParameters.Texture = backSky;
+            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+            primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
+            objectManager.Add(primitiveObject);
+
+            //left
+            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            primitiveObject.ID = "left back";
+            primitiveObject.EffectParameters.Texture = leftSky;
+            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 90, 0);
+            primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
+            objectManager.Add(primitiveObject);
+
+            //right
+            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            primitiveObject.ID = "sky right";
+            primitiveObject.EffectParameters.Texture = rightSky;
+            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 20);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, -90, 0);
+            primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
+            objectManager.Add(primitiveObject);
+
+            //top
+            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            primitiveObject.ID = "sky top";
+            primitiveObject.EffectParameters.Texture = topSky;
+            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(90, -90, 0);
+            primitiveObject.Transform3D.Translation = new Vector3(0, worldScale / 2.0f, 0);
+            objectManager.Add(primitiveObject);
+
+            //to do...front
+            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            primitiveObject.ID = "sky front";
+            primitiveObject.EffectParameters.Texture = frontSky;
+            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
+            primitiveObject.Transform3D.Translation = new Vector3(0, 0, worldScale / 2.0f);
+            objectManager.Add(primitiveObject);
+        }
+
+        private void InitGround()
+        {
+            //grass
+            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            primitiveObject.ID = "grass";
+            primitiveObject.EffectParameters.Texture = grass;
+            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(90, 90, 0);
+            objectManager.Add(primitiveObject);
+        }
+
+        private void InitGraphics(int width, int height)
+        {
+            //set resolution
+            _graphics.PreferredBackBufferWidth = width;
+            _graphics.PreferredBackBufferHeight = height;
+
+            //dont forget to apply resolution changes otherwise we wont see the new WxH
+            _graphics.ApplyChanges();
+
+            //set screen centre based on resolution
+            screenCentre = new Vector2(width / 2, height / 2);
+
+            //set cull mode to show front and back faces - inefficient but we will change later
+            RasterizerState rs = new RasterizerState();
+            rs.CullMode = CullMode.None;
+            _graphics.GraphicsDevice.RasterizerState = rs;
+
+            //we use a sampler state to set the texture address mode to solve the aliasing problem between skybox planes
+            SamplerState samplerState = new SamplerState();
+            samplerState.AddressU = TextureAddressMode.Clamp;
+            samplerState.AddressV = TextureAddressMode.Clamp;
+            _graphics.GraphicsDevice.SamplerStates[0] = samplerState;
+
+            //set blending
+            _graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+
+            //set screen centre for use when centering mouse
+            screenCentre = new Vector2(width / 2, height / 2);
+        }
+
+        protected override void LoadContent()
+        {
+        }
+
+        protected override void UnloadContent()
+        {
+            base.UnloadContent();
+        }
+
+        #endregion Initialization - Vertices, Archetypes, Helpers, Drawn Content(e.g. Skybox)
+
+        #region Update & Draw
+
+        protected override void Update(GameTime gameTime)
+        {
+            if (keyboardManager.IsFirstKeyPress(Keys.Escape))
+            {
+                Exit();
+            }
+
+            if (keyboardManager.IsFirstKeyPress(Keys.C))
+            {
+                cameraManager.CycleActiveCamera();
+            }
+
+            base.Update(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+            base.Draw(gameTime);
+        }
+
+        #endregion Update & Draw
+    }
+}
