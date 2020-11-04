@@ -104,7 +104,7 @@ namespace GDGame
 
             if (mouseDelta.Length() != 0)
             {
-                parent.Transform3D.RotateBy(new Vector3(-1 * mouseDelta, 0));
+               // parent.Transform3D.RotateBy(new Vector3(-1 * mouseDelta, 0));
 
                 //Should have the camera rotating in HandleCameraToFollow
                 camera3D.Transform3D.RotateBy(new Vector3(-1 * mouseDelta, 0));

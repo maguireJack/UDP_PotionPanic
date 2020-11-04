@@ -446,7 +446,7 @@ namespace GDGame
         {
             //transform
             Transform3D transform3D = new Transform3D(new Vector3(0, 0, 0),
-                                new Vector3(0, 45, 0),       //rotation
+                                new Vector3(0, 0, 0),       //rotation
                                 new Vector3(1, 1, 1),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
@@ -460,17 +460,19 @@ namespace GDGame
             ModelObject playerObject = new ModelObject("Wizard", ActorType.Player,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, wizard);
-
+            playerObject.ControllerList.Add(new DriveController("player Controler", ControllerType.FirstPerson,
+                this.keyboardManager, GameConstants.playerMoveSpeed, GameConstants.playerRotateSpeed));
             ThirdPersonPlayerController controller = new ThirdPersonPlayerController(
                 keyboardManager, mouseManager, cameraManager[0],
                 GameConstants.playerMoveSpeed,
                 GameConstants.playerStrafeSpeed,
                 GameConstants.playerRotateSpeed,
                 GameConstants.KeysOne);
-
             Player player = new Player(objectManager, keyboardManager, playerObject, controller);
-
+            Player player2 = new Player(objectManager, keyboardManager, playerObject, new DriveController("player Controler", ControllerType.FirstPerson,
+                this.keyboardManager, GameConstants.playerMoveSpeed, GameConstants.playerRotateSpeed));
             objectManager.Add(player);
+            objectManager.Add(player2);
         }
 
         private void InitVertices()
