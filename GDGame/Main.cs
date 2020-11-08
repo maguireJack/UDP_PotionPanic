@@ -198,7 +198,7 @@ namespace GDGame
             Transform3D transform3D = null;
             Camera3D camera3D = null;
 
-            #region Camera - Third Person Player Camera
+            #region Camera -  Third Person Player Camera
 
             transform3D = new Transform3D(new Vector3(
                 0,
