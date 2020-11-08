@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Base\Actor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Base\Actor3D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Camera\Camera3D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Events\EventDispatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Drawn\DrawnActor3D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Drawn\ModelObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Drawn\MoveableObject.cs" />

@@ -4,21 +4,25 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GDGame
+namespace GDGame.Game.Actors
 {
-    public class InteractableObject : ModelObject
+    public abstract class InteractableObject : ModelObject
     {
         #region Fields
+
         private string name;
         private float interactDistance;
+        private bool locked;
+
         #endregion
 
         #region Properties
+
         public string Name
         {
             get
             {
-                return this.name;
+                return name;
             }
         }
 
@@ -26,17 +30,32 @@ namespace GDGame
         {
             get
             {
-                return this.interactDistance;
+                return interactDistance;
             }
         }
+
+        public bool Locked
+        {
+            get
+            {
+                return locked;
+            }
+            set
+            {
+                locked = value;
+            }
+        }
+
         #endregion
 
         #region Constructors
+
         public InteractableObject(ModelObject modelObject,
             string name, float interactDistance) : base(modelObject)
         {
             this.name = name;
             this.interactDistance = interactDistance;
+            locked = false;
         }
 
         public InteractableObject(string id,
@@ -51,7 +70,9 @@ namespace GDGame
         {
             this.name = name;
             this.interactDistance = interactDistance;
+            locked = false;
         }
+
         #endregion
 
         public float GetDistance(Actor3D actor)

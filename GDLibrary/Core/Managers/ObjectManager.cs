@@ -1,5 +1,6 @@
 ﻿using GDLibrary.Actors;
 using GDLibrary.Enums;
+using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -107,6 +108,30 @@ namespace GDLibrary.Managers
 
         #region Custom (Not Nialls)
 
+        public bool RemoveByID(string id)
+        {
+            count++;
+            for(int i = 0; i < opaqueList.Count; i++)
+            {
+                if (opaqueList[i].ID.Equals(id))
+                {
+                    opaqueList.RemoveAt(i);
+                    return true;
+                }    
+            }
+
+            for (int i = 0; i < transparentList.Count; i++)
+            {
+                if (opaqueList[i].ID.Equals(id))
+                {
+                    transparentList.RemoveAt(i);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public List<DrawnActor3D> GetActorList(ActorType actorType)
         {
             List<DrawnActor3D> list = new List<DrawnActor3D>();
@@ -121,6 +146,11 @@ namespace GDLibrary.Managers
         }
 
         public int ListSize()
+        {
+            return opaqueList.Count + transparentList.Count;
+        }
+
+        public int TotalListChanges()
         {
             return count;
         }

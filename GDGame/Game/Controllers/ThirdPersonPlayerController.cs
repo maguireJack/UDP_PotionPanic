@@ -6,9 +6,9 @@ using GDLibrary.Managers;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using System.Diagnostics;
-using GDGame;
+using GDGame.Game.Constants;
 
-namespace GDGame
+namespace GDGame.Game.Controllers
 {
     public class ThirdPersonPlayerController : IController
     {
@@ -117,8 +117,6 @@ namespace GDGame
                 turnAngle = currentAngle - turnAngle;
             }
             else turnAngle = currentAngle - (float)Math.Atan2(parent.Transform3D.Look.Z, parent.Transform3D.Look.X);
-
-            Debug.WriteLine(turnAngle);
 
             if (turnAngle > Math.PI)
             {

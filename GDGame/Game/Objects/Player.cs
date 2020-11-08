@@ -1,11 +1,17 @@
-﻿using GDLibrary.Actors;
+﻿using GDGame.Game.Actors;
+using GDGame.Game.Constants;
+using GDGame.Game.Interfaces;
+using GDLibrary.Actors;
+using GDLibrary.Core.Events;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
-namespace GDGame
+namespace GDGame.Game.Objects
 {
     public class Player : MoveableObject
     {
@@ -63,7 +69,7 @@ namespace GDGame
             //but going to wait to see what Niall does before I update this.
 
             //Check if there size of the object manager has changed, if it has, get and update the interactable list of objects here
-            if (lastListSize != objectManager.ListSize())
+            if (lastListSize != objectManager.TotalListChanges())
             {
                 lastListSize = objectManager.ListSize();
                 interactableList = objectManager.GetActorList(ActorType.Interactable);
@@ -77,9 +83,21 @@ namespace GDGame
                     //check if our hand is empty
                     //check if it is an item we can pickup (rather than a interactable workstation, etc
                     //then check if the Pickup key is pressed
-                    if (handItem == null && iObject is HandHeldPickup && keyBoardManager.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Space))
+                    if (keyBoardManager.IsKeyDown(GameConstants.playerInteractKey))
                     {
-                        handItem = iObject as HandHeldPickup;
+                        if (handItem == null && iObject is HandHeldPickup)
+                            handItem = iObject as HandHeldPickup;
+                        else if (handItem != null && iObject is IContainerInteractable)
+                        {
+                            IContainerInteractable container = iObject as IContainerInteractable;
+                            if (container.Deposit(handItem))
+                            {
+                                EventDispatcher.Publish(EventType.Remove, new ArrayList() { handItem.ID }); ;
+                                handItem = null;
+                                return;
+                            }
+                        }
+
                     }
                 }
             }

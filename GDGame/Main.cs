@@ -1,5 +1,11 @@
-﻿using GDLibrary.Actors;
+﻿using GDGame.Game.Actors;
+using GDGame.Game.Constants;
+using GDGame.Game.Controllers;
+using GDGame.Game.Enums;
+using GDGame.Game.Objects;
+using GDLibrary.Actors;
 using GDLibrary.Controllers;
+using GDLibrary.Core.Events;
 using GDLibrary.Debug;
 using GDLibrary.Enums;
 using GDLibrary.Factories;
@@ -9,11 +15,12 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace GDGame
 {
-    public class Main : Game
+    public class Main : Microsoft.Xna.Framework.Game
     {
         #region Fields
 
@@ -55,6 +62,7 @@ namespace GDGame
 
         private PrimitiveObject primitiveObject = null;
         private Model box, wizard, redPotion;
+        private EventDispatcher eventDispatcher;
 
         #endregion Fields
 
@@ -78,11 +86,12 @@ namespace GDGame
             #endregion
 
             //set game title
-            Window.Title = "My Amazing Game";
+            Window.Title = "Potion Panic";
 
             //note that we moved this from LoadContent to allow InitDebug to be called in Initialize
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            InitEventDispatcher();
             //managers
             InitManagers();
 
@@ -115,6 +124,37 @@ namespace GDGame
             InitDebug();
 
             base.Initialize();
+        }
+
+        private void InitEventDispatcher()
+        {
+            eventDispatcher = new EventDispatcher(this);
+            Components.Add(eventDispatcher);
+
+            eventDispatcher.RecipeEvent += EventDispatcher_RecipeEvent;
+            eventDispatcher.RemoveEvent += EventDispatcher_RemoveEvent;
+        }
+
+        private void EventDispatcher_RemoveEvent(string id)
+        {
+            objectManager.RemoveByID(id);
+        }
+
+        //TODO Parameters not being passed are textures and modeltype
+        private void EventDispatcher_RecipeEvent(ArrayList data)
+        {
+            //effectparameters
+            EffectParameters effectParameters = new EffectParameters(modelEffect,
+                null,
+                Color.White, 1);
+
+            //model object
+            ModelObject potionObject = new ModelObject((string)data[0] + objectManager.TotalListChanges(), ActorType.Interactable,
+                StatusType.Drawn | StatusType.Update, (Transform3D)data[3],
+                effectParameters, redPotion);
+
+            HandHeldPickup potion = new HandHeldPickup(potionObject, PickupType.Potion, (string)data[0], 30f, (Vector3)data[2]);
+            objectManager.Add(potion);
         }
 
         private void DemoCurve()
@@ -272,13 +312,13 @@ namespace GDGame
 
             #region Camera - Rail
 
-            transform3D = new Transform3D(new Vector3(0, 250, 100),
-                       new Vector3(-1, 0, 0), //look
-                       new Vector3(0, 1, 0)); //up
+          //  transform3D = new Transform3D(new Vector3(0, 250, 100),
+          //             new Vector3(-1, 0, 0), //look
+          //             new Vector3(0, 1, 0)); //up
 
-            camera3D = new Camera3D("rail camera - final battle",
-              ActorType.Camera3D, StatusType.Update, transform3D,
-          ProjectionParameters.StandardDeepSixteenTen);
+          //  camera3D = new Camera3D("rail camera - final battle",
+          //    ActorType.Camera3D, StatusType.Update, transform3D,
+          //ProjectionParameters.StandardDeepSixteenTen);
 
             //camera3D.ControllerList.Add(new RailController("rail controller - final battle 1",
             //    ControllerType.Rail,
@@ -286,12 +326,12 @@ namespace GDGame
             //    new RailParameters("bottom rail",
             //    new Vector3(100, 10, 50), new Vector3(55, 10, -50))));
 
-            camera3D.ControllerList.Add(new RailController("rail controller - final battle 1",
-           ControllerType.Rail,
-           carModelObject,
-           railDictionary["rail1"])); //use the rail dictionary to retrieve a rail by id
+           // camera3D.ControllerList.Add(new RailController("rail controller - final battle 1",
+           //ControllerType.Rail,
+           //carModelObject,
+           //railDictionary["rail1"])); //use the rail dictionary to retrieve a rail by id
 
-            cameraManager.Add(camera3D);
+            //cameraManager.Add(camera3D);
 
             #endregion Camera - Rail
 
@@ -394,11 +434,11 @@ namespace GDGame
 
         private void InitStaticModels()
         {
-            ////////BOX
+            ////////Cauldron
             //transform
-            Transform3D transform3D = new Transform3D(new Vector3(0, 5, 0),
+            Transform3D transform3D = new Transform3D(GameConstants.cauldronPos,
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(1, 1, 4),        //scale
+                                new Vector3(10, 10, 10),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
@@ -407,20 +447,15 @@ namespace GDGame
                 crate,
                 Color.White, 1);
 
-            //model object
-            carModelObject = new ModelObject("car", ActorType.Player,
+            ModelObject modelObject = new ModelObject("Cauldron", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, box);
-            objectManager.Add(carModelObject);
 
-            carModelObject.ControllerList.Add(new DriveController(
-                "fp - car - controller", ControllerType.FirstPerson,
-                keyboardManager,
-                GameConstants.carMoveSpeed,
-                GameConstants.carRotateSpeed));
+            Cauldron cauldron = new Cauldron(modelObject, "Cauldron", GameConstants.playerInteractionDistance);
 
+            objectManager.Add(cauldron);
 
-            ///////Potion1
+            ///////Ingredient 1
             //transform 
             transform3D = new Transform3D(new Vector3(0, 0, -100),
                                 new Vector3(0, 0, 0),       //rotation
@@ -434,12 +469,57 @@ namespace GDGame
                 Color.White, 1);
 
             //model object
-            ModelObject potionObject = new ModelObject("potion1", ActorType.Interactable,
+            modelObject = new ModelObject("i1", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, redPotion);
 
-            HandHeldPickup potion1 = new HandHeldPickup(potionObject, "Red Potion", 30f, GameConstants.potionRedPos);
-            objectManager.Add(potion1);
+            HandHeldPickup ingredient = new HandHeldPickup(modelObject, PickupType.Solid, "Red Rock", 30f, GameConstants.potionRedPos);
+            objectManager.Add(ingredient);
+
+
+            ///////Ingredient 2
+            //transform 
+            transform3D = new Transform3D(new Vector3(50, 0, -100),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(2, 2, 2),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            //effectparameters
+            effectParameters = new EffectParameters(modelEffect,
+                null,
+                Color.White, 1);
+
+            //model object
+            modelObject = new ModelObject("i2", ActorType.Interactable,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, redPotion);
+
+            ingredient = new HandHeldPickup(modelObject, PickupType.Solid, "Red Rock", 30f, GameConstants.potionRedPos);
+            objectManager.Add(ingredient);
+
+
+            ///////Ingredient 3
+            //transform 
+            transform3D = new Transform3D(new Vector3(100, 0, -100),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(2, 2, 2),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            //effectparameters
+            effectParameters = new EffectParameters(modelEffect,
+                null,
+                Color.White, 1);
+
+            //model object
+            modelObject = new ModelObject("i3", ActorType.Interactable,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, redPotion);
+
+            ingredient = new HandHeldPickup(modelObject, PickupType.Solid, "Blue Flower", 30f, GameConstants.potionRedPos);
+            objectManager.Add(ingredient);
+
         }
 
         private void InitPlayer()
@@ -653,7 +733,7 @@ namespace GDGame
         {
             #region Demo
 
-            System.Diagnostics.Debug.WriteLine("t in ms:" + gameTime.TotalGameTime.TotalMilliseconds + " v: " + curve1D.Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 2));
+            //System.Diagnostics.Debug.WriteLine("t in ms:" + gameTime.TotalGameTime.TotalMilliseconds + " v: " + curve1D.Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 2));
 
             #endregion
 
