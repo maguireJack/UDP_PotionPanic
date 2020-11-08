@@ -20,6 +20,22 @@ namespace GDLibrary.Parameters
 
         #region Properties
 
+        public Vector3 OriginalLook
+        {
+            get
+            {
+                return originalLook;
+            }
+        }
+
+        public Vector3 OriginalRotationInDegrees
+        {
+            get
+            {
+                return originalRotationInDegrees;
+            }
+        }
+
         public Matrix World
         {
             get
@@ -103,6 +119,7 @@ namespace GDLibrary.Parameters
             }
         }
 
+
         #endregion Properties
 
         #region Constructors & Core
@@ -157,6 +174,7 @@ namespace GDLibrary.Parameters
             look = Vector3.Transform(originalLook, rotMatrix);
             up = Vector3.Transform(originalUp, rotMatrix);
         }
+
 
         #endregion Movement
 

@@ -204,7 +204,7 @@ namespace GDGame
                 0,
                 GameConstants.playerCamOffsetY,
                 GameConstants.playerCamOffsetZ),
-                new Vector3(0, 0, -1), Vector3.UnitY);
+                new Vector3(0, -1, -1), Vector3.UnitY);
 
             camera3D = new Camera3D("3rd person player",
                 ActorType.Camera3D, StatusType.Update, transform3D,
@@ -469,10 +469,7 @@ namespace GDGame
                 GameConstants.playerRotateSpeed,
                 GameConstants.KeysOne);
             Player player = new Player(objectManager, keyboardManager, playerObject, controller);
-            Player player2 = new Player(objectManager, keyboardManager, playerObject, new DriveController("player Controler", ControllerType.FirstPerson,
-                this.keyboardManager, GameConstants.playerMoveSpeed, GameConstants.playerRotateSpeed));
             objectManager.Add(player);
-            objectManager.Add(player2);
         }
 
         private void InitVertices()

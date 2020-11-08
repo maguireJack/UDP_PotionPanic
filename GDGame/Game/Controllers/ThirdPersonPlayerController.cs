@@ -5,17 +5,26 @@ using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
+using System.Diagnostics;
+using GDGame;
 
 namespace GDGame
 {
     public class ThirdPersonPlayerController : IController
     {
+        #region Fields
+
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
         private Camera3D camera3D;
-        private float moveSpeed, strafeSpeed, rotationSpeed;
+        private float moveSpeed, strafeSpeed, rotationSpeed, turnAngle;
         private Keys[] moveKeys;
         private bool cameraMoveConstraint;
+        Vector3 translateBy;
+
+        #endregion
+
+        #region Constructors
 
         public ThirdPersonPlayerController(KeyboardManager keyboardManager,
             MouseManager mouseManager,
@@ -32,7 +41,10 @@ namespace GDGame
             this.rotationSpeed = rotationSpeed;
             this.moveKeys = moveKeys;
             cameraMoveConstraint = false;
+            translateBy = Vector3.Zero;
         }
+
+        #endregion
 
         public void Update(GameTime gameTime, IActor actor)
         {
@@ -40,16 +52,9 @@ namespace GDGame
 
             if (parent != null)
             {
-                HandleInput(gameTime, parent);
+                HandleMovement(gameTime, parent);
                 HandleCameraFollow(gameTime, parent);
             }
-        }
-
-        private void HandleInput(GameTime gameTime, Actor3D parent)
-        {
-            HandleKeyboardInput(gameTime, parent);
-            HandleMouseInput(gameTime, parent);
-            HandleCameraFollow(gameTime, parent);
         }
 
         private void HandleCameraFollow(GameTime gameTime, Actor3D parent)
@@ -77,39 +82,56 @@ namespace GDGame
             }
         }
 
-        private void HandleKeyboardInput(GameTime gameTime, Actor3D parent)
+        private void HandleMovement(GameTime gameTime, Actor3D parent)
         {
+
             Vector3 moveVector = Vector3.Zero;
 
-            if (this.keyboardManager.IsKeyDown(moveKeys[0]))
-                moveVector = parent.Transform3D.Look * this.moveSpeed;
-            else if (this.keyboardManager.IsKeyDown(moveKeys[1]))
-                moveVector = -1 * parent.Transform3D.Look * this.moveSpeed;
+            //Move forward
+            if (keyboardManager.IsKeyDown(moveKeys[0]))
+                moveVector.Z -= moveSpeed;
+            //Move Back
+            else if (keyboardManager.IsKeyDown(moveKeys[1]))
+                moveVector.Z += moveSpeed;
+            //Move Left
+            if (keyboardManager.IsKeyDown(moveKeys[2]))
+                moveVector.X -= strafeSpeed;
+            //Move Right
+            else if (keyboardManager.IsKeyDown(moveKeys[3]))
+                moveVector.X += strafeSpeed;
 
-            if (this.keyboardManager.IsKeyDown(moveKeys[2]))
-                moveVector -= parent.Transform3D.Right * this.strafeSpeed;
-            else if (this.keyboardManager.IsKeyDown(moveKeys[3]))
-                moveVector += parent.Transform3D.Right * this.strafeSpeed;
 
-            //constrain movement in Y-axis
-            moveVector.Y = 0;
-
+            parent.Transform3D.RotateAroundUpBy(CalculateRotation(parent, moveVector));
             parent.Transform3D.TranslateBy(moveVector * gameTime.ElapsedGameTime.Milliseconds);
         }
 
-        private void HandleMouseInput(GameTime gameTime, Actor3D parent)
+        private float CalculateRotation(Actor3D parent, Vector3 moveVector)
         {
-            Vector2 mouseDelta = this.mouseManager.GetDeltaFromCentre(new Vector2(512, 384));
-            mouseDelta *= this.rotationSpeed * gameTime.ElapsedGameTime.Milliseconds;
+            //Convert look direction to angle in radians
+            float currentAngle = (float)Math.Atan2(parent.Transform3D.Look.Z, parent.Transform3D.Look.X);
 
-            if (mouseDelta.Length() != 0)
+            //If moveVector not Zero, turn towards move direction, else turn back to original look position
+            if (moveVector != Vector3.Zero)
             {
-               // parent.Transform3D.RotateBy(new Vector3(-1 * mouseDelta, 0));
+                turnAngle = (float)Math.Atan2(moveVector.Z, moveVector.X);
+                turnAngle = currentAngle - turnAngle;
+            }
+            else turnAngle = currentAngle - (float)Math.Atan2(parent.Transform3D.Look.Z, parent.Transform3D.Look.X);
 
-                //Should have the camera rotating in HandleCameraToFollow
-                camera3D.Transform3D.RotateBy(new Vector3(-1 * mouseDelta, 0));
+            Debug.WriteLine(turnAngle);
+
+            if (turnAngle > Math.PI)
+            {
+                //if angle is bigger than 180, flip rotation
+                turnAngle -= (float)(2 * Math.PI);
+            }
+            else if (turnAngle < -Math.PI)
+            {
+                //if angle is less than -180, flip rotation
+                turnAngle += (float)(2 * Math.PI);
             }
 
+            return turnAngle;
         }
 
         public object Clone()
