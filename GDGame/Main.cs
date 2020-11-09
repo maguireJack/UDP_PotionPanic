@@ -61,7 +61,7 @@ namespace GDGame
         #endregion
 
         private PrimitiveObject primitiveObject = null;
-        private Model box, wizard, redPotion;
+        private Model box, wizard, redPotion, level, cauldronModel;
         private EventDispatcher eventDispatcher;
 
         #endregion Fields
@@ -312,13 +312,13 @@ namespace GDGame
 
             #region Camera - Rail
 
-          //  transform3D = new Transform3D(new Vector3(0, 250, 100),
-          //             new Vector3(-1, 0, 0), //look
-          //             new Vector3(0, 1, 0)); //up
+            //  transform3D = new Transform3D(new Vector3(0, 250, 100),
+            //             new Vector3(-1, 0, 0), //look
+            //             new Vector3(0, 1, 0)); //up
 
-          //  camera3D = new Camera3D("rail camera - final battle",
-          //    ActorType.Camera3D, StatusType.Update, transform3D,
-          //ProjectionParameters.StandardDeepSixteenTen);
+            //  camera3D = new Camera3D("rail camera - final battle",
+            //    ActorType.Camera3D, StatusType.Update, transform3D,
+            //ProjectionParameters.StandardDeepSixteenTen);
 
             //camera3D.ControllerList.Add(new RailController("rail controller - final battle 1",
             //    ControllerType.Rail,
@@ -326,10 +326,10 @@ namespace GDGame
             //    new RailParameters("bottom rail",
             //    new Vector3(100, 10, 50), new Vector3(55, 10, -50))));
 
-           // camera3D.ControllerList.Add(new RailController("rail controller - final battle 1",
-           //ControllerType.Rail,
-           //carModelObject,
-           //railDictionary["rail1"])); //use the rail dictionary to retrieve a rail by id
+            // camera3D.ControllerList.Add(new RailController("rail controller - final battle 1",
+            //ControllerType.Rail,
+            //carModelObject,
+            //railDictionary["rail1"])); //use the rail dictionary to retrieve a rail by id
 
             //cameraManager.Add(camera3D);
 
@@ -408,6 +408,12 @@ namespace GDGame
 
             redPotion
                 = Content.Load<Model>("Assets/Models/potion1");
+
+            level
+                = Content.Load<Model>("Assets/Models/level");
+
+            cauldronModel
+                = Content.Load<Model>("Assets/Models/cauldron");
         }
 
         #endregion Initialization - Managers, Cameras, Effects, Textures
@@ -434,11 +440,12 @@ namespace GDGame
 
         private void InitStaticModels()
         {
+
             ////////Cauldron
             //transform
             Transform3D transform3D = new Transform3D(GameConstants.cauldronPos,
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(10, 10, 10),        //scale
+                                new Vector3(.1f, .1f, .1f),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
@@ -449,11 +456,32 @@ namespace GDGame
 
             ModelObject modelObject = new ModelObject("Cauldron", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, box);
+                effectParameters, cauldronModel);
 
             Cauldron cauldron = new Cauldron(modelObject, "Cauldron", GameConstants.playerInteractionDistance);
 
             objectManager.Add(cauldron);
+
+            ///////Level
+            //transform 
+            transform3D = new Transform3D(new Vector3(-500, 0, 0),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(1, 1, 1),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            //effectparameters
+            effectParameters = new EffectParameters(modelEffect,
+                null,
+                Color.White, 1);
+
+            //model object
+            ModelObject levelObject = new ModelObject("level", ActorType.Decorator,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, level);
+
+            objectManager.Add(levelObject);
+
 
             ///////Ingredient 1
             //transform 
