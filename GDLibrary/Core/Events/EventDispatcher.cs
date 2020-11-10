@@ -1,4 +1,4 @@
-﻿using GDLibrary.Interfaces;
+﻿using GDLibrary.Actors;
 using Microsoft.Xna.Framework;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +10,8 @@ namespace GDLibrary.Core.Events
         Camera,
         Player,
         Recipe,
+        PotionPicked,
+        Add,
         Remove,
         WinLose,
         Menu,
@@ -44,6 +46,12 @@ namespace GDLibrary.Core.Events
         public delegate void RecipeEventHandler(ArrayList data);
         public event RecipeEventHandler RecipeEvent;
 
+        public delegate void PotionPickedEventHandler();
+        public event PotionPickedEventHandler PotionPickedEvent;
+
+        public delegate void AddEventHandler(DrawnActor3D actor);
+        public event AddEventHandler AddEvent;
+
         public delegate void RemoveEventHandler(string id);
         public event RemoveEventHandler RemoveEvent;
 
@@ -67,8 +75,14 @@ namespace GDLibrary.Core.Events
                 EventData evt = queue.Dequeue();
                 switch(evt.EventType)
                 {
+                    case EventType.PotionPicked:
+                        PotionPickedEvent();
+                        break;
                     case EventType.Recipe:
                         RecipeEvent(evt.Data);
+                        break;
+                    case EventType.Add:
+                        AddEvent((DrawnActor3D)evt.Data[0]);
                         break;
                     case EventType.Remove:
                         RemoveEvent((string)evt.Data[0]);

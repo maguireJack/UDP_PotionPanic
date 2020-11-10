@@ -61,13 +61,14 @@ namespace GDGame.Game.Constants
         public static readonly Vector3 potionRedPos = new Vector3(4, 18, -1.5f);
 
         public static readonly Keys playerInteractKey = Keys.Space;
-        public static readonly float playerInteractionDistance = 30f;
+        public static readonly float defualtInteractionDist = 50f;
 
         #endregion
 
         #region Objects
 
-        public static readonly Vector3 cauldronPos = new Vector3(100, 10, 0);
+        public static readonly Vector3 cauldronPos = new Vector3(100, 0, 100);
+        public static readonly Vector3 binPos = new Vector3(-100, 0, 100);
 
         #endregion
 
@@ -91,14 +92,14 @@ namespace GDGame.Game.Constants
 
         //Name, Points, HandPos, Transform3D
         public static readonly ArrayList potion1_data = new ArrayList { "Potion of Healing", 5, new Vector3(4, 18, -1.5f),
-            new Transform3D(new Vector3(cauldronPos.X, cauldronPos.Y + 20, cauldronPos.Z),   //translation
+            new Transform3D(new Vector3(cauldronPos.X, cauldronPos.Y + 60, cauldronPos.Z),   //translation
                 Vector3.Zero,           //rotation
                 new Vector3(2, 2, 2),   //scale
                 -Vector3.UnitZ,         //look
                 Vector3.UnitY)          //up
     };
         public static readonly ArrayList potion2_data = new ArrayList { "Potion of Something", 6, new Vector3(4, 18, -1.5f),
-        new Transform3D(new Vector3(cauldronPos.X, cauldronPos.Y + 20, cauldronPos.Z),   //translation
+        new Transform3D(new Vector3(cauldronPos.X, cauldronPos.Y + 60, cauldronPos.Z),   //translation
                 Vector3.Zero,           //rotation
                 new Vector3(2, 2, 2),   //scale
                 -Vector3.UnitZ,         //look

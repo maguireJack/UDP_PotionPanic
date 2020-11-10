@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Game.Actors
 {
-    public abstract class InteractableObject : ModelObject
+    public abstract class InteractableActor : ModelObject
     {
         #region Fields
 
@@ -40,17 +40,13 @@ namespace GDGame.Game.Actors
             {
                 return locked;
             }
-            set
-            {
-                locked = value;
-            }
         }
 
         #endregion
 
         #region Constructors
 
-        public InteractableObject(ModelObject modelObject,
+        public InteractableActor(ModelObject modelObject,
             string name, float interactDistance) : base(modelObject)
         {
             this.name = name;
@@ -58,7 +54,7 @@ namespace GDGame.Game.Actors
             locked = false;
         }
 
-        public InteractableObject(string id,
+        public InteractableActor(string id,
             ActorType actorType,
             StatusType statusType,
             Transform3D transform,
@@ -80,6 +76,16 @@ namespace GDGame.Game.Actors
             Vector2 actorTranslation = new Vector2(actor.Transform3D.Translation.X, actor.Transform3D.Translation.Z);
             Vector2 thisTranslation = new Vector2(Transform3D.Translation.X, Transform3D.Translation.Z);
             return Vector2.Distance(actorTranslation, thisTranslation);
+        }
+
+        protected void Lock()
+        {
+            locked = true;
+        }
+
+        protected void Unlock()
+        {
+            locked = false;
         }
     }
 }

@@ -86,6 +86,11 @@ namespace GDLibrary.Actors
             EffectParameters.Effect.Projection = camera.Projection;
             EffectParameters.Effect.DiffuseColor = EffectParameters.DiffuseColor.ToVector3();
             EffectParameters.Effect.Alpha = EffectParameters.Alpha;
+
+            DepthStencilState dss = new DepthStencilState();
+            dss.DepthBufferEnable = true;
+            graphicsDevice.DepthStencilState = dss;
+
             EffectParameters.Effect.CurrentTechnique.Passes[0].Apply();
 
             //Not all models NEED a texture. Does a semi-transparent window need a texture?

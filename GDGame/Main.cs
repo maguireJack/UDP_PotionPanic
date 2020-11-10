@@ -61,7 +61,7 @@ namespace GDGame
         #endregion
 
         private PrimitiveObject primitiveObject = null;
-        private Model box, wizard, redPotion, level, cauldronModel;
+        private Model box, wizard, redPotion, level, cauldronModel, redRockModel, blueFlowerModel, greenHerbModel;
         private EventDispatcher eventDispatcher;
 
         #endregion Fields
@@ -132,7 +132,13 @@ namespace GDGame
             Components.Add(eventDispatcher);
 
             eventDispatcher.RecipeEvent += EventDispatcher_RecipeEvent;
+            eventDispatcher.AddEvent += EventDispatcher_AddEvent;
             eventDispatcher.RemoveEvent += EventDispatcher_RemoveEvent;
+        }
+
+        private void EventDispatcher_AddEvent(DrawnActor3D actor)
+        {
+            objectManager.Add(actor);
         }
 
         private void EventDispatcher_RemoveEvent(string id)
@@ -150,7 +156,7 @@ namespace GDGame
 
             //model object
             ModelObject potionObject = new ModelObject((string)data[0] + objectManager.TotalListChanges(), ActorType.Interactable,
-                StatusType.Drawn | StatusType.Update, (Transform3D)data[3],
+                StatusType.Drawn | StatusType.Update, ((Transform3D)data[3]).Clone() as Transform3D,
                 effectParameters, redPotion);
 
             HandHeldPickup potion = new HandHeldPickup(potionObject, PickupType.Potion, (string)data[0], 30f, (Vector3)data[2]);
@@ -414,6 +420,15 @@ namespace GDGame
 
             cauldronModel
                 = Content.Load<Model>("Assets/Models/cauldron");
+
+            redRockModel
+                = Content.Load<Model>("Assets/Models/redRock");
+
+            blueFlowerModel
+                = Content.Load<Model>("Assets/Models/blueFlower");
+
+            greenHerbModel
+                = Content.Load<Model>("Assets/Models/greenHerb");
         }
 
         #endregion Initialization - Managers, Cameras, Effects, Textures
@@ -436,6 +451,7 @@ namespace GDGame
 
             //models
             InitStaticModels();
+            InitIngredientGivers();
         }
 
         private void InitStaticModels()
@@ -445,7 +461,7 @@ namespace GDGame
             //transform
             Transform3D transform3D = new Transform3D(GameConstants.cauldronPos,
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(.1f, .1f, .1f),        //scale
+                                new Vector3(0.07f, 0.07f, 0.07f),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
@@ -458,9 +474,31 @@ namespace GDGame
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, cauldronModel);
 
-            Cauldron cauldron = new Cauldron(modelObject, "Cauldron", GameConstants.playerInteractionDistance);
+            Cauldron cauldron = new Cauldron(modelObject, "Cauldron", GameConstants.defualtInteractionDist, eventDispatcher);
 
             objectManager.Add(cauldron);
+
+
+            ////////Bin
+            //transform
+            transform3D = new Transform3D(GameConstants.binPos,
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(10, 10, 10),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            //effectparameters
+            effectParameters = new EffectParameters(modelEffect,
+                crate,
+                Color.White, 1);
+
+            modelObject = new ModelObject("Bin", ActorType.Interactable,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, box);
+
+            Bin bin = new Bin(modelObject, "Bin", GameConstants.defualtInteractionDist);
+
+            objectManager.Add(bin);
 
             ///////Level
             //transform 
@@ -481,35 +519,56 @@ namespace GDGame
                 effectParameters, level);
 
             objectManager.Add(levelObject);
+        }
 
-
-            ///////Ingredient 1
+        private void InitIngredientGivers()
+        {
+            ///////////////////////////////////Red Rock Giver\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
             //transform 
+            Transform3D transform3D = new Transform3D(new Vector3(0, 0, -100),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(3, 3, 3),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            //effectparameters
+            EffectParameters effectParameters = new EffectParameters(modelEffect,
+                null,
+                Color.White, 1);
+
+            //model object
+            ModelObject modelObject = new ModelObject("RedRock", ActorType.Interactable,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, redRockModel);
+
+            //Red rock pickup
+            HandHeldPickup ingredient = new HandHeldPickup(modelObject, PickupType.Solid, "Red Rock", GameConstants.defualtInteractionDist, GameConstants.potionRedPos);
+
+            ////////////////Giver creation
+            /////transform 
             transform3D = new Transform3D(new Vector3(0, 0, -100),
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(2, 2, 2),        //scale
+                                new Vector3(10, 10, 10),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
-            //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                null,
+                crate,
                 Color.White, 1);
 
-            //model object
-            modelObject = new ModelObject("i1", ActorType.Interactable,
+            modelObject = new ModelObject("RedRockGiver", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, redPotion);
+                effectParameters, box);
 
-            HandHeldPickup ingredient = new HandHeldPickup(modelObject, PickupType.Solid, "Red Rock", 30f, GameConstants.potionRedPos);
-            objectManager.Add(ingredient);
+            IngredientGiver ingredientGiver = new IngredientGiver(modelObject, "Red Rock Giver", GameConstants.defualtInteractionDist, ingredient);
+            objectManager.Add(ingredientGiver);
 
 
-            ///////Ingredient 2
+            ///////////////////////////////////Blue Flower Giver\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
             //transform 
-            transform3D = new Transform3D(new Vector3(50, 0, -100),
-                                new Vector3(0, 0, 0),       //rotation
-                                new Vector3(2, 2, 2),        //scale
+            transform3D = new Transform3D(new Vector3(100, 0, -100),
+                                new Vector3(0, 90, 0),       //rotation
+                                new Vector3(3, 3, 3),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
@@ -519,19 +578,38 @@ namespace GDGame
                 Color.White, 1);
 
             //model object
-            modelObject = new ModelObject("i2", ActorType.Interactable,
+            modelObject = new ModelObject("BlueFlower", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, redPotion);
+                effectParameters, blueFlowerModel);
 
-            ingredient = new HandHeldPickup(modelObject, PickupType.Solid, "Red Rock", 30f, GameConstants.potionRedPos);
-            objectManager.Add(ingredient);
+            //Blue flower pickup
+            ingredient = new HandHeldPickup(modelObject, PickupType.Solid, "Blue Flower", GameConstants.defualtInteractionDist, GameConstants.potionRedPos);
 
-
-            ///////Ingredient 3
+            ////////////////Giver Creation
             //transform 
             transform3D = new Transform3D(new Vector3(100, 0, -100),
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(2, 2, 2),        //scale
+                                new Vector3(10, 10, 10),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            effectParameters = new EffectParameters(modelEffect,
+                crate,
+                Color.White, 1);
+
+            modelObject = new ModelObject("BlueFlowerGiver", ActorType.Interactable,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, box);
+
+            ingredientGiver = new IngredientGiver(modelObject, "Blue Flower Giver", GameConstants.defualtInteractionDist, ingredient);
+            objectManager.Add(ingredientGiver);
+
+
+            ///////////////////////////////////Green Herb Giver\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+            //transform 
+            transform3D = new Transform3D(new Vector3(-100, 0, -100),
+                                new Vector3(0, 90, 0),       //rotation
+                                new Vector3(3, 3, 3),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
@@ -541,13 +619,30 @@ namespace GDGame
                 Color.White, 1);
 
             //model object
-            modelObject = new ModelObject("i3", ActorType.Interactable,
+            modelObject = new ModelObject("GreenHerb", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, redPotion);
+                effectParameters, greenHerbModel);
 
-            ingredient = new HandHeldPickup(modelObject, PickupType.Solid, "Blue Flower", 30f, GameConstants.potionRedPos);
-            objectManager.Add(ingredient);
+            ingredient = new HandHeldPickup(modelObject, PickupType.Solid, "Green Herb", GameConstants.defualtInteractionDist, GameConstants.potionRedPos);
 
+            ////////////////Giver creation
+            //transform 
+            transform3D = new Transform3D(new Vector3(-100, 0, -100),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(10, 10, 10),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            effectParameters = new EffectParameters(modelEffect,
+                crate,
+                Color.White, 1);
+
+            modelObject = new ModelObject("GreenHerbGiver", ActorType.Interactable,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, box);
+
+            ingredientGiver = new IngredientGiver(modelObject, "Green Herb Giver", GameConstants.defualtInteractionDist, ingredient);
+            objectManager.Add(ingredientGiver);
         }
 
         private void InitPlayer()

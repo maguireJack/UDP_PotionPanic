@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 namespace GDGame.Game.Objects
 {
-    public class Cauldron : InteractableObject, IContainerInteractable
+    public class Cauldron : InteractableActor, IContainerInteractable
     {
         #region Fields
 
@@ -20,10 +20,16 @@ namespace GDGame.Game.Objects
 
         #region Constructors
 
-        public Cauldron(ModelObject modelObject, string name, float interactDistance) :
+        public Cauldron(ModelObject modelObject, string name, float interactDistance, EventDispatcher eventDispatcher) :
             base(modelObject, name, interactDistance)
         {
             inventory = new HashSet<string>();
+            eventDispatcher.PotionPickedEvent += EventDispatcher_PotionPickedEvent;
+        }
+
+        private void EventDispatcher_PotionPickedEvent()
+        {
+            Unlock();
         }
 
         #endregion
@@ -72,13 +78,13 @@ namespace GDGame.Game.Objects
                 {
                     if(inventory.SetEquals(key))
                     {
-                        inventory.Clear();
-
                         //If it does, get the data of the potion and dispatch an event
                         EventDispatcher.Publish(EventType.Recipe, GameConstants.potions[key]);
-                        return;
+                        Lock(); //Lock the cauldron so the player cannot put items in until the potion is taken away 
+                        break;
                     }
                 }
+                inventory.Clear();
             }
         }
     }
