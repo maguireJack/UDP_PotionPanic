@@ -101,7 +101,7 @@ namespace GDGame.Game.Controllers
                 moveVector.X += strafeSpeed;
 
 
-            parent.Transform3D.RotateAroundUpBy(CalculateRotation(parent, moveVector));
+            parent.Transform3D.RotateAroundUpBy(CalculateRotation(parent, moveVector) * rotationSpeed);
             parent.Transform3D.TranslateBy(moveVector * gameTime.ElapsedGameTime.Milliseconds);
         }
 
@@ -110,13 +110,13 @@ namespace GDGame.Game.Controllers
             //Convert look direction to angle in radians
             float currentAngle = (float)Math.Atan2(parent.Transform3D.Look.Z, parent.Transform3D.Look.X);
 
-            //If moveVector not Zero, turn towards move direction, else turn back to original look position
+            //If moveVector not Zero, turn towards move direction
             if (moveVector != Vector3.Zero)
             {
                 turnAngle = (float)Math.Atan2(moveVector.Z, moveVector.X);
                 turnAngle = currentAngle - turnAngle;
             }
-            else turnAngle = currentAngle - (float)Math.Atan2(parent.Transform3D.Look.Z, parent.Transform3D.Look.X);
+            else turnAngle = 0;
 
             if (turnAngle > Math.PI)
             {

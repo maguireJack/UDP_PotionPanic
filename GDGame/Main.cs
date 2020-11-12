@@ -47,7 +47,7 @@ namespace GDGame
         private float worldScale = 3000;
 
         private VertexPositionColorTexture[] vertices;
-        private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, crate;
+        private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, crate, wizardTexture;
 
         //font used to show debug info
         private SpriteFont debugFont;
@@ -402,6 +402,9 @@ namespace GDGame
 
             crate
                 = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
+
+            wizardTexture
+                = Content.Load<Texture2D>("Assets/Textures/Wizard/wizardTexture");
         }
 
         private void InitModels()
@@ -533,8 +536,8 @@ namespace GDGame
 
             //effectparameters
             EffectParameters effectParameters = new EffectParameters(modelEffect,
-                null,
-                Color.White, 1);
+                crate,
+                Color.Red, 1);
 
             //model object
             ModelObject modelObject = new ModelObject("RedRock", ActorType.Interactable,
@@ -574,7 +577,7 @@ namespace GDGame
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                null,
+                leftSky,
                 Color.White, 1);
 
             //model object
@@ -656,7 +659,7 @@ namespace GDGame
 
             //effectparameters
             EffectParameters effectParameters = new EffectParameters(modelEffect,
-                null,
+                wizardTexture,
                 Color.White, 1);
 
             //model object

@@ -129,17 +129,8 @@ namespace GDLibrary.Parameters
         /// <param name="alpha">Floating-point tansparency value</param>
         public EffectParameters(BasicEffect effect, Texture2D texture, Color diffusecolor, float alpha)
         {
-            Effect = effect;
-
-            if (texture != null)
-            {
-                effect.TextureEnabled = true;
-                Texture = texture;
-            }
-            else
-            {
-                effect.TextureEnabled = false;
-            }
+            this.effect = effect;
+            this.texture = texture;
 
             DiffuseColor = diffuseColor;
 
@@ -156,8 +147,10 @@ namespace GDLibrary.Parameters
             //if no texture, then dont crash!
             if (texture != null)
             {
+                effect.TextureEnabled = true;
                 effect.Texture = texture;
             }
+            else effect.TextureEnabled = false;
 
             //to do - diffuse and alpha are not applied
             effect.DiffuseColor = diffuseColor.ToVector3();

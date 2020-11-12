@@ -52,7 +52,7 @@ namespace GDGame.Game.Constants
 
         public static readonly float playerMoveSpeed = 0.1f;
         public static readonly float playerStrafeSpeed = strafeSpeedMultiplier * playerMoveSpeed;
-        public static readonly float playerRotateSpeed = 1f;
+        public static readonly float playerRotateSpeed = 4f;
 
         public static readonly float playerCamOffsetY = 300;
         public static readonly float playerCamOffsetZ = 300;
