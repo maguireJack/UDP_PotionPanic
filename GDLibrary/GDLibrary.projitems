@@ -37,7 +37,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\GDDebug\DebugDrawer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Interfaces\IActor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Interfaces\IController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core\Managers\Input\GamepadManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Managers\Input\GamePadManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Parameters\Curve\Curve1D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Parameters\Curve\Curve2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Parameters\Curve\Curve3D.cs" />

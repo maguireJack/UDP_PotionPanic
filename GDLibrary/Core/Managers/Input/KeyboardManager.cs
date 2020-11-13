@@ -90,6 +90,27 @@ namespace GDLibrary.Managers
         //    return newState.GetPressedKeys().Length == 0 ? false : true;
         //}
 
+        //Checks if any of the keys passed in have been pressed
+        public bool IsAnyKeyPressedFirstTime(Keys[] keys)
+        {
+            foreach(Keys key in keys)
+            {
+                if (IsFirstKeyPress(key))
+                    return true;
+            }
+            return false;
+        }
+
+        public bool IsAnyKeyPressed(Keys[][] keys, int pos)
+        {
+            foreach (Keys[] keyArr in keys)
+            {
+                if (IsKeyDown(keyArr[pos]))
+                    return true;
+            }
+            return false;
+        }
+
         #endregion Constructors & Core
     }
 }

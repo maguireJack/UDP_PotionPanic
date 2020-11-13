@@ -1,6 +1,6 @@
 ﻿namespace GDGame.Game.Enums
 {
-    public enum PickupType
+   public enum PickupType
     {
         Ingredient,
         Potion,

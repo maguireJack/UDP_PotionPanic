@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace GDLibrary
+namespace GDLibrary.Managers
 {
     /// <summary>
     /// Provides methods to determine the state of gamepad buttons and sticks.
@@ -145,6 +145,16 @@ namespace GDLibrary
         {
             return IsPlayerConnected(playerIndex) ?
                 newState[(int)playerIndex].Buttons : default;
+        }
+
+        public bool IsAnyButtonPressed(PlayerIndex playerIndex, Buttons[] buttons)
+        {
+            foreach (Buttons button in buttons)
+            {
+                if (IsFirstButtonPress(playerIndex, button))
+                    return true;
+            }
+            return false;
         }
     }
 }

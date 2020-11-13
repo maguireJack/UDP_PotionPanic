@@ -5,7 +5,6 @@ using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
-using System.Diagnostics;
 using GDGame.Game.Constants;
 
 namespace GDGame.Game.Controllers
@@ -17,10 +16,9 @@ namespace GDGame.Game.Controllers
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
         private Camera3D camera3D;
-        private float moveSpeed, strafeSpeed, rotationSpeed, turnAngle;
-        private Keys[] moveKeys;
+        private float moveSpeed, rotationSpeed;
+        private Keys[][] moveKeys;
         private bool cameraMoveConstraint;
-        Vector3 translateBy;
 
         #endregion
 
@@ -29,19 +27,17 @@ namespace GDGame.Game.Controllers
         public ThirdPersonPlayerController(KeyboardManager keyboardManager,
             MouseManager mouseManager,
             Camera3D camera3D,
-            float moveSpeed, float strafeSpeed, float rotationSpeed,
-            Keys[] moveKeys
+            float moveSpeed, float rotationSpeed,
+            Keys[][] moveKeys
             )
         {
             this.keyboardManager = keyboardManager;
             this.mouseManager = mouseManager;
             this.camera3D = camera3D;
             this.moveSpeed = moveSpeed;
-            this.strafeSpeed = strafeSpeed;
             this.rotationSpeed = rotationSpeed;
             this.moveKeys = moveKeys;
             cameraMoveConstraint = false;
-            translateBy = Vector3.Zero;
         }
 
         #endregion
@@ -73,9 +69,8 @@ namespace GDGame.Game.Controllers
             GamePadState state = GamePad.GetState(PlayerIndex.One);
             if (capabilities.HasLeftXThumbStick)
             {
-                moveVector.X = state.ThumbSticks.Left.X * strafeSpeed;
-                moveVector.Z = state.ThumbSticks.Left.Y * strafeSpeed;
-                Debug.WriteLine(moveVector);
+                moveVector.X = state.ThumbSticks.Left.X * moveSpeed;
+                moveVector.Z = -state.ThumbSticks.Left.Y * moveSpeed;
             }
                 parent.Transform3D.RotateAroundUpBy(CalculateRotation(parent, moveVector) * rotationSpeed);
             parent.Transform3D.TranslateBy(moveVector * gameTime.ElapsedGameTime.Milliseconds);
@@ -112,17 +107,17 @@ namespace GDGame.Game.Controllers
             Vector3 moveVector = Vector3.Zero;
 
             //Move forward
-            if (keyboardManager.IsKeyDown(moveKeys[0]))
+            if (keyboardManager.IsAnyKeyPressed(moveKeys, 0))
                 moveVector.Z -= moveSpeed;
             //Move Back
-            else if (keyboardManager.IsKeyDown(moveKeys[1]))
+            else if (keyboardManager.IsAnyKeyPressed(moveKeys, 1))
                 moveVector.Z += moveSpeed;
             //Move Left
-            if (keyboardManager.IsKeyDown(moveKeys[2]))
-                moveVector.X -= strafeSpeed;
+            if (keyboardManager.IsAnyKeyPressed(moveKeys, 2))
+                    moveVector.X -= moveSpeed;
             //Move Right
-            else if (keyboardManager.IsKeyDown(moveKeys[3]))
-                moveVector.X += strafeSpeed;
+            else if (keyboardManager.IsAnyKeyPressed(moveKeys, 3))
+                    moveVector.X += moveSpeed;
 
 
             parent.Transform3D.RotateAroundUpBy(CalculateRotation(parent, moveVector) * rotationSpeed);
@@ -133,6 +128,7 @@ namespace GDGame.Game.Controllers
         {
             //Convert look direction to angle in radians
             float currentAngle = (float)Math.Atan2(parent.Transform3D.Look.Z, parent.Transform3D.Look.X);
+            float turnAngle = 0;
 
             //If moveVector not Zero, turn towards move direction
             if (moveVector != Vector3.Zero)

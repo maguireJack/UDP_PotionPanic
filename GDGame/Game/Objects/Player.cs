@@ -18,6 +18,7 @@ namespace GDGame.Game.Objects
 
         private ObjectManager objectManager;
         private KeyboardManager keyBoardManager;
+        private GamePadManager gamePadManager;
         private HandHeldPickup handItem;
         private List<DrawnActor3D> interactableList;
         private int lastListSize;
@@ -44,11 +45,13 @@ namespace GDGame.Game.Objects
 
         #region Constructors
 
-        public Player(ObjectManager objectManager, KeyboardManager keyboardManager, ModelObject modelObject, IController controller) :
+        public Player(ObjectManager objectManager, KeyboardManager keyboardManager, GamePadManager gamePadManager,
+            ModelObject modelObject, IController controller) :
             base(modelObject, controller)
         {
             this.objectManager = objectManager;
             this.keyBoardManager = keyboardManager;
+            this.gamePadManager = gamePadManager;
             this.handItem = null;
             this.lastListSize = 0;
         }
@@ -106,7 +109,8 @@ namespace GDGame.Game.Objects
         private void InteractWith(InteractableActor iActor)
         {
             //check if the interact key is pressed
-            if (keyBoardManager.IsKeyDown(GameConstants.playerInteractKey))
+            if (keyBoardManager.IsAnyKeyPressedFirstTime(GameConstants.playerInteractKeys) ||
+                gamePadManager.IsAnyButtonPressed(PlayerIndex.One, GameConstants.playerInteractButtons))
             {
                 //if player hand is empty
                 if (handItem == null)

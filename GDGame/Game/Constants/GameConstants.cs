@@ -12,16 +12,17 @@ namespace GDGame.Game.Constants
     {
         #region Common
 
-        private static readonly float strafeSpeedMultiplier = 0.75f;
-        public static readonly Keys[] KeysOne = { Keys.W, Keys.S, Keys.A, Keys.D };
-        public static readonly Keys[] KeysTwo = { Keys.U, Keys.J, Keys.H, Keys.K };
+        public static readonly Keys[][] MoveKeys = { 
+            new Keys[]{ Keys.W, Keys.S, Keys.A, Keys.D },
+            new Keys[]{ Keys.Up, Keys.Down, Keys.Left, Keys.Right }
+        };
 
         #endregion Common
 
         #region First Person Camera
 
         public static readonly float moveSpeed = 0.1f;
-        public static readonly float strafeSpeed = strafeSpeedMultiplier * moveSpeed;
+        public static readonly float strafeSpeed = 0.075f;
         public static readonly float rotateSpeed = 0.01f;
 
         #endregion First Person Camera
@@ -29,7 +30,7 @@ namespace GDGame.Game.Constants
         #region Flight Camera
 
         public static readonly float flightMoveSpeed = 0.8f;
-        public static readonly float flightStrafeSpeed = strafeSpeedMultiplier * flightMoveSpeed;
+        public static readonly float flightStrafeSpeed = 0.6f;
         public static readonly float flightRotateSpeed = 0.01f;
 
         #endregion Flight Camera
@@ -53,7 +54,6 @@ namespace GDGame.Game.Constants
         #region Player
 
         public static readonly float playerMoveSpeed = 0.1f;
-        public static readonly float playerStrafeSpeed = strafeSpeedMultiplier * playerMoveSpeed;
         public static readonly float playerRotateSpeed = 4f;
 
         public static readonly float playerCamOffsetY = 300;
@@ -62,7 +62,8 @@ namespace GDGame.Game.Constants
         public static readonly Vector3 playerHoldPos = new Vector3(32, 40, 3);
         public static readonly Vector3 potionRedPos = new Vector3(4, 18, -1.5f);
 
-        public static readonly Keys playerInteractKey = Keys.Space;
+        public static readonly Keys[] playerInteractKeys = { Keys.Space, Keys.RightControl };
+        public static readonly Buttons[] playerInteractButtons = { Buttons.LeftTrigger };
         public static readonly float defualtInteractionDist = 50f;
 
         #endregion

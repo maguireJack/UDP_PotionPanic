@@ -35,6 +35,7 @@ namespace GDGame
         private CameraManager<Camera3D> cameraManager;
         private ObjectManager objectManager;
         private KeyboardManager keyboardManager;
+        private GamePadManager gamePadManager;
         private MouseManager mouseManager;
 
         //hashmap (Dictonary in C#) to store useful rails and curves
@@ -56,7 +57,6 @@ namespace GDGame
         #region Demo
 
         private PrimitiveObject archetypalTexturedQuad;
-        private ModelObject carModelObject;
         private Curve1D curve1D;
 
         #endregion
@@ -212,6 +212,10 @@ namespace GDGame
             keyboardManager = new KeyboardManager(this);
             Components.Add(keyboardManager);
 
+            //gamepad
+            gamePadManager = new GamePadManager(this, 1);
+            Components.Add(gamePadManager);
+
             //mouse
             mouseManager = new MouseManager(this, false);
             Components.Add(mouseManager);
@@ -292,7 +296,8 @@ namespace GDGame
             //define move parameters
             MoveParameters moveParameters = new MoveParameters(keyboardManager,
                 mouseManager, GameConstants.flightMoveSpeed, GameConstants.flightStrafeSpeed,
-                GameConstants.flightRotateSpeed, GameConstants.KeysOne);
+                GameConstants.flightRotateSpeed,
+                GameConstants.MoveKeys[0]);
 
             //attach a controller
             camera3D.ControllerList.Add(new FlightCameraController("flight controller",
@@ -679,10 +684,9 @@ namespace GDGame
             ThirdPersonPlayerController controller = new ThirdPersonPlayerController(
                 keyboardManager, mouseManager, cameraManager[0],
                 GameConstants.playerMoveSpeed,
-                GameConstants.playerStrafeSpeed,
                 GameConstants.playerRotateSpeed,
-                GameConstants.KeysOne);
-            Player player = new Player(objectManager, keyboardManager, playerObject, controller);
+                GameConstants.MoveKeys);
+            Player player = new Player(objectManager, keyboardManager, gamePadManager, playerObject, controller);
             objectManager.Add(player);
         }
 
