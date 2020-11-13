@@ -1,14 +1,10 @@
-﻿using GDGame.Game.Actors;
-using GDGame.Game.Constants;
-using GDGame.Game.Enums;
-using GDGame.Game.Interfaces;
+﻿using GDGame.MyGame.Actors;
 using GDLibrary.Actors;
-using GDLibrary.Core.Events;
+using GDLibrary.Enums;
+using GDLibrary.Events;
 using Microsoft.Xna.Framework;
-using System.Collections;
-using System.Collections.Generic;
 
-namespace GDGame.Game.Objects
+namespace GDGame.MyGame.Objects
 {
     public class IngredientGiver : InteractableActor
     {
@@ -36,7 +32,10 @@ namespace GDGame.Game.Objects
         public HandHeldPickup TakeItem()
         {
             HandHeldPickup clone = item.Clone() as HandHeldPickup;
-            EventDispatcher.Publish(EventType.Add, new ArrayList() { clone });
+            //Add item to object manager
+            EventDispatcher.Publish(new EventData(EventCategoryType.Object,
+                EventActionType.OnAddActor, new object[] { clone }));
+            //give it to player
             return clone;
         }
     }

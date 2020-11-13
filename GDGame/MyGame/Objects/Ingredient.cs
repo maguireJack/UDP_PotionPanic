@@ -1,7 +1,7 @@
-﻿using GDGame.Game.Enums;
+﻿using GDGame.MyGame.Enums;
 using System;
 
-namespace GDGame.Game.Objects
+namespace GDGame.MyGame.Objects
 {
     public class Ingredient : ICloneable
     {

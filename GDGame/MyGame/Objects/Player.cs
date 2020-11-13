@@ -1,16 +1,16 @@
-﻿using GDGame.Game.Actors;
-using GDGame.Game.Constants;
-using GDGame.Game.Interfaces;
+﻿using GDGame.MyGame.Actors;
+using GDGame.MyGame.Constants;
+using GDGame.MyGame.Interfaces;
 using GDLibrary.Actors;
-using GDLibrary.Core.Events;
 using GDLibrary.Enums;
+using GDLibrary.Events;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace GDGame.Game.Objects
+namespace GDGame.MyGame.Objects
 {
     public class Player : MoveableObject
     {
@@ -119,8 +119,12 @@ namespace GDGame.Game.Objects
                     if (iActor is HandHeldPickup)
                     {
                         handItem = iActor as HandHeldPickup;
-                        if(handItem.PickupType == Enums.PickupType.Potion)
-                            EventDispatcher.Publish(EventType.PotionPicked, new ArrayList());
+                        if (handItem.PickupType == Enums.PickupType.Potion)
+                        {
+                            //if potion, unlock the cauldron
+                            EventDispatcher.Publish(new EventData(EventCategoryType.Interactable,
+                                EventActionType.OnUnlock, new object[] { }));
+                        }
                     }
                     //else actor is an ingredient giver, place item in hand
                     else if (iActor is IngredientGiver)
@@ -133,7 +137,8 @@ namespace GDGame.Game.Objects
                     //If deposit was successful, remove item
                     if (container.Deposit(handItem))
                     {
-                        EventDispatcher.Publish(EventType.Remove, new ArrayList() { handItem.ID });
+                        EventDispatcher.Publish(new EventData(EventCategoryType.Object,
+                            EventActionType.OnRemoveActor, new object[]{ handItem }));
                         handItem = null;
                         return;
                     }

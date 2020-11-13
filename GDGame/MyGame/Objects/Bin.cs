@@ -1,9 +1,9 @@
-﻿using GDGame.Game.Actors;
-using GDGame.Game.Interfaces;
+﻿using GDGame.MyGame.Actors;
+using GDGame.MyGame.Interfaces;
 using GDLibrary.Actors;
 using Microsoft.Xna.Framework;
 
-namespace GDGame.Game.Objects
+namespace GDGame.MyGame.Objects
 {
     /**
      * Class for destroy items

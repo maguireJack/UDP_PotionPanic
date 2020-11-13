@@ -15,6 +15,8 @@ namespace GDLibrary.Parameters
         private Vector3 translation, rotationInDegrees, scale;
         private Vector3 look, up; //right = Vector3.Cross(look, up)
         private Vector3 originalLook, originalUp, originalRotationInDegrees;
+        private bool isDirty = true;
+        private Matrix world;
 
         #endregion Fields
 
@@ -24,12 +26,18 @@ namespace GDLibrary.Parameters
         {
             get
             {
-                return Matrix.Identity
+                if (isDirty)
+                {
+                    world = Matrix.Identity
                     * Matrix.CreateScale(scale)
                     * Matrix.CreateRotationX(MathHelper.ToRadians(rotationInDegrees.X))
                       * Matrix.CreateRotationY(MathHelper.ToRadians(rotationInDegrees.Y))
                         * Matrix.CreateRotationZ(MathHelper.ToRadians(rotationInDegrees.Z))
                         * Matrix.CreateTranslation(translation);
+                    isDirty = false;
+                }
+
+                return world;
             }
         }
 
@@ -76,6 +84,7 @@ namespace GDLibrary.Parameters
             set
             {
                 translation = value;
+                isDirty = true;
             }
         }
 
@@ -88,6 +97,7 @@ namespace GDLibrary.Parameters
             set
             {
                 rotationInDegrees = value;
+                isDirty = true;
             }
         }
 
@@ -100,6 +110,7 @@ namespace GDLibrary.Parameters
             set
             {
                 scale = value;
+                isDirty = true;
             }
         }
 
@@ -138,13 +149,15 @@ namespace GDLibrary.Parameters
             Scale = scale;
             originalLook = Look = look;
             originalUp = Up = up;
+
+        //    this.isDirty = true;
         }
 
         #region Movement
 
         public void TranslateBy(Vector3 delta)
         {
-            translation += delta;
+            Translation += delta;
         }
 
         public void RotateAroundUpBy(float magnitude)
@@ -155,12 +168,14 @@ namespace GDLibrary.Parameters
             //transform the original look using this rotationInDegrees around UnitY and normalize
             look = Vector3.Normalize(Vector3.Transform(originalLook,
                 Matrix.CreateRotationY(MathHelper.ToRadians(rotationInDegrees.Y))));
+
+            this.isDirty = true;
         }
 
         public void RotateBy(Vector3 axisAndMagnitude)
         {
             //add this statement to allow us to add/subtract from whatever the current rotation is
-            rotationInDegrees = originalRotationInDegrees + axisAndMagnitude;
+            RotationInDegrees = originalRotationInDegrees + axisAndMagnitude;
 
             //explain: yaw, pitch, roll
             //create a new "XYZ" axis to rotate around using the (x,y,0) values from mouse and any current rotation

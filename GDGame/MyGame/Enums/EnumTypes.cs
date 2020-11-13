@@ -1,4 +1,4 @@
-﻿namespace GDGame.Game.Enums
+﻿namespace GDGame.MyGame.Enums
 {
    public enum PickupType
     {

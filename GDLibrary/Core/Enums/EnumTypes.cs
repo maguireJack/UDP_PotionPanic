@@ -65,4 +65,84 @@
         XZ,
         YZ
     }
+
+    /// <summary>
+    /// Event categories within the game that a subscriber can subscribe to in the EventDispatcher 
+    /// </summary>
+    /// <see cref="GDLibrary.Events.EventData"/>
+    /// <seealso cref="GDLibrary.Events.EventDispatcher_OLD"/>
+    public enum EventCategoryType
+    {
+        Camera,      
+        Player,
+        NonPlayer,
+        Pickup,
+        Sound,
+        Menu,
+        UI,
+        Object,
+        Interactable
+        //add more here...
+    }
+
+    /// <summary>
+    /// Event actions that can occur within a category (e.g. EventCategoryType.Sound with EventActionType.OnPlay) 
+    /// </summary>
+    /// <see cref="GDLibrary.Events.EventData"/>
+    /// <seealso cref="GDLibrary.Events.EventDispatcher_OLD"/>
+    public enum EventActionType
+    {
+        //sent by audio, video
+        OnPlay,
+        OnPause,
+        OnResume,
+        OnStop,
+        OnStopAll,
+
+        //processed by many managers (incl. menu, sound, object, ui, physic) and video controller
+        OnStart,
+        OnRestart,
+        OnVolumeDelta,
+        OnVolumeSet,
+        OnMute,
+        OnUnMute,
+        OnExit,
+
+        //send by mouse or gamepad manager
+        OnClick,
+        OnHover,
+
+        //sent by camera manager
+        OnCameraSetActive,
+        OnCameraCycle,
+
+        //sent by player when gains or loses health 
+        OnHealthDelta,
+
+        //sent to set player health to a specific start/end value
+        OnHealthSet,
+
+        //sent by game state manager
+        OnLose,
+        OnWin,
+        OnPickup,
+
+        //sent whenever we change the opacity of a drawn object - remember ObjectManager has two draw lists (opaque and transparent)
+        OnOpaqueToTransparent,
+        OnTransparentToOpaque,
+
+        //sent when we want to add/remove an Actor from the game - see ObjectManager::Remove()
+        OnAddActor,
+        OnRemoveActor,
+        OnSpawn,
+
+        OnCreate,
+
+        //sent to interactable actors to prevent them from being interacted with
+        OnLock,
+        OnUnlock
+
+        //add more here...
+    }
+
 }

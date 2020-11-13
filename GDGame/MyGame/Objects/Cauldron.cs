@@ -1,15 +1,13 @@
-﻿using GDGame.Game.Actors;
-using GDGame.Game.Constants;
-using GDGame.Game.Enums;
-using GDGame.Game.Interfaces;
+﻿using GDGame.MyGame.Actors;
+using GDGame.MyGame.Constants;
+using GDGame.MyGame.Enums;
+using GDGame.MyGame.Interfaces;
 using GDLibrary.Actors;
-using GDLibrary.Core.Events;
+using GDLibrary.Enums;
+using GDLibrary.Events;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
-namespace GDGame.Game.Objects
+namespace GDGame.MyGame.Objects
 {
     public class Cauldron : InteractableActor, IContainerInteractable
     {
@@ -21,16 +19,20 @@ namespace GDGame.Game.Objects
 
         #region Constructors
 
-        public Cauldron(ModelObject modelObject, string name, float interactDistance, EventDispatcher eventDispatcher) :
+        public Cauldron(ModelObject modelObject, string name, float interactDistance) :
             base(modelObject, name, interactDistance)
         {
             inventory = new Recipe();
-            eventDispatcher.PotionPickedEvent += EventDispatcher_PotionPickedEvent;
+            EventDispatcher.Subscribe(EventCategoryType.Interactable, HandleEvent);
         }
 
-        private void EventDispatcher_PotionPickedEvent()
+        private void HandleEvent(EventData eventData)
         {
-            Unlock();
+            if(eventData.EventCategoryType == EventCategoryType.Interactable)
+            {
+                if (eventData.EventActionType == EventActionType.OnUnlock)
+                    Unlock();
+            }
         }
 
         #endregion
@@ -79,7 +81,8 @@ namespace GDGame.Game.Objects
                     if (inventory.Equals(key))
                     {
                         //If it does, get the data of the potion and dispatch an event
-                        EventDispatcher.Publish(EventType.Recipe, GameConstants.potions[key]);
+                        EventDispatcher.Publish(new EventData(EventCategoryType.Pickup,
+                            EventActionType.OnCreate, new object[] { GameConstants.potions[key] }));
                         Lock(); //Lock the cauldron so the player cannot put items in until the potion is taken away 
                         break;
                     }

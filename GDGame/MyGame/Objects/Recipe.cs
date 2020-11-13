@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GDGame.Game.Objects
+namespace GDGame.MyGame.Objects
 {
     public class Recipe
     {

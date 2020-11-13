@@ -5,9 +5,9 @@ using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
-using GDGame.Game.Constants;
+using GDGame.MyGame.Constants;
 
-namespace GDGame.Game.Controllers
+namespace GDGame.MyGame.Controllers
 {
     public class ThirdPersonPlayerController : IController
     {

@@ -1,13 +1,4 @@
-﻿/*
-Function: 		Encapsulates manager parameters for those classes (e.g. UIMouseObject) that need access to a large number of managers.
-                Used by UIMouseObject.
-Author: 		NMCG
-Version:		1.0
-Date Updated:	25/11/17
-Bugs:			None
-Fixes:			None
-*/
-using GDLibrary.Managers;
+﻿using GDLibrary.Managers;
 
 namespace GDLibrary
 {

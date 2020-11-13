@@ -12,6 +12,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Base\Actor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Base\Actor3D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Camera\Camera3D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Containers\AdvancedList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Containers\EventHandlerList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Controllers\Camera\FlightCameraController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Demos\EventSender.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Events\Dispatcher\EventDispatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Events\Dispatcher\EventDispatcher_OLD.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Events\Handlers\EventHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Events\Parameters\EventData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Events\EventDispatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Drawn\DrawnActor3D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Drawn\ModelObject.cs" />
@@ -25,7 +33,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\Controllers\Actor\FirstPersonController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Controllers\Base\TargetController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Controllers\Base\UserInputController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core\Controllers\Camera\FlightCameraController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Controllers\Base\Controller.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Controllers\Actor\PanController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Controllers\Actor\RailController.cs" />
@@ -34,9 +41,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\Demos\PlayerType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Enums\EnumTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Factories\VertexFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\GameComponents\PausableDrawableGameComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\GameComponents\PausableGameComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\GDDebug\DebugDrawer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Interfaces\IActor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Interfaces\IController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Interfaces\IDebug.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Interfaces\IEventHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Interfaces\IGDDrawable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Managers\Input\GamePadManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Parameters\Curve\Curve1D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Parameters\Curve\Curve2D.cs" />

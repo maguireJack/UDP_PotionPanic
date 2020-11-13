@@ -13,7 +13,8 @@ namespace GDLibrary.Core.Utilities
         /// <param name="filter">A filter predicate for an object of type T</param>
         /// <param name="transform">An action which will transform the object of type T</param>
         /// <returns>Integer count of the number of transformed objects</returns>
-        public static int Transform<T>(IEnumerable<T> collection, Predicate<T> filter, Action<T> transform)
+        public static int Transform<T>(IEnumerable<T> collection, 
+            Predicate<T> filter, Action<T> transform)
         {
             int count = 0;
             foreach (T obj in collection)
