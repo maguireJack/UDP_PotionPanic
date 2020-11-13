@@ -48,13 +48,37 @@ namespace GDGame.Game.Controllers
 
         public void Update(GameTime gameTime, IActor actor)
         {
+            //checks if controller is connected
+            GamePadCapabilities capabilities = GamePad.GetCapabilities(PlayerIndex.One);
+
             Actor3D parent = actor as Actor3D;
 
             if (parent != null)
             {
-                HandleMovement(gameTime, parent);
+                if (capabilities.IsConnected)
+                {
+                    HandleControlerMovement(gameTime, parent, capabilities);
+                }
+                else
+                { 
+                    HandleMovement(gameTime, parent);
+                }
                 HandleCameraFollow(gameTime, parent);
             }
+        }
+
+        private void HandleControlerMovement(GameTime gameTime, Actor3D parent, GamePadCapabilities capabilities)
+        {
+            Vector3 moveVector = Vector3.Zero;
+            GamePadState state = GamePad.GetState(PlayerIndex.One);
+            if (capabilities.HasLeftXThumbStick)
+            {
+                moveVector.X = state.ThumbSticks.Left.X * strafeSpeed;
+                moveVector.Z = state.ThumbSticks.Left.Y * strafeSpeed;
+                Debug.WriteLine(moveVector);
+            }
+                parent.Transform3D.RotateAroundUpBy(CalculateRotation(parent, moveVector) * rotationSpeed);
+            parent.Transform3D.TranslateBy(moveVector * gameTime.ElapsedGameTime.Milliseconds);
         }
 
         private void HandleCameraFollow(GameTime gameTime, Actor3D parent)
