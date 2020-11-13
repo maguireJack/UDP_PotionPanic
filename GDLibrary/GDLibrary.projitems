@@ -45,6 +45,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\Parameters\Curve\Transform3DCurve.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Parameters\Input\ManagerParameters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Parameters\Rail\RailParameters.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Parameters\Time\Timer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Utilities\MathUtility.cs" />
     <Compile Include="..\GDLibrary\Core\Interfaces\I3DDrawable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Interfaces\IVertexData.cs" />
