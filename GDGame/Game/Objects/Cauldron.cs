@@ -7,6 +7,7 @@ using GDLibrary.Core.Events;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace GDGame.Game.Objects
 {
@@ -14,7 +15,7 @@ namespace GDGame.Game.Objects
     {
         #region Fields
 
-        private HashSet<string> inventory;
+        private Recipe inventory;
 
         #endregion
 
@@ -23,7 +24,7 @@ namespace GDGame.Game.Objects
         public Cauldron(ModelObject modelObject, string name, float interactDistance, EventDispatcher eventDispatcher) :
             base(modelObject, name, interactDistance)
         {
-            inventory = new HashSet<string>();
+            inventory = new Recipe();
             eventDispatcher.PotionPickedEvent += EventDispatcher_PotionPickedEvent;
         }
 
@@ -44,14 +45,8 @@ namespace GDGame.Game.Objects
         {
             switch(item.PickupType)
             {
-                case PickupType.Solid:
-                    Add(item.Name, 1);
-                    break;
-                case PickupType.Dust:
-                    Add(item.Name, 1);
-                    break;
-                case PickupType.Liquid:
-                    Add(item.Name, 1);
+                case PickupType.Ingredient:
+                    Add(item.Ingredient);
                     break;
                 default:
                     return false;
@@ -60,23 +55,28 @@ namespace GDGame.Game.Objects
             return true;
         }
 
-        private void Add(string name, int n)
+        private void Add(Ingredient item)
         {
-            if (inventory.Contains(name + n))
+            if(inventory.ContainsKey(item))
             {
-                Add(name, n + 1);
+                inventory.Ingredients[item]++;
             }
-            else inventory.Add(name + n);
+            else inventory.Add(item, 1);
         }
 
         private void Recipes()
         {
-            if(inventory.Count > 2)
+            int count = 0;
+            foreach(int value in inventory.Ingredients.Values)
+            {
+                count += value;
+            }
+            if(count > 2)
             {
                 //for each key (recipe) check to see if the inventory of the cauldron matches the recipe
-                foreach(HashSet<string> key in GameConstants.potions.Keys)
+                foreach (Recipe key in GameConstants.potions.Keys)
                 {
-                    if(inventory.SetEquals(key))
+                    if (inventory.Equals(key))
                     {
                         //If it does, get the data of the potion and dispatch an event
                         EventDispatcher.Publish(EventType.Recipe, GameConstants.potions[key]);

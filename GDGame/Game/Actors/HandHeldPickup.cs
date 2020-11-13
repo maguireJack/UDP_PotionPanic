@@ -1,4 +1,5 @@
 ﻿using GDGame.Game.Enums;
+using GDGame.Game.Objects;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
@@ -14,6 +15,7 @@ namespace GDGame.Game.Actors
 
         private PickupType pickupType;
         private Vector3 heldCoords;
+        private Ingredient ingredient;
 
         #endregion
 
@@ -35,6 +37,18 @@ namespace GDGame.Game.Actors
             }
         }
 
+        public Ingredient Ingredient
+        {
+            get
+            {
+                return ingredient;
+            }
+            set
+            {
+                ingredient = value;
+            }
+        }
+
         #endregion
 
         #region Constructors
@@ -45,23 +59,16 @@ namespace GDGame.Game.Actors
         {
             this.pickupType = pickupType;
             this.heldCoords = heldCoords;
+            this.ingredient = null;
         }
 
-        public HandHeldPickup(string id,
-            ActorType actorType,
-            StatusType statusType,
-            Transform3D transform,
-            EffectParameters effectParameters,
-            Model model,
-            PickupType pickupType,
-            string name,
-            float interactDistance,
-            Vector3 heldCoords) :
-            base(id, actorType, statusType, transform, effectParameters, model,
-                name, interactDistance)
+        public HandHeldPickup(ModelObject modelObject, PickupType pickupType,
+            string name, float interactDistance, Vector3 heldCoords, Ingredient ingredient) :
+            base(modelObject, name, interactDistance)
         {
             this.pickupType = pickupType;
             this.heldCoords = heldCoords;
+            this.ingredient = ingredient;
         }
 
         #endregion
@@ -77,7 +84,8 @@ namespace GDGame.Game.Actors
                PickupType,
                Name,
                InteractDistance,
-               heldCoords);
+               heldCoords,
+               ingredient);
 
             //remember if we clone a model then we need to clone any attached controllers
             if (ControllerList != null)

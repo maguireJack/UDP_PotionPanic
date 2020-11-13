@@ -17,6 +17,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GDGame
 {
@@ -115,6 +116,7 @@ namespace GDGame
             //cameras - notice we moved the camera creation BELOW where we created the drawn content - see DriveController
             InitCameras3D();
 
+            GameConstants.InitPotions();
             InitPlayer();
 
             //graphic settings - see https://en.wikipedia.org/wiki/Display_resolution#/media/File:Vector_Video_Standards8.svg
@@ -545,7 +547,8 @@ namespace GDGame
                 effectParameters, redRockModel);
 
             //Red rock pickup
-            HandHeldPickup ingredient = new HandHeldPickup(modelObject, PickupType.Solid, "Red Rock", GameConstants.defualtInteractionDist, GameConstants.potionRedPos);
+            HandHeldPickup pickup = new HandHeldPickup(modelObject, PickupType.Ingredient, "Red Rock",
+                GameConstants.defualtInteractionDist, GameConstants.potionRedPos, GameConstants.redSolid);
 
             ////////////////Giver creation
             /////transform 
@@ -563,7 +566,8 @@ namespace GDGame
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, box);
 
-            IngredientGiver ingredientGiver = new IngredientGiver(modelObject, "Red Rock Giver", GameConstants.defualtInteractionDist, ingredient);
+            IngredientGiver ingredientGiver = new IngredientGiver(modelObject, "Red Rock Giver",
+                GameConstants.defualtInteractionDist, pickup);
             objectManager.Add(ingredientGiver);
 
 
@@ -586,7 +590,8 @@ namespace GDGame
                 effectParameters, blueFlowerModel);
 
             //Blue flower pickup
-            ingredient = new HandHeldPickup(modelObject, PickupType.Solid, "Blue Flower", GameConstants.defualtInteractionDist, GameConstants.potionRedPos);
+            pickup = new HandHeldPickup(modelObject, PickupType.Ingredient, "Blue Flower",
+                GameConstants.defualtInteractionDist,GameConstants.potionRedPos, GameConstants.blueSolid);
 
             ////////////////Giver Creation
             //transform 
@@ -604,7 +609,8 @@ namespace GDGame
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, box);
 
-            ingredientGiver = new IngredientGiver(modelObject, "Blue Flower Giver", GameConstants.defualtInteractionDist, ingredient);
+            ingredientGiver = new IngredientGiver(modelObject, "Blue Flower Giver",
+                GameConstants.defualtInteractionDist, pickup);
             objectManager.Add(ingredientGiver);
 
 
@@ -626,7 +632,8 @@ namespace GDGame
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, greenHerbModel);
 
-            ingredient = new HandHeldPickup(modelObject, PickupType.Solid, "Green Herb", GameConstants.defualtInteractionDist, GameConstants.potionRedPos);
+            pickup = new HandHeldPickup(modelObject, PickupType.Ingredient, "Green Herb",
+                GameConstants.defualtInteractionDist, GameConstants.potionRedPos, GameConstants.greenSolid);
 
             ////////////////Giver creation
             //transform 
@@ -644,7 +651,8 @@ namespace GDGame
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, box);
 
-            ingredientGiver = new IngredientGiver(modelObject, "Green Herb Giver", GameConstants.defualtInteractionDist, ingredient);
+            ingredientGiver = new IngredientGiver(modelObject, "Green Herb Giver",
+                GameConstants.defualtInteractionDist, pickup);
             objectManager.Add(ingredientGiver);
         }
 

@@ -2,10 +2,22 @@
 {
     public enum PickupType
     {
-        Solid,
-        Dust,
-        Liquid,
+        Ingredient,
         Potion,
         Other
+    }
+
+    public enum IngredientState
+    {
+        Solid,
+        Dust,
+        Liquid
+    }
+
+    public enum IngredientType
+    {
+        Red,
+        Blue,
+        Green
     }
 }

@@ -1,4 +1,6 @@
-﻿using GDLibrary.Parameters;
+﻿using GDGame.Game.Enums;
+using GDGame.Game.Objects;
+using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Collections;
@@ -74,17 +76,18 @@ namespace GDGame.Game.Constants
 
         #region Ingredients
 
-        public static readonly string redSolid = "Red Rock";
-        public static readonly string redDust = "Red Dust";
-        public static readonly string redLiquid = "Red Liquid";
+        public static readonly Ingredient redSolid = new Ingredient(IngredientType.Red, IngredientState.Solid);
+        public static readonly Ingredient redDust = new Ingredient(IngredientType.Red, IngredientState.Dust);
+        public static readonly Ingredient redLiquid = new Ingredient(IngredientType.Red, IngredientState.Liquid);
 
-        public static readonly string blueSolid = "Blue Flower";
-        public static readonly string blueDust = "Blue Dust";
-        public static readonly string blueLiquid = "Blue Liquid";
+        public static readonly Ingredient blueSolid = new Ingredient(IngredientType.Blue, IngredientState.Solid);
+        public static readonly Ingredient blueDust = new Ingredient(IngredientType.Blue, IngredientState.Dust);
+        public static readonly Ingredient blueLiquid = new Ingredient(IngredientType.Blue, IngredientState.Liquid);
 
-        public static readonly string greenSolid = "Green Herb";
-        public static readonly string greenDust = "Green Dust";
-        public static readonly string greenLiquid = "Green Liquid";
+        public static readonly Ingredient greenSolid = new Ingredient(IngredientType.Green, IngredientState.Solid);
+        public static readonly Ingredient greenDust = new Ingredient(IngredientType.Green, IngredientState.Dust);
+        public static readonly Ingredient greenLiquid = new Ingredient(IngredientType.Green, IngredientState.Liquid);
+
 
         #endregion
 
@@ -97,7 +100,7 @@ namespace GDGame.Game.Constants
                 new Vector3(2, 2, 2),   //scale
                 -Vector3.UnitZ,         //look
                 Vector3.UnitY)          //up
-    };
+        };
         public static readonly ArrayList potion2_data = new ArrayList { "Potion of Something", 6, new Vector3(4, 18, -1.5f),
         new Transform3D(new Vector3(cauldronPos.X, cauldronPos.Y + 60, cauldronPos.Z),   //translation
                 Vector3.Zero,           //rotation
@@ -106,25 +109,20 @@ namespace GDGame.Game.Constants
                 Vector3.UnitY)          //up
         };
 
-        #endregion
+        public static readonly Dictionary<Recipe, ArrayList> potions = new Dictionary<Recipe, ArrayList>();
 
-            #region Potion Recipes
-
-            /*
-             * The naming convention for a potion is:
-             * potion = ingredientX + 1, ingredientY + 1, ingredientZ + 1
-             * potion = ingredientX + 1, ingredientX + 2, ingredientX + 3
-             * Notice, if there are multiple of the same ingredients, add an extra number
-            */
-        public static readonly HashSet<string> potion1 = new HashSet<string>{ redSolid + 1, redSolid + 2, blueSolid + 1};
-        public static readonly HashSet<string> potion2 = new HashSet<string> { blueSolid + 1, blueSolid + 2, redSolid + 1 };
-
-        //add potions into here
-        public static readonly Dictionary<HashSet<string>, ArrayList> potions = new Dictionary<HashSet<string>, ArrayList>()
+        public static void InitPotions()
         {
-            { potion1, potion1_data },
-            { potion2, potion2_data }
-        };
+            Recipe recipe = new Recipe();
+            recipe.Add(redSolid, 2);
+            recipe.Add(blueSolid, 1);
+            potions.Add(recipe, potion1_data);
+
+            recipe = new Recipe();
+            recipe.Add(redSolid, 1);
+            recipe.Add(blueSolid, 2);
+            potions.Add(recipe, potion2_data);
+        }
 
         #endregion
     }
