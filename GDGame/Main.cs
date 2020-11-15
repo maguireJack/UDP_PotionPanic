@@ -512,9 +512,9 @@ namespace GDGame
 
             ///////Level
             //transform 
-            transform3D = new Transform3D(new Vector3(-500, 0, 0),
+            transform3D = new Transform3D(new Vector3(-600, 0, 0),
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(1, 1, 1),        //scale
+                                new Vector3(2, 2, 2),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
