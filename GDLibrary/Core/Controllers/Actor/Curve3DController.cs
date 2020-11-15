@@ -24,6 +24,7 @@ namespace GDLibrary.Controllers
             this.transform3DCurve = transform3DCurve;
         }
 
+        //local
         Vector3 translation, look, up;
         public override void Update(GameTime gameTime, IActor actor)
         {

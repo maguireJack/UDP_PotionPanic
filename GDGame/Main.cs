@@ -1,13 +1,13 @@
-﻿using GDGame.Game.Actors;
-using GDGame.Game.Constants;
-using GDGame.Game.Controllers;
-using GDGame.Game.Enums;
-using GDGame.Game.Objects;
+﻿using GDGame.MyGame.Actors;
+using GDGame.MyGame.Constants;
+using GDGame.MyGame.Controllers;
+using GDGame.MyGame.Enums;
+using GDGame.MyGame.Objects;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
-using GDLibrary.Core.Events;
 using GDLibrary.Debug;
 using GDLibrary.Enums;
+using GDLibrary.Events;
 using GDLibrary.Factories;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
@@ -17,11 +17,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace GDGame
 {
-    public class Main : Microsoft.Xna.Framework.Game
+    public class Main : Game
     {
         #region Fields
 
@@ -133,36 +132,31 @@ namespace GDGame
             eventDispatcher = new EventDispatcher(this);
             Components.Add(eventDispatcher);
 
-            eventDispatcher.RecipeEvent += EventDispatcher_RecipeEvent;
-            eventDispatcher.AddEvent += EventDispatcher_AddEvent;
-            eventDispatcher.RemoveEvent += EventDispatcher_RemoveEvent;
-        }
-
-        private void EventDispatcher_AddEvent(DrawnActor3D actor)
-        {
-            objectManager.Add(actor);
-        }
-
-        private void EventDispatcher_RemoveEvent(string id)
-        {
-            objectManager.RemoveByID(id);
+            EventDispatcher.Subscribe(EventCategoryType.Pickup, HandleEvent);
         }
 
         //TODO Parameters not being passed are textures and modeltype
-        private void EventDispatcher_RecipeEvent(ArrayList data)
+        private void HandleEvent(EventData eventData)
         {
-            //effectparameters
-            EffectParameters effectParameters = new EffectParameters(modelEffect,
-                null,
-                Color.White, 1);
+            if (eventData.EventCategoryType == EventCategoryType.Pickup)
+            {
+                if (eventData.EventActionType == EventActionType.OnCreate)
+                {
+                    ArrayList potion_data = eventData.Parameters[0] as ArrayList;
+                    //effectparameters
+                    EffectParameters effectParameters = new EffectParameters(modelEffect,
+                        null,
+                        Color.White, 1);
 
-            //model object
-            ModelObject potionObject = new ModelObject((string)data[0] + objectManager.TotalListChanges(), ActorType.Interactable,
-                StatusType.Drawn | StatusType.Update, ((Transform3D)data[3]).Clone() as Transform3D,
-                effectParameters, redPotion);
+                    //model object
+                    ModelObject potionObject = new ModelObject((string)potion_data[0] + objectManager.TotalListChanges(), ActorType.Interactable,
+                        StatusType.Drawn | StatusType.Update, ((Transform3D)potion_data[3]).Clone() as Transform3D,
+                        effectParameters, redPotion);
 
-            HandHeldPickup potion = new HandHeldPickup(potionObject, PickupType.Potion, (string)data[0], 30f, (Vector3)data[2]);
-            objectManager.Add(potion);
+                    HandHeldPickup potion = new HandHeldPickup(potionObject, PickupType.Potion, (string)potion_data[0], 30f, (Vector3)potion_data[2]);
+                    objectManager.Add(potion);
+                }
+            }
         }
 
         private void DemoCurve()
@@ -221,7 +215,7 @@ namespace GDGame
             Components.Add(mouseManager);
 
             //object
-            objectManager = new ObjectManager(this, 6, 10, cameraManager);
+            objectManager = new ObjectManager(this, StatusType.Drawn | StatusType.Update, 6, 10, cameraManager);
             //set the object manager to be drawn BEFORE the debug drawer to the screen
             objectManager.DrawOrder = 1;
             Components.Add(objectManager);
@@ -484,7 +478,7 @@ namespace GDGame
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, cauldronModel);
 
-            Cauldron cauldron = new Cauldron(modelObject, "Cauldron", GameConstants.defualtInteractionDist, eventDispatcher);
+            Cauldron cauldron = new Cauldron(modelObject, "Cauldron", GameConstants.defualtInteractionDist);
 
             objectManager.Add(cauldron);
 

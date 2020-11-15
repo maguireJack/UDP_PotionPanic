@@ -3,6 +3,7 @@ using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace GDLibrary.Actors
 {
@@ -18,10 +19,24 @@ namespace GDLibrary.Actors
         private ActorType actorType;
         private StatusType statusType;
         private ControllerList controllerList = new ControllerList();
+        private EventHandlerList eventHandlerList = new EventHandlerList();
 
         #endregion Fields
 
         #region Properties
+
+        public EventHandlerList EventHandlerList
+        {
+            get
+            {
+                return eventHandlerList;
+            }
+            //no reason to allow this list to be directly set externally
+            protected set
+            {
+                eventHandlerList = value;
+            }
+        }
 
         public ControllerList ControllerList
         {

@@ -1,12 +1,12 @@
-﻿using GDGame.Game.Enums;
-using GDGame.Game.Objects;
+﻿using GDGame.MyGame.Enums;
+using GDGame.MyGame.Objects;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace GDGame.Game.Constants
+namespace GDGame.MyGame.Constants
 {
     public class GameConstants
     {

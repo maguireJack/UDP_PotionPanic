@@ -15,6 +15,8 @@ namespace GDLibrary.Actors
 
         //name, active, Transform3D::Reset??
         private ProjectionParameters projectionParameters;
+        private Matrix view;
+        private bool isDirty;
 
         #endregion Fields
 
@@ -33,10 +35,16 @@ namespace GDLibrary.Actors
         {
             get
             {
-                return Matrix.CreateLookAt(Transform3D.Translation,
-                    //to do...add Transform3D::Target
-                    Transform3D.Translation + Transform3D.Look,
-                    Transform3D.Up);
+             //   if (this.isDirty)
+              //  {
+
+                    this.view = Matrix.CreateLookAt(Transform3D.Translation,
+                        //to do...add Transform3D::Target
+                        Transform3D.Translation + Transform3D.Look,
+                        Transform3D.Up);
+               //     this.isDirty = true;
+              //  }
+                return this.view;
             }
         }
 

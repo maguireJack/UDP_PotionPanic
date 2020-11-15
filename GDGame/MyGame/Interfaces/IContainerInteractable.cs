@@ -1,6 +1,6 @@
-﻿using GDGame.Game.Actors;
+﻿using GDGame.MyGame.Actors;
 
-namespace GDGame.Game.Interfaces
+namespace GDGame.MyGame.Interfaces
 {
     interface IContainerInteractable
     {

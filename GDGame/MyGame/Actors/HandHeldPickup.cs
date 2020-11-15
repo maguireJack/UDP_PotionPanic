@@ -1,13 +1,12 @@
-﻿using GDGame.Game.Enums;
-using GDGame.Game.Objects;
+﻿using GDGame.MyGame.Enums;
+using GDGame.MyGame.Objects;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
-namespace GDGame.Game.Actors
+namespace GDGame.MyGame.Actors
 {
     public class HandHeldPickup : InteractableActor
     {

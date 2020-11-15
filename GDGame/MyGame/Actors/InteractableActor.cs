@@ -4,7 +4,7 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GDGame.Game.Actors
+namespace GDGame.MyGame.Actors
 {
     public abstract class InteractableActor : ModelObject
     {

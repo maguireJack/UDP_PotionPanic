@@ -104,6 +104,7 @@ namespace GDLibrary.Parameters
 
         //used by both
         private Matrix projection;
+        private bool isDirty = true;
 
         #endregion Fields
 
@@ -124,6 +125,7 @@ namespace GDLibrary.Parameters
             set
             {
                 fieldOfView = value;
+                this.isDirty = true;
             }
         }
 
@@ -142,6 +144,7 @@ namespace GDLibrary.Parameters
             set
             {
                 aspectRatio = value;
+                this.isDirty = true;
             }
         }
 
@@ -160,6 +163,7 @@ namespace GDLibrary.Parameters
             set
             {
                 nearClipPlane = value;
+                this.isDirty = true;
             }
         }
 
@@ -178,6 +182,7 @@ namespace GDLibrary.Parameters
             set
             {
                 farClipPlane = value; //validation
+                this.isDirty = true;
             }
         }
 
@@ -191,9 +196,14 @@ namespace GDLibrary.Parameters
         {
             get
             {
-                projection = Matrix.CreatePerspectiveFieldOfView(
-                       fieldOfView, aspectRatio,
-                       nearClipPlane, farClipPlane);
+                if (this.isDirty)
+                {
+                    projection = Matrix.CreatePerspectiveFieldOfView(
+                           fieldOfView, aspectRatio,
+                           nearClipPlane, farClipPlane);
+
+                    this.isDirty = false;
+                }
                 return projection;
             }
         }
