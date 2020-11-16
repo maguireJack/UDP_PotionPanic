@@ -49,7 +49,7 @@ namespace GDGame
         private float worldScale = 3000;
 
         private VertexPositionColorTexture[] vertices;
-        private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, crate, wizardTexture;
+        private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, crate, wizardTexture, mushroomTexture, redRockTexture, redPotionTexture;
 
         //font used to show debug info
         private SpriteFont debugFont;
@@ -62,7 +62,7 @@ namespace GDGame
         #endregion
 
         private PrimitiveObject primitiveObject = null;
-        private Model box, wizard, redPotion, level, cauldronModel, redRockModel, blueFlowerModel, greenHerbModel;
+        private Model box, wizard, redPotion, level, cauldronModel, redRockModel, blueFlowerModel, greenMushroom;
         private EventDispatcher eventDispatcher;
         private PhysicsManager physicsManager;
         private Viewport halfSizeViewport;
@@ -150,7 +150,7 @@ namespace GDGame
                     ArrayList potion_data = eventData.Parameters[0] as ArrayList;
                     //effectparameters
                     EffectParameters effectParameters = new EffectParameters(modelEffect,
-                        null,
+                        redPotionTexture,
                         Color.White, 1);
 
                     //model object
@@ -400,6 +400,13 @@ namespace GDGame
 
             wizardTexture
                 = Content.Load<Texture2D>("Assets/Textures/Wizard/wizardTexture");
+
+            mushroomTexture
+                = Content.Load<Texture2D>("Assets/Textures/Props/Ingredients/MushRoom1");
+            redRockTexture
+                = Content.Load<Texture2D>("Assets/Textures/Props/Ingredients/RedCrystal");
+            //redPotionTexture
+            //    = Content.Load<Texture2D>("Assets/Textures/Props/Potion/potion texture");
         }
 
         private void InitModels()
@@ -420,13 +427,15 @@ namespace GDGame
                 = Content.Load<Model>("Assets/Models/cauldron");
 
             redRockModel
-                = Content.Load<Model>("Assets/Models/redRock");
+                = Content.Load<Model>("Assets/Models/RedCrystal");
 
             blueFlowerModel
                 = Content.Load<Model>("Assets/Models/blueFlower");
 
-            greenHerbModel
-                = Content.Load<Model>("Assets/Models/greenHerb");
+            greenMushroom
+                = Content.Load<Model>("Assets/Models/Shrooms");
+
+
         }
 
         #endregion Initialization - Managers, Cameras, Effects, Textures
@@ -500,9 +509,9 @@ namespace GDGame
 
             ///////Level
             //transform 
-            transform3D = new Transform3D(new Vector3(-500, 0, 0),
+            transform3D = new Transform3D(new Vector3(-600, 0, 0),
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(1, 1, 1),        //scale
+                                new Vector3(2, 2, 2),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
@@ -525,13 +534,13 @@ namespace GDGame
             //transform 
             Transform3D transform3D = new Transform3D(new Vector3(0, 0, -100),
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(3, 3, 3),        //scale
+                                new Vector3(50, 50, 50),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
             //effectparameters
             EffectParameters effectParameters = new EffectParameters(modelEffect,
-                crate,
+                redRockTexture,
                 Color.Red, 1);
 
             //model object
@@ -617,15 +626,15 @@ namespace GDGame
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                null,
+                mushroomTexture,
                 Color.White, 1);
 
             //model object
-            modelObject = new ModelObject("GreenHerb", ActorType.Interactable,
+            modelObject = new ModelObject("GreenMushroom", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, greenHerbModel);
+                effectParameters, greenMushroom);
 
-            pickup = new HandHeldPickup(modelObject, PickupType.Ingredient, "Green Herb",
+            pickup = new HandHeldPickup(modelObject, PickupType.Ingredient, "Green Mushroom",
                 GameConstants.defualtInteractionDist, GameConstants.potionRedPos, GameConstants.greenSolid);
 
             ////////////////Giver creation
