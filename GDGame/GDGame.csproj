@@ -23,5 +23,10 @@
   <ItemGroup>
     <Folder Include="MyGame\Actors\" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="JigLibX">
+      <HintPath>..\GDLibrary\Dependencies\Physics\JigLibX.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <Import Project="..\GDLibrary\GDLibrary.projitems" Label="Shared" />
 </Project>

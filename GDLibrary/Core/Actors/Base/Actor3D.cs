@@ -1,5 +1,6 @@
 ﻿using GDLibrary.Enums;
 using GDLibrary.Parameters;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
@@ -32,14 +33,18 @@ namespace GDLibrary.Actors
 
         #endregion Properties
 
-        #region Constructors
+        #region Constructors & Core
 
         public Actor3D(string id, ActorType actorType, StatusType statusType, Transform3D transform3D) : base(id, actorType, statusType)
         {
             this.transform3D = transform3D;
         }
 
-        #endregion Constructors
+        //returns the compound matrix transformation that will scale, rotate and place the actor in the 3D world of the game
+        public virtual Matrix GetWorldMatrix()
+        {
+            return Transform3D.World;
+        }
 
         public override bool Equals(object obj)
         {
@@ -58,5 +63,7 @@ namespace GDLibrary.Actors
             //deep-copy
             return new Actor3D(ID, ActorType, StatusType, transform3D.Clone() as Transform3D);
         }
+
+        #endregion Constructors & Core
     }
 }

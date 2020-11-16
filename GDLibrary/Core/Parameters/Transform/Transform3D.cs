@@ -21,6 +21,15 @@ namespace GDLibrary.Parameters
         #endregion Fields
 
         #region Properties
+        public Matrix Orientation
+        {
+            get
+            {
+                return Matrix.CreateRotationX(MathHelper.ToRadians(rotationInDegrees.X))
+                        * Matrix.CreateRotationY(MathHelper.ToRadians(rotationInDegrees.Y))
+                            * Matrix.CreateRotationZ(MathHelper.ToRadians(rotationInDegrees.Z));
+            }
+        }
 
         public Matrix World
         {
@@ -51,6 +60,7 @@ namespace GDLibrary.Parameters
             set
             {
                 look = value;
+                isDirty = true;
             }
         }
 
@@ -64,6 +74,7 @@ namespace GDLibrary.Parameters
             set
             {
                 up = value;
+                isDirty = true;
             }
         }
 
@@ -150,7 +161,7 @@ namespace GDLibrary.Parameters
             originalLook = Look = look;
             originalUp = Up = up;
 
-        //    this.isDirty = true;
+            //    this.isDirty = true;
         }
 
         #region Movement
@@ -166,10 +177,8 @@ namespace GDLibrary.Parameters
             rotationInDegrees.Y += magnitude; //this is what orients model on the screen
 
             //transform the original look using this rotationInDegrees around UnitY and normalize
-            look = Vector3.Normalize(Vector3.Transform(originalLook,
+            Look = Vector3.Normalize(Vector3.Transform(originalLook,
                 Matrix.CreateRotationY(MathHelper.ToRadians(rotationInDegrees.Y))));
-
-            this.isDirty = true;
         }
 
         public void RotateBy(Vector3 axisAndMagnitude)
@@ -185,16 +194,15 @@ namespace GDLibrary.Parameters
                 MathHelper.ToRadians(rotationInDegrees.Z)); //Roll
 
             //update the look and up vector (i.e. rotate them both around this new "XYZ" axis)
-            look = Vector3.Transform(originalLook, rotMatrix);
-            up = Vector3.Transform(originalUp, rotMatrix);
+            Look = Vector3.Transform(originalLook, rotMatrix);
+            Up = Vector3.Transform(originalUp, rotMatrix);
         }
 
         #endregion Movement
 
         public object Clone()
         {
-            return new Transform3D(translation, rotationInDegrees, scale,
-                look, up);
+            return new Transform3D(translation, rotationInDegrees, scale, look, up);
         }
 
         #endregion Constructors & Core

@@ -36,6 +36,7 @@ namespace GDGame
         private KeyboardManager keyboardManager;
         private GamePadManager gamePadManager;
         private MouseManager mouseManager;
+        
 
         //hashmap (Dictonary in C#) to store useful rails and curves
         private Dictionary<string, Transform3DCurve> transform3DCurveDictionary;
@@ -63,6 +64,9 @@ namespace GDGame
         private PrimitiveObject primitiveObject = null;
         private Model box, wizard, redPotion, level, cauldronModel, redRockModel, blueFlowerModel, greenHerbModel;
         private EventDispatcher eventDispatcher;
+        private PhysicsManager physicsManager;
+        private Viewport halfSizeViewport;
+        private RenderManager renderManager;
 
         #endregion Fields
 
@@ -83,6 +87,7 @@ namespace GDGame
         {
             #region Demo
             DemoCurve();
+            DemoViewport();
             #endregion
 
             //set game title
@@ -149,7 +154,7 @@ namespace GDGame
                         Color.White, 1);
 
                     //model object
-                    ModelObject potionObject = new ModelObject((string)potion_data[0] + objectManager.TotalListChanges(), ActorType.Interactable,
+                    ModelObject potionObject = new ModelObject((string)potion_data[0] + objectManager.NewID(), ActorType.Interactable,
                         StatusType.Drawn | StatusType.Update, ((Transform3D)potion_data[3]).Clone() as Transform3D,
                         effectParameters, redPotion);
 
@@ -165,6 +170,11 @@ namespace GDGame
             curve1D.Add(100, 2);
             curve1D.Add(250, 5);
             curve1D.Add(1500, 8);
+        }
+
+        private void DemoViewport()
+        {
+            halfSizeViewport = new Viewport(250, 50, 300, 400);
         }
 
         private void InitCurves()
@@ -199,7 +209,7 @@ namespace GDGame
         private void InitManagers()
         {
             //camera
-            cameraManager = new CameraManager<Camera3D>(this);
+            cameraManager = new CameraManager<Camera3D>(this, StatusType.Update);
             Components.Add(cameraManager);
 
             //keyboard
@@ -215,9 +225,17 @@ namespace GDGame
             Components.Add(mouseManager);
 
             //object
-            objectManager = new ObjectManager(this, StatusType.Drawn | StatusType.Update, 6, 10, cameraManager);
-            //set the object manager to be drawn BEFORE the debug drawer to the screen
-            objectManager.DrawOrder = 1;
+            objectManager = new ObjectManager(this, StatusType.Update, 6, 10);
+
+            //render
+            renderManager = new RenderManager(this, StatusType.Drawn, ScreenLayoutType.Multi,
+                objectManager, cameraManager);
+
+            //physicsManager = new PhysicsManager(this, StatusType.Update, -9.81f * Vector3.UnitY);
+            //Components.Add(this.physicsManager);
+
+            Components.Add(renderManager);
+
             Components.Add(objectManager);
         }
 
@@ -243,6 +261,7 @@ namespace GDGame
         {
             Transform3D transform3D = null;
             Camera3D camera3D = null;
+            Viewport viewPort = new Viewport(0, 0, 1024, 768);
 
             #region Camera -  Third Person Player Camera
 
@@ -254,108 +273,83 @@ namespace GDGame
 
             camera3D = new Camera3D("3rd person player",
                 ActorType.Camera3D, StatusType.Update, transform3D,
-                ProjectionParameters.StandardDeepSixteenTen);
+                ProjectionParameters.StandardDeepSixteenTen, viewPort);
             cameraManager.Add(camera3D);
 
             #endregion
 
             #region Camera - First Person
 
-            transform3D = new Transform3D(new Vector3(10, 10, 20),
-                new Vector3(0, 0, -1), Vector3.UnitY);
+            //transform3D = new Transform3D(new Vector3(10, 10, 20),
+            //    new Vector3(0, 0, -1), Vector3.UnitY);
 
-            camera3D = new Camera3D("1st person",
-                ActorType.Camera3D, StatusType.Update, transform3D,
-                ProjectionParameters.StandardDeepSixteenTen);
+            //camera3D = new Camera3D("1st person",
+            //    ActorType.Camera3D, StatusType.Update, transform3D,
+            //    ProjectionParameters.StandardDeepSixteenTen, new Viewport(5, 5, 502, 374));
 
-            //attach a controller
-            camera3D.ControllerList.Add(new FirstPersonController(
-                "1st person controller A", ControllerType.FirstPerson,
-                keyboardManager, mouseManager,
-                GameConstants.moveSpeed, GameConstants.strafeSpeed, GameConstants.rotateSpeed));
-            cameraManager.Add(camera3D);
+            ////attach a controller
+            //camera3D.ControllerList.Add(new FirstPersonController(
+            //    "1st person controller A", ControllerType.FirstPerson,
+            //    keyboardManager, mouseManager,
+            //    GameConstants.moveSpeed, GameConstants.strafeSpeed, GameConstants.rotateSpeed));
+            //cameraManager.Add(camera3D);
 
             #endregion Camera - First Person
 
             #region Camera - Flight
 
-            transform3D = new Transform3D(new Vector3(0, 10, 10),
-                        new Vector3(0, 0, -1),
-                        Vector3.UnitY);
+            //transform3D = new Transform3D(new Vector3(0, 10, 10),
+            //            new Vector3(0, 0, -1),
+            //            Vector3.UnitY);
 
-            camera3D = new Camera3D("flight person",
-                ActorType.Camera3D, StatusType.Update, transform3D,
-                ProjectionParameters.StandardDeepSixteenTen);
+            //camera3D = new Camera3D("flight person",
+            //    ActorType.Camera3D, StatusType.Update, transform3D,
+            //    ProjectionParameters.StandardDeepSixteenTen, new Viewport(0, 384, 512, 384));
 
-            //define move parameters
-            MoveParameters moveParameters = new MoveParameters(keyboardManager,
-                mouseManager, GameConstants.flightMoveSpeed, GameConstants.flightStrafeSpeed,
-                GameConstants.flightRotateSpeed,
-                GameConstants.MoveKeys[0]);
+            ////define move parameters
+            //MoveParameters moveParameters = new MoveParameters(keyboardManager,
+            //    mouseManager, GameConstants.flightMoveSpeed, GameConstants.flightStrafeSpeed,
+            //    GameConstants.flightRotateSpeed,
+            //    GameConstants.MoveKeys[0]);
 
             //attach a controller
-            camera3D.ControllerList.Add(new FlightCameraController("flight controller",
-                                        ControllerType.FlightCamera, moveParameters));
-            cameraManager.Add(camera3D);
+            //camera3D.ControllerList.Add(new FlightCameraController("flight controller",
+            //                            ControllerType.FlightCamera, moveParameters));
+            //cameraManager.Add(camera3D);
 
             #endregion Camera - Flight
 
             #region Camera - Security
 
-            transform3D = new Transform3D(new Vector3(10, 10, 50),
-                        new Vector3(0, 0, -1),
-                        Vector3.UnitY);
+            //transform3D = new Transform3D(new Vector3(10, 10, 50),
+            //            new Vector3(0, 0, -1),
+            //            Vector3.UnitY);
 
-            camera3D = new Camera3D("security",
-                ActorType.Camera3D, StatusType.Update, transform3D,
-            ProjectionParameters.StandardDeepSixteenTen);
-
-            camera3D.ControllerList.Add(new PanController(
-                "pan controller", ControllerType.Pan,
-                new Vector3(1, 1, 0), new TrigonometricParameters(30, GameConstants.mediumAngularSpeed, 0)));
-            cameraManager.Add(camera3D);
-
-            #endregion Camera - Security
-
-            #region Camera - Rail
-
-            //  transform3D = new Transform3D(new Vector3(0, 250, 100),
-            //             new Vector3(-1, 0, 0), //look
-            //             new Vector3(0, 1, 0)); //up
-
-            //  camera3D = new Camera3D("rail camera - final battle",
+            //camera3D = new Camera3D("security",
             //    ActorType.Camera3D, StatusType.Update, transform3D,
-            //ProjectionParameters.StandardDeepSixteenTen);
+            //    ProjectionParameters.StandardDeepSixteenTen, new Viewport(512, 384, 512, 384));
 
-            //camera3D.ControllerList.Add(new RailController("rail controller - final battle 1",
-            //    ControllerType.Rail,
-            //    this.carModelObject,
-            //    new RailParameters("bottom rail",
-            //    new Vector3(100, 10, 50), new Vector3(55, 10, -50))));
-
-            // camera3D.ControllerList.Add(new RailController("rail controller - final battle 1",
-            //ControllerType.Rail,
-            //carModelObject,
-            //railDictionary["rail1"])); //use the rail dictionary to retrieve a rail by id
-
+            //camera3D.ControllerList.Add(new PanController(
+            //    "pan controller", ControllerType.Pan,
+            //    new Vector3(1, 1, 0), new TrigonometricParameters(30, GameConstants.mediumAngularSpeed, 0)));
             //cameraManager.Add(camera3D);
 
-            #endregion Camera - Rail
+            #endregion Camera - Security
 
             #region Camera - Curve3D
 
             //notice that it doesnt matter what translation, look, and up are since curve will set these
-            transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, Vector3.Zero);
+            //transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, Vector3.Zero);
 
-            camera3D = new Camera3D("curve camera - main arena",
-              ActorType.Camera3D, StatusType.Update, transform3D,
-                        ProjectionParameters.StandardDeepSixteenTen);
+            //camera3D = new Camera3D("curve camera - main arena",
+            //  ActorType.Camera3D, StatusType.Update, transform3D,
+            //  ProjectionParameters.StandardDeepSixteenTen, viewPort);
 
-            camera3D.ControllerList.Add(new Curve3DController("main arena - fly through - 1",
-                ControllerType.Curve,
-                        transform3DCurveDictionary["headshake1"])); //use the curve dictionary to retrieve a transform3DCurve by id
+            //camera3D.ControllerList.Add(new Curve3DController("main arena - fly through - 1",
+            //    ControllerType.Curve,
+            //            transform3DCurveDictionary["headshake1"])); //use the curve dictionary to retrieve a transform3DCurve by id
 
-            cameraManager.Add(camera3D);
+            //cameraManager.Add(camera3D);
 
             #endregion Camera - Curve3D
 
@@ -767,6 +761,7 @@ namespace GDGame
             primitiveObject.ID = "sky back";
             primitiveObject.EffectParameters.Texture = backSky;
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
             objectManager.Add(primitiveObject);
 
@@ -776,7 +771,7 @@ namespace GDGame
             primitiveObject.EffectParameters.Texture = leftSky;
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
             primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 90, 0);
-            primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
+            primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
             objectManager.Add(primitiveObject);
 
             //right
@@ -785,7 +780,7 @@ namespace GDGame
             primitiveObject.EffectParameters.Texture = rightSky;
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 20);
             primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, -90, 0);
-            primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
+            primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
             objectManager.Add(primitiveObject);
 
             //top
@@ -793,16 +788,15 @@ namespace GDGame
             primitiveObject.ID = "sky top";
             primitiveObject.EffectParameters.Texture = topSky;
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(90, -90, 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(-90, -90, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, worldScale / 2.0f, 0);
             objectManager.Add(primitiveObject);
 
-            //to do...front
+            //front
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "sky front";
             primitiveObject.EffectParameters.Texture = frontSky;
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, worldScale / 2.0f);
             objectManager.Add(primitiveObject);
         }
@@ -885,6 +879,10 @@ namespace GDGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            DepthStencilState dss = new DepthStencilState();
+            dss.DepthBufferEnable = true;
+            _graphics.GraphicsDevice.DepthStencilState = dss;
+
             base.Draw(gameTime);
         }
 

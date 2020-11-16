@@ -1,18 +1,19 @@
 ﻿using GDLibrary.Interfaces;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
 namespace GDLibrary.Containers
 {
     /// <summary>
-    /// Used to store event handlers to be applied to an actor
+    /// Used to store controllers to be applied to an actor
     /// </summary>
     /// <see cref="GDLibrary.Actors.Actor"/>
-    public class EventHandlerList : List<IEventHandler>
+    public class UpdateableList : List<IController>
     {
         #region Constructors & Core
 
-        public virtual bool Remove(Predicate<IEventHandler> predicate)
+        public virtual bool Remove(Predicate<IController> predicate)
         {
             int position = this.FindIndex(predicate);
             if (position != -1)
@@ -23,11 +24,11 @@ namespace GDLibrary.Containers
             return false;
         }
 
-        public virtual int Transform(Predicate<IEventHandler> filter,
-                                            Action<IEventHandler> transform)
+        public virtual int Transform(Predicate<IController> filter,
+                                            Action<IController> transform)
         {
             int count = 0;
-            foreach (IEventHandler obj in this)
+            foreach (IController obj in this)
             {
                 if (filter(obj))
                 {
@@ -36,6 +37,15 @@ namespace GDLibrary.Containers
                 }
             }
             return count;
+        }
+
+        public virtual void Update(GameTime gameTime, IActor parent)
+        {
+            //calls update on all controllers
+            foreach (IController controller in this)
+            {
+                controller.Update(gameTime, parent);
+            }
         }
 
         #endregion Constructors & Core

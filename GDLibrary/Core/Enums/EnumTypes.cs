@@ -1,5 +1,17 @@
 ﻿namespace GDLibrary.Enums
 {
+    public enum ScreenLayoutType : sbyte
+    {
+        Single,
+        Multi
+    }
+
+    public enum DrawType : sbyte
+    {
+        Opaque,
+        Semitransparent
+    }
+
     /// <summary>
     /// Actor types within the game (both drawn and undrawn)
     /// </summary>
@@ -9,7 +21,7 @@
         Player,    //hero (rendered using Max/Maya file)
         Decorator, //architecture, obstacle (rendered using Max/Maya file)
         Primitive, //make this type using IVertexData
-        Pickups,
+        Pickup,
         Interactable,
 
         Camera2D,
@@ -67,13 +79,13 @@
     }
 
     /// <summary>
-    /// Event categories within the game that a subscriber can subscribe to in the EventDispatcher 
+    /// Event categories within the game that a subscriber can subscribe to in the EventDispatcher
     /// </summary>
     /// <see cref="GDLibrary.Events.EventData"/>
     /// <seealso cref="GDLibrary.Events.EventDispatcher_OLD"/>
     public enum EventCategoryType
     {
-        Camera,      
+        Camera,
         Player,
         NonPlayer,
         Pickup,
@@ -86,7 +98,7 @@
     }
 
     /// <summary>
-    /// Event actions that can occur within a category (e.g. EventCategoryType.Sound with EventActionType.OnPlay) 
+    /// Event actions that can occur within a category (e.g. EventCategoryType.Sound with EventActionType.OnPlay)
     /// </summary>
     /// <see cref="GDLibrary.Events.EventData"/>
     /// <seealso cref="GDLibrary.Events.EventDispatcher_OLD"/>
@@ -116,7 +128,7 @@
         OnCameraSetActive,
         OnCameraCycle,
 
-        //sent by player when gains or loses health 
+        //sent by player when gains or loses health
         OnHealthDelta,
 
         //sent to set player health to a specific start/end value

@@ -3,7 +3,6 @@ using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 
 namespace GDLibrary.Actors
 {

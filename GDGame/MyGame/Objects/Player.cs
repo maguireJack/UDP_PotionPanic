@@ -68,7 +68,7 @@ namespace GDGame.MyGame.Objects
         private void UpdateInteractableList()
         {
             //Check if there size of the object manager has changed, if it has, get and update the interactable list of objects here
-            if (lastListSize != objectManager.TotalListChanges())
+            if (lastListSize != objectManager.NewID())
             {
                 //This is a temporary way to get a list of interactable objects, I have an idea of how to have this optimised
                 //but going to wait to see what Niall does before I update this.

@@ -12,9 +12,10 @@ namespace GDLibrary.GameComponents
     {
         #region Fields
         private StatusType statusType;
-        #endregion
+        #endregion Fields
 
-        #region Properties 
+        #region Properties
+
         public StatusType StatusType
         {
             get
@@ -26,73 +27,128 @@ namespace GDLibrary.GameComponents
                 this.statusType = value;
             }
         }
-        #endregion
+
+        #endregion Properties
 
         #region Constructors & Core
+
         public PausableDrawableGameComponent(Game game, StatusType statusType)
             : base(game)
         {
             //allows us to start the game component with drawing and/or updating paused
             this.statusType = statusType;
+
+            //subscribe to events that will affect the state of any child class (e.g. a menu play event for the object manager
+            SubscribeToEvents();
         }
+
+        #region Handle Events
+
+        /// <summary>
+        /// Subscribe to any events that will affect any child class (e.g. menu pause in ObjectManager)
+        /// </summary>
+        protected virtual void SubscribeToEvents()
+        {
+            //menu
+            EventDispatcher.Subscribe(EventCategoryType.Menu, HandleEvent);
+        }
+
+        protected virtual void HandleEvent(EventData eventData)
+        {
+            if (eventData.EventCategoryType == EventCategoryType.Menu)
+            {
+                if (eventData.EventActionType == EventActionType.OnPause)
+                    this.StatusType = StatusType.Off;
+                else if (eventData.EventActionType == EventActionType.OnPlay)
+                    this.StatusType = StatusType.Drawn | StatusType.Update;
+            }
+        }
+
+        #endregion Handle Events
+
+        #region Update & Draw
 
         public override void Update(GameTime gameTime)
         {
-            //screen manager needs to listen to input even when paused i.e. hide/show menu - see ScreenManager::HandleInput()
+            //any child class manager needs to listen to input even when paused i.e. hide/show menu - see ScreenManager::HandleInput()
             HandleInput(gameTime);
 
             if ((this.statusType & StatusType.Update) != 0) //if update flag is set
                 ApplyUpdate(gameTime);
-            // base.Update(gameTime); //does notthing so comment out
+
+            // base.Update(gameTime); //does nothing so comment out
         }
 
         public override void Draw(GameTime gameTime)
         {
             if ((this.statusType & StatusType.Drawn) != 0) //if draw flag is set
                 ApplyDraw(gameTime);
-            // base.Draw(gameTime); //does notthing so comment out
+
+            // base.Draw(gameTime); //does nothing so comment out
         }
 
+        /// <summary>
+        /// Called in any child class that wants to be pausable
+        /// </summary>
+        /// <remarks>All child classes who subscribe to menu pause/play events should call this method instead of Update() </remarks>
+        /// <see cref="GDLibrary.Managers.ObjectManager"/>
+        /// <param name="gameTime">GameTime object</param>
         protected virtual void ApplyUpdate(GameTime gameTime)
         {
-
         }
 
+        /// <summary>
+        /// Called in any child class that wants to be pausable
+        /// </summary>
+        /// <remarks>All child classes who subscribe to menu pause/play events should call this method instead of Draw() </remarks>
+        /// <see cref="GDLibrary.Managers.ObjectManager"/>
+        /// <param name="gameTime">GameTime object</param>
         protected virtual void ApplyDraw(GameTime gameTime)
         {
-
         }
 
+        #endregion Update & Draw
+
+        #region Handle User Input
+
+        /// <summary>
+        /// Handle all input
+        /// </summary>
+        /// <remarks>May be overridden in child class</remarks>
+        /// <param name="gameTime">GameTime object</param>
         protected virtual void HandleInput(GameTime gameTime)
         {
-
         }
 
+        /// <summary>
+        /// Handle mouse input
+        /// </summary>
+        /// <remarks>May be overridden in child class</remarks>
+        /// <param name="gameTime">GameTime object</param>
         protected virtual void HandleMouse(GameTime gameTime)
         {
-
         }
 
+        /// <summary>
+        /// Handle keyboard input
+        /// </summary>
+        /// <remarks>May be overridden in child class</remarks>
+        /// <param name="gameTime">GameTime object</param>
         protected virtual void HandleKeyboard(GameTime gameTime)
         {
-
         }
 
+        /// <summary>
+        /// Handle gamepad input
+        /// </summary>
+        /// <remarks>May be overridden in child class</remarks>
+        /// <param name="gameTime">GameTime object</param>
         protected virtual void HandleGamePad(GameTime gameTime)
         {
-
-        } 
-
-
-        protected virtual void SubscribeToEvents()
-        {
-
         }
 
-        protected virtual void HandleEvent(EventData eventData)
-        {
+        #endregion Handle User Input
 
-        }
-        #endregion
+        #endregion Constructors & Core
     }
 }

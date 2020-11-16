@@ -1,5 +1,6 @@
 ﻿using GDLibrary.Actors;
 using GDLibrary.Enums;
+using GDLibrary.GameComponents;
 using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
@@ -10,7 +11,7 @@ namespace GDLibrary.Managers
     /// <summary>
     /// Stores the Camera3D objects used within the game and provides methods to toggle/cycle/set active camera
     /// </summary>
-    public class CameraManager<T> : GameComponent where T : IActor
+    public class CameraManager<T> : PausableGameComponent where T : IActor
     {
         #region Fields
 
@@ -70,7 +71,7 @@ namespace GDLibrary.Managers
 
         #region Constructors & Core
 
-        public CameraManager(Game game) : base(game)
+        public CameraManager(Game game, StatusType statusType) : base(game, statusType)
         {
             list = new List<Camera3D>();
         }
@@ -111,21 +112,15 @@ namespace GDLibrary.Managers
             activeCameraIndex %= list.Count;
         }
 
-        /// <summary>
-        /// Updates all cameras in the list
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public override void Update(GameTime gameTime)
+        protected override void ApplyUpdate(GameTime gameTime)
         {
             foreach (Camera3D camera in list)
             {
                 if ((camera.StatusType & StatusType.Update) == StatusType.Update)
-                {
                     camera.Update(gameTime);
-                }
             }
 
-            base.Update(gameTime);
+            // base.ApplyUpdate(gameTime);
         }
 
         #endregion Constructors & Core
