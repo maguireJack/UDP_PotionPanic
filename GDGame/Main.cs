@@ -67,6 +67,7 @@ namespace GDGame
         private PhysicsManager physicsManager;
         private Viewport halfSizeViewport;
         private RenderManager renderManager;
+        private PersistantData persistantData;
 
         #endregion Fields
 
@@ -228,7 +229,7 @@ namespace GDGame
             objectManager = new ObjectManager(this, StatusType.Update, 6, 10);
 
             //render
-            renderManager = new RenderManager(this, StatusType.Drawn, ScreenLayoutType.Multi,
+            renderManager = new RenderManager(this, StatusType.Drawn, ScreenLayoutType.Single,
                 objectManager, cameraManager);
 
             //physicsManager = new PhysicsManager(this, StatusType.Update, -9.81f * Vector3.UnitY);
@@ -685,6 +686,8 @@ namespace GDGame
                 GameConstants.MoveKeys);
             Player player = new Player(objectManager, keyboardManager, gamePadManager, playerObject, controller);
             objectManager.Add(player);
+
+            persistantData = new PersistantData();
         }
 
         private void InitVertices()
@@ -874,6 +877,7 @@ namespace GDGame
 
             if (keyboardManager.IsFirstKeyPress(Keys.Escape))
             {
+                persistantData.SaveData();
                 Exit();
             }
 

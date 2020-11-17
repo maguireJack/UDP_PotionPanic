@@ -6,6 +6,7 @@ using GDLibrary.Managers;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDGame.MyGame.Constants;
+using GDLibrary.Events;
 
 namespace GDGame.MyGame.Controllers
 {
@@ -16,7 +17,7 @@ namespace GDGame.MyGame.Controllers
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
         private Camera3D camera3D;
-        private float moveSpeed, rotationSpeed;
+        private float moveSpeed, rotationSpeed, originalMoveSpeed;
         private Keys[][] moveKeys;
         private bool cameraMoveConstraint;
 
@@ -34,13 +35,23 @@ namespace GDGame.MyGame.Controllers
             this.keyboardManager = keyboardManager;
             this.mouseManager = mouseManager;
             this.camera3D = camera3D;
-            this.moveSpeed = moveSpeed;
+            this.moveSpeed = this.originalMoveSpeed = moveSpeed;
             this.rotationSpeed = rotationSpeed;
             this.moveKeys = moveKeys;
             cameraMoveConstraint = false;
+
+            EventDispatcher.Subscribe(EventCategoryType.Upgrade, HandleEvent);
         }
 
         #endregion
+
+        private void HandleEvent(EventData eventData)
+        {
+            if (eventData.EventActionType == EventActionType.MoveSpeedUp)
+            {
+                moveSpeed = originalMoveSpeed + (((float)eventData.Parameters[0]) / 100f * originalMoveSpeed);
+            }
+        }
 
         public void Update(GameTime gameTime, IActor actor)
         {

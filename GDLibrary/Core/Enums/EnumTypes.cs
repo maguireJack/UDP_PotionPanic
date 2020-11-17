@@ -93,7 +93,8 @@
         Menu,
         UI,
         Object,
-        Interactable
+        Interactable,
+        Upgrade
         //add more here...
     }
 
@@ -152,8 +153,12 @@
 
         //sent to interactable actors to prevent them from being interacted with
         OnLock,
-        OnUnlock
+        OnUnlock,
 
+        //sent to actors that can be upgraded
+        MoveSpeedUp,
+        SpeedUp,
+        ValueUp
         //add more here...
     }
 

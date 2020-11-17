@@ -23,7 +23,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\Events\Dispatcher\EventDispatcher_OLD.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Events\Handlers\EventHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Events\Parameters\EventData.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core\Events\EventDispatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Drawn\DrawnActor3D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Drawn\ModelObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Drawn\MoveableObject.cs" />

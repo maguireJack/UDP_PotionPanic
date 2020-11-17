@@ -1,8 +1,10 @@
 ﻿using GDGame.MyGame.Enums;
 using GDGame.MyGame.Objects;
+using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -72,6 +74,27 @@ namespace GDGame.MyGame.Constants
 
         public static readonly Vector3 cauldronPos = new Vector3(100, 0, 100);
         public static readonly Vector3 binPos = new Vector3(-100, 0, 100);
+
+        #endregion
+
+        #region Upgrades
+
+        //Name, Upgrade Action, { TierNum, Cost, Value } - value = value to pass via event
+        public static readonly Upgrade upgradeSpeed = new Upgrade("Move Speed", EventActionType.MoveSpeedUp,
+        new Dictionary<int, Tuple<int, float>>(){ 
+            { 1, new Tuple<int, float>(100, 10) },
+            { 2, new Tuple<int, float>(150, 25) },
+            { 3, new Tuple<int, float>(250, 50) }
+        });
+
+        public static readonly Upgrade upgradePotionValue = new Upgrade("Potion Value", EventActionType.ValueUp,
+        new Dictionary<int, Tuple<int, float>>(){
+            { 1, new Tuple<int, float>(100, 20) },
+            { 2, new Tuple<int, float>(200, 50) },
+            { 3, new Tuple<int, float>(400, 100) }
+        });
+
+        public static readonly Upgrade[] upgrades = { upgradeSpeed, upgradePotionValue };
 
         #endregion
 

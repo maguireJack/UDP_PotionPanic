@@ -41,7 +41,7 @@ namespace GDLibrary.Managers
 
         private void DrawMulti(GameTime gameTime)
         {
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 4; i++)
             {
                 DrawSingle(gameTime, cameraManager[i]);
             }
