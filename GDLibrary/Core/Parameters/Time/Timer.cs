@@ -9,6 +9,7 @@ namespace GDLibrary.Core.Parameters.Time
         private double timerLengthMS;
         private double startTime;
         private double elapsedTime;
+        private bool isRunning;
 
         #endregion
 
@@ -20,6 +21,11 @@ namespace GDLibrary.Core.Parameters.Time
             set { timerLengthMS = value; }
         }
 
+        public bool IsRunning
+        {
+            get { return isRunning; }
+        }
+
         #endregion
 
         #region Constructors
@@ -27,6 +33,7 @@ namespace GDLibrary.Core.Parameters.Time
         public Timer(double timerLengthMS)
         {
             this.timerLengthMS = timerLengthMS;
+            isRunning = false;
         }
 
         #endregion
@@ -35,11 +42,13 @@ namespace GDLibrary.Core.Parameters.Time
         {
             startTime = gameTime.TotalGameTime.TotalMilliseconds;
             elapsedTime = 0;
+            isRunning = true;
         }
 
         public bool IsDone(GameTime gameTime)
         {
             elapsedTime = gameTime.TotalGameTime.TotalMilliseconds - startTime;
+            isRunning = false;
             return elapsedTime >= timerLengthMS;
         }
     }
