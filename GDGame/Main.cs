@@ -90,7 +90,7 @@ namespace GDGame
         private void InitDebug()
         {
             InitDebugInfo(false);
-            InitializeDebugCollisionSkinInfo(false);
+            InitializeDebugCollisionSkinInfo(true);
         }
 
         private void InitDebugInfo(bool bEnable)
@@ -491,7 +491,7 @@ namespace GDGame
                 effectParameters, cauldronModel); 
 
             Cauldron cauldron = new Cauldron(collidableObject, "Cauldron", GameConstants.defualtInteractionDist);
-            cauldron.AddPrimitive(new Sphere(transform3D.Translation, 10), new MaterialProperties(0.2f, 0.8f, 0.7f));
+            cauldron.AddPrimitive(new Sphere(transform3D.Translation, 60), new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             objectManager.Add(cauldron);
 
@@ -514,7 +514,7 @@ namespace GDGame
                 effectParameters, box);
 
             Bin bin = new Bin(collidableObject, "Bin", GameConstants.defualtInteractionDist);
-            bin.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale),
+            bin.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             objectManager.Add(bin);

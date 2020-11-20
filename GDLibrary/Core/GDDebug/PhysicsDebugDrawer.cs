@@ -122,7 +122,8 @@ namespace GDLibrary.Debug
             {
                 Vector3 v = vertexData[vertexData.Count - 1].Position;
                 vertexData.Add(new VertexPositionColor(v, color));
-                vertexData.Add(new VertexPositionColor(shape[0].Position, color));
+                if(shape.Length > 0)
+                    vertexData.Add(new VertexPositionColor(shape[0].Position, color));
             }
 
             foreach (VertexPositionColor vps in shape)
