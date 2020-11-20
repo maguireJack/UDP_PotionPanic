@@ -49,7 +49,7 @@ namespace GDGame
         private float worldScale = 3000;
 
         private VertexPositionColorTexture[] vertices;
-        private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, crate, wizardTexture, mushroomTexture, redRockTexture, redPotionTexture;
+        private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, crate, wizardTexture, mushroomTexture, redRockTexture, redPotionTexture, spacekey;
 
         //font used to show debug info
         private SpriteFont debugFont;
@@ -182,11 +182,12 @@ namespace GDGame
         {
             //create the camera curve to be applied to the track controller
             Transform3DCurve curveA = new Transform3DCurve(CurveLoopType.Oscillate); //experiment with other CurveLoopTypes
-            curveA.Add(new Vector3(0, 5, 100), -Vector3.UnitZ, Vector3.UnitY, 0); //start
-            curveA.Add(new Vector3(0, 5, 80), new Vector3(1, 0, -1), Vector3.UnitY, 1000); //start position
-            curveA.Add(new Vector3(0, 5, 50), -Vector3.UnitZ, Vector3.UnitY, 3000); //start position
-            curveA.Add(new Vector3(0, 5, 20), new Vector3(-1, 0, -1), Vector3.UnitY, 4000); //start position
-            curveA.Add(new Vector3(0, 5, 10), -Vector3.UnitZ, Vector3.UnitY, 6000); //start position
+            curveA.Add(new Vector3(-500, 1000, 200), -Vector3.UnitY, Vector3.UnitY, 0); //start
+            curveA.Add(new Vector3(-500, 250, 400), -Vector3.UnitY, Vector3.UnitY, 1000); //start position
+            curveA.Add(new Vector3(-500, 100, 600), -Vector3.UnitZ, Vector3.UnitY, 3000); //start position
+            curveA.Add(new Vector3(-500, 50, 800), -Vector3.UnitZ, Vector3.UnitY, 4000); //start position
+            curveA.Add(new Vector3(-500, 50, 1000), -Vector3.UnitZ, Vector3.UnitY, 6000); //start position
+            //curveA.Add(new Vector3(-500, 50, 2500), -Vector3.UnitZ, Vector3.UnitY, 6000); //start position
 
             //add to the dictionary
             transform3DCurveDictionary.Add("headshake1", curveA);
@@ -340,17 +341,17 @@ namespace GDGame
             #region Camera - Curve3D
 
             //notice that it doesnt matter what translation, look, and up are since curve will set these
-            //transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, Vector3.Zero);
+            transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, Vector3.Zero);
 
-            //camera3D = new Camera3D("curve camera - main arena",
-            //  ActorType.Camera3D, StatusType.Update, transform3D,
-            //  ProjectionParameters.StandardDeepSixteenTen, viewPort);
+            camera3D = new Camera3D("curve camera - main arena",
+              ActorType.Camera3D, StatusType.Update, transform3D,
+              ProjectionParameters.StandardDeepSixteenTen, viewPort);
 
-            //camera3D.ControllerList.Add(new Curve3DController("main arena - fly through - 1",
-            //    ControllerType.Curve,
-            //            transform3DCurveDictionary["headshake1"])); //use the curve dictionary to retrieve a transform3DCurve by id
+            camera3D.ControllerList.Add(new Curve3DController("main arena - fly through - 1",
+                ControllerType.Curve,
+                        transform3DCurveDictionary["headshake1"])); //use the curve dictionary to retrieve a transform3DCurve by id
 
-            //cameraManager.Add(camera3D);
+            cameraManager.Add(camera3D);
 
             #endregion Camera - Curve3D
 
@@ -395,6 +396,9 @@ namespace GDGame
 
             grass
               = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/grass1");
+
+            spacekey
+                = Content.Load<Texture2D>("Assets/Textures/Props/Crates/spacekey");
 
             crate
                 = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
@@ -485,6 +489,20 @@ namespace GDGame
             Cauldron cauldron = new Cauldron(modelObject, "Cauldron", GameConstants.defualtInteractionDist);
 
             objectManager.Add(cauldron);
+
+
+            /////////Spacebar Helper
+            //transform3D = new Transform3D(GameConstants.cauldronPos,
+            //                new Vector3(0,0,0),
+            //                new Vector3(.14f, .01f, .14f),
+            //                -Vector3.UnitZ,
+            //                Vector3.UnitY);
+            //effectParameters = new EffectParameters(modelEffect,
+            //                   crate,
+            //                   Color.Yellow,
+            //                   1);
+            //ModelObject helper = new ModelObject("helper1", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, grass);
+            //objectManager.Add(helper);
 
 
             ////////Bin
@@ -775,6 +793,18 @@ namespace GDGame
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
             primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
+            objectManager.Add(primitiveObject);
+
+
+            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            //  primitiveObject.StatusType = StatusType.Off; //Experiment of the effect of StatusType
+            primitiveObject.ID = "spacebar helper";
+            primitiveObject.EffectParameters.Texture = spacekey;
+            primitiveObject.Transform3D.Scale = new Vector3(70, 35, 0);
+            primitiveObject.StatusType = StatusType.Off;
+            primitiveObject.ActorType = ActorType.Decorator;
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(90, 180, 0);
+            primitiveObject.Transform3D.Translation = GameConstants.cauldronPos + new Vector3(0, 70, 0); ;
             objectManager.Add(primitiveObject);
 
             //left

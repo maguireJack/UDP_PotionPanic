@@ -223,6 +223,19 @@ namespace GDLibrary.Managers
             return list;
         }
 
+        public DrawnActor3D GetActorByID(String ID)
+        {
+            
+            foreach (DrawnActor3D actor in opaqueList)
+            {
+                if (actor.ID == ID)
+                {
+                    return actor;
+                }
+            }
+            return null;
+        }
+
         public int ListSize()
         {
             return opaqueList.Count + transparentList.Count;

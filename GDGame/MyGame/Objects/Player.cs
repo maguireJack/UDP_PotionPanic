@@ -21,6 +21,8 @@ namespace GDGame.MyGame.Objects
         private GamePadManager gamePadManager;
         private HandHeldPickup handItem;
         private List<DrawnActor3D> interactableList;
+        private List<DrawnActor3D> helperList;
+        private DrawnActor3D helper;
         private int lastListSize;
         //inventory
 
@@ -74,6 +76,7 @@ namespace GDGame.MyGame.Objects
                 //but going to wait to see what Niall does before I update this.
                 lastListSize = objectManager.ListSize();
                 interactableList = objectManager.GetActorList(ActorType.Interactable);
+                helperList = objectManager.GetActorList(ActorType.Decorator);
             }
         }
 
@@ -89,6 +92,7 @@ namespace GDGame.MyGame.Objects
             {
                 InteractableActor iActor = actor as InteractableActor;
 
+                
                 //If the actor is locked, ignore it
                 if (iActor.Locked)
                     continue;
@@ -98,7 +102,30 @@ namespace GDGame.MyGame.Objects
                 {
                     closestDistance = distance;
                     closestActor = iActor;
+
+                    helper = objectManager.GetActorByID("spacebar helper");
+                    
+
+                    if (closestActor.ID == "Cauldron")
+                    {
+
+                        helper.StatusType = StatusType.Drawn | StatusType.Update;
+
+                    }
+                    else
+                    {
+                        if (closestDistance >= 10)
+                        {
+                            helper.StatusType = StatusType.Off;
+                        }
+                    }
+                    
+                    
                 }
+                
+
+
+
             }
 
             //If the player is in range of the interactable objects
@@ -119,6 +146,7 @@ namespace GDGame.MyGame.Objects
                     if (iActor is HandHeldPickup)
                     {
                         handItem = iActor as HandHeldPickup;
+
                         if (handItem.PickupType == Enums.PickupType.Potion)
                         {
                             //if potion, unlock the cauldron
@@ -128,7 +156,10 @@ namespace GDGame.MyGame.Objects
                     }
                     //else actor is an ingredient giver, place item in hand
                     else if (iActor is IngredientGiver)
+                    {
                         handItem = ((IngredientGiver)iActor).TakeItem();
+                    }
+
                 }
                 //If our hand is not empty and actor is interactable container, transfer item
                 else if (iActor is IContainerInteractable)

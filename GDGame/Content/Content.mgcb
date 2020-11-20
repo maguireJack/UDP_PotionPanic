@@ -354,6 +354,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Props/Crates/crate5.jpg
 
+#begin Assets/Textures/Props/Crates/spacekey.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Props/Crates/spacekey.png
+
 #begin Assets/Textures/Props/Ingredients/MushRoom1.png
 /importer:TextureImporter
 /processor:TextureProcessor
