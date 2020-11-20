@@ -702,7 +702,18 @@ namespace GDGame
                 GameConstants.playerMoveSpeed,
                 GameConstants.playerRotateSpeed,
                 GameConstants.MoveKeys);
-            Player player = new Player(objectManager, keyboardManager, gamePadManager, playerObject, controller);
+
+            //interact helper
+            PrimitiveObject interactHelper = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            interactHelper.ID = "spacebar helper";
+            interactHelper.EffectParameters.Texture = spacekey;
+            interactHelper.Transform3D.Scale = new Vector3(70, 35, 0);
+            interactHelper.StatusType = StatusType.Off;
+            interactHelper.ActorType = ActorType.Decorator;
+            interactHelper.Transform3D.RotationInDegrees = new Vector3(90, 180, 0);
+            objectManager.Add(interactHelper);
+
+            Player player = new Player(objectManager, keyboardManager, gamePadManager, playerObject, controller, interactHelper);
             objectManager.Add(player);
 
             persistantData = new PersistantData();
@@ -793,18 +804,6 @@ namespace GDGame
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
             primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
-            objectManager.Add(primitiveObject);
-
-
-            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
-            //  primitiveObject.StatusType = StatusType.Off; //Experiment of the effect of StatusType
-            primitiveObject.ID = "spacebar helper";
-            primitiveObject.EffectParameters.Texture = spacekey;
-            primitiveObject.Transform3D.Scale = new Vector3(70, 35, 0);
-            primitiveObject.StatusType = StatusType.Off;
-            primitiveObject.ActorType = ActorType.Decorator;
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(90, 180, 0);
-            primitiveObject.Transform3D.Translation = GameConstants.cauldronPos + new Vector3(0, 70, 0); ;
             objectManager.Add(primitiveObject);
 
             //left

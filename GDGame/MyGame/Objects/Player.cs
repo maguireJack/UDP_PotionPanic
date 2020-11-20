@@ -1,5 +1,6 @@
 ﻿using GDGame.MyGame.Actors;
 using GDGame.MyGame.Constants;
+using GDGame.MyGame.Enums;
 using GDGame.MyGame.Interfaces;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
@@ -9,6 +10,7 @@ using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GDGame.MyGame.Objects
 {
@@ -19,10 +21,9 @@ namespace GDGame.MyGame.Objects
         private ObjectManager objectManager;
         private KeyboardManager keyBoardManager;
         private GamePadManager gamePadManager;
+        private PrimitiveObject helper;
         private HandHeldPickup handItem;
         private List<DrawnActor3D> interactableList;
-        private List<DrawnActor3D> helperList;
-        private DrawnActor3D helper;
         private int lastListSize;
         //inventory
 
@@ -48,12 +49,13 @@ namespace GDGame.MyGame.Objects
         #region Constructors
 
         public Player(ObjectManager objectManager, KeyboardManager keyboardManager, GamePadManager gamePadManager,
-            ModelObject modelObject, IController controller) :
+            ModelObject modelObject, IController controller, PrimitiveObject helper) :
             base(modelObject, controller)
         {
             this.objectManager = objectManager;
             this.keyBoardManager = keyboardManager;
             this.gamePadManager = gamePadManager;
+            this.helper = helper;
             this.handItem = null;
             this.lastListSize = 0;
         }
@@ -76,7 +78,7 @@ namespace GDGame.MyGame.Objects
                 //but going to wait to see what Niall does before I update this.
                 lastListSize = objectManager.ListSize();
                 interactableList = objectManager.GetActorList(ActorType.Interactable);
-                helperList = objectManager.GetActorList(ActorType.Decorator);
+                //helperList = objectManager.GetActorList(ActorType.Decorator);
             }
         }
 
@@ -102,39 +104,55 @@ namespace GDGame.MyGame.Objects
                 {
                     closestDistance = distance;
                     closestActor = iActor;
-
-                    helper = objectManager.GetActorByID("spacebar helper");
-                    
-
-                    if (closestActor.ID == "Cauldron")
-                    {
-
-                        helper.StatusType = StatusType.Drawn | StatusType.Update;
-
-                    }
-                    else
-                    {
-                        if (closestDistance >= 10)
-                        {
-                            helper.StatusType = StatusType.Off;
-                        }
-                    }
-                    
-                    
                 }
-                
-
-
-
             }
 
             //If the player is in range of the interactable objects
             if (closestActor != null && closestDistance <= closestActor.InteractDistance)
+            {
+                helper.Transform3D.Translation = closestActor.Transform3D.Translation;
+                if (DisplayHelper(closestActor))
+                {
+                    helper.Transform3D.Translation += new Vector3(0, 75, 0);
+                    helper.StatusType = StatusType.Drawn;
+                }
+                else helper.StatusType = StatusType.Off;
+
                 InteractWith(closestActor);
+            }
+            else helper.StatusType = StatusType.Off;
+        }
+
+        public bool DisplayHelper(InteractableActor iActor)
+        {
+            if (handItem == null)
+            {
+                if (iActor is HandHeldPickup || iActor is IngredientGiver)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if(iActor.Name.Equals("Bin"))
+                {
+                    return true;
+                }
+                if (handItem.PickupType == PickupType.Ingredient)
+                {
+                    if (iActor is Cauldron)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private void InteractWith(InteractableActor iActor)
         {
+
             //check if the interact key is pressed
             if (keyBoardManager.IsAnyKeyPressedFirstTime(GameConstants.playerInteractKeys) ||
                 gamePadManager.IsAnyButtonPressed(PlayerIndex.One, GameConstants.playerInteractButtons))
@@ -168,6 +186,7 @@ namespace GDGame.MyGame.Objects
                     //If deposit was successful, remove item
                     if (container.Deposit(handItem))
                     {
+                        interactableList.Remove(handItem);
                         EventDispatcher.Publish(new EventData(EventCategoryType.Object,
                             EventActionType.OnRemoveActor, new object[]{ handItem }));
                         handItem = null;
