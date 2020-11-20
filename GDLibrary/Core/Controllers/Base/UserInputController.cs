@@ -121,9 +121,12 @@ namespace GDLibrary
         public override void Update(GameTime gameTime, IActor actor)
         {
             Actor3D parentActor = actor as Actor3D;
-            HandleMouseInput(gameTime, parentActor);
-            HandleKeyboardInput(gameTime, parentActor);
-            HandleGamePadInput(gameTime, parentActor);
+            if (parentActor != null)
+            {
+                HandleMouseInput(gameTime, parentActor);
+                HandleKeyboardInput(gameTime, parentActor);
+                HandleGamePadInput(gameTime, parentActor);
+            }
             base.Update(gameTime, actor);
         }
 

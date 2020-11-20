@@ -55,7 +55,7 @@ namespace GDGame.MyGame.Constants
 
         #region Player
 
-        public static readonly float playerMoveSpeed = 0.1f;
+        public static readonly float playerMoveSpeed = 2f;
         public static readonly float playerRotateSpeed = 4f;
 
         public static readonly float playerCamOffsetY = 300;

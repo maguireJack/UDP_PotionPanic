@@ -19,8 +19,8 @@ namespace GDGame.MyGame.Objects
 
         #region Constructors
 
-        public Cauldron(ModelObject modelObject, string name, float interactDistance) :
-            base(modelObject, name, interactDistance)
+        public Cauldron(CollidableObject collidableObject, string name, float interactDistance) :
+            base(collidableObject, name, interactDistance)
         {
             inventory = new Recipe();
             EventDispatcher.Subscribe(EventCategoryType.Interactable, HandleEvent);

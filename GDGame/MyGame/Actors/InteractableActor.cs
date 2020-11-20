@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.MyGame.Actors
 {
-    public abstract class InteractableActor : ModelObject
+    public abstract class InteractableActor : CollidableObject
     {
         #region Fields
 

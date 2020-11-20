@@ -7,10 +7,12 @@ using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDGame.MyGame.Constants;
 using GDLibrary.Events;
+using GDLibrary.Controllers;
+using System.Diagnostics;
 
 namespace GDGame.MyGame.Controllers
 {
-    public class ThirdPersonPlayerController : IController
+    public class ThirdPersonPlayerController : Controller
     {
         #region Fields
 
@@ -25,12 +27,13 @@ namespace GDGame.MyGame.Controllers
 
         #region Constructors
 
-        public ThirdPersonPlayerController(KeyboardManager keyboardManager,
+        public ThirdPersonPlayerController(string id, ControllerType controllerType,
+            KeyboardManager keyboardManager,
             MouseManager mouseManager,
             Camera3D camera3D,
             float moveSpeed, float rotationSpeed,
-            Keys[][] moveKeys
-            )
+            Keys[][] moveKeys)
+            : base (id, controllerType)
         {
             this.keyboardManager = keyboardManager;
             this.mouseManager = mouseManager;
@@ -53,7 +56,7 @@ namespace GDGame.MyGame.Controllers
             }
         }
 
-        public void Update(GameTime gameTime, IActor actor)
+        public override void Update(GameTime gameTime, IActor actor)
         {
             //checks if controller is connected
             GamePadCapabilities capabilities = GamePad.GetCapabilities(PlayerIndex.One);
@@ -72,6 +75,8 @@ namespace GDGame.MyGame.Controllers
                 }
                 HandleCameraFollow(gameTime, parent);
             }
+
+            base.Update(gameTime, actor);
         }
 
         private void HandleControlerMovement(GameTime gameTime, Actor3D parent, GamePadCapabilities capabilities)
@@ -114,7 +119,7 @@ namespace GDGame.MyGame.Controllers
 
         private void HandleMovement(GameTime gameTime, Actor3D parent)
         {
-
+            CharacterObject character = parent as CharacterObject;
             Vector3 moveVector = Vector3.Zero;
 
             //Move forward
@@ -130,9 +135,11 @@ namespace GDGame.MyGame.Controllers
             else if (keyboardManager.IsAnyKeyPressed(moveKeys, 3))
                     moveVector.X += moveSpeed;
 
+            if(moveVector == Vector3.Zero)
+                character.CharacterBody.DesiredVelocity = Vector3.Zero;
 
             parent.Transform3D.RotateAroundUpBy(CalculateRotation(parent, moveVector) * rotationSpeed);
-            parent.Transform3D.TranslateBy(moveVector * gameTime.ElapsedGameTime.Milliseconds);
+            character.CharacterBody.Velocity += moveVector * gameTime.ElapsedGameTime.Milliseconds;
         }
 
         private float CalculateRotation(Actor3D parent, Vector3 moveVector)

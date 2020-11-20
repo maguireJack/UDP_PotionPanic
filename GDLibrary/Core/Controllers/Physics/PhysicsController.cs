@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using JigLibX.Physics;
+﻿using JigLibX.Physics;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
 //Physics - Step 3
@@ -42,7 +42,6 @@ namespace GDLibrary.Controllers
         #region Inherited from Controller
         public override void UpdateController(float elapsedTime)
         {
-            /*
             // Apply pending forces
             while (forces.Count > 0)
             {
@@ -82,7 +81,6 @@ namespace GDLibrary.Controllers
                         break;
                 }
             }
-            */
         }
         #endregion Inherited from Controller
     }

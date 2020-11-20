@@ -11,10 +11,13 @@ namespace GDLibrary.GameComponents
     public class PausableGameComponent : GameComponent
     {
         #region Fields
+
         private StatusType statusType;
+
         #endregion Fields
 
         #region Properties
+
         public StatusType StatusType
         {
             get
@@ -26,9 +29,11 @@ namespace GDLibrary.GameComponents
                 this.statusType = value;
             }
         }
+
         #endregion Properties
 
         #region Constructors & Core
+
         public PausableGameComponent(Game game, StatusType statusType)
            : base(game)
         {
@@ -92,6 +97,7 @@ namespace GDLibrary.GameComponents
         protected virtual void HandleGamePad(GameTime gameTime)
         {
         }
+
         #endregion Constructors & Core
     }
 }

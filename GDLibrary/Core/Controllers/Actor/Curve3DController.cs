@@ -6,6 +6,9 @@ using Microsoft.Xna.Framework;
 
 namespace GDLibrary.Controllers
 {
+    /// <summary>
+    /// Moves a target actor along a pre-defined curve defined by transformCurve3D
+    /// </summary>
     public class Curve3DController : Controller
     {
         #region Statics

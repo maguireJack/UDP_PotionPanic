@@ -10,6 +10,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
   <ItemGroup>
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
   </ItemGroup>
@@ -23,10 +29,6 @@
   <ItemGroup>
     <Folder Include="MyGame\Actors\" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="JigLibX">
-      <HintPath>..\GDLibrary\Dependencies\Physics\JigLibX.dll</HintPath>
-    </Reference>
-  </ItemGroup>
   <Import Project="..\GDLibrary\GDLibrary.projitems" Label="Shared" />
+  <Import Project="..\JigLibX\JigLibX.projitems" Label="Shared" />
 </Project>

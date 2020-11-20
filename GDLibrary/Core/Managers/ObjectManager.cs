@@ -21,22 +21,25 @@ namespace GDLibrary.Managers
         private List<DrawnActor3D> opaqueList, transparentList;
         private int idCount;
 
-        public IEnumerable<DrawnActor3D> OpaqueList
+        #endregion Fields
+
+        #region Properties
+        public List<DrawnActor3D> OpaqueList
         {
             get
             {
                 return opaqueList;
             }
         }
-        public IEnumerable<DrawnActor3D> TransparentList
+
+        public List<DrawnActor3D> TransparentList
         {
             get
             {
                 return transparentList;
             }
         }
-
-        #endregion Fields
+        #endregion Properties
 
         #region Constructors & Core
 
@@ -49,6 +52,7 @@ namespace GDLibrary.Managers
         }
 
         #region Handle Events
+
         protected override void SubscribeToEvents()
         {
             //remove
@@ -89,8 +93,10 @@ namespace GDLibrary.Managers
         {
             if (eventData.EventActionType == EventActionType.OnRemoveActor)
             {
-                DrawnActor3D removeObject = eventData.Parameters[0] as DrawnActor3D;
-                opaqueList.Remove(removeObject);
+                //  DrawnActor3D removeObject = eventData.Parameters[0] as DrawnActor3D;
+                opaqueList.Remove(eventData.Parameters[0] as DrawnActor3D);
+
+                //REFACTOR - NMCG - remove collision surface from physicsManager
             }
             else if (eventData.EventActionType == EventActionType.OnAddActor)
             {
@@ -100,11 +106,8 @@ namespace GDLibrary.Managers
                     Add(modelObject);
                 }
             }
-
-            //example predicate
-            //RemoveFirstIf((drawnActor3D) =>
-            //(drawnActor3D.ActorType == ActorType.Pickup && drawnActor3D.EffectParameters.Alpha == 1));
         }
+
         #endregion Handle Events
 
         /// <summary>
@@ -115,9 +118,13 @@ namespace GDLibrary.Managers
         {
             idCount++;
             if (actor.EffectParameters.Alpha < 1)
+            {
                 transparentList.Add(actor);
+            }
             else
+            {
                 opaqueList.Add(actor);
+            }
         }
 
         /// <summary>
@@ -173,15 +180,43 @@ namespace GDLibrary.Managers
             foreach (DrawnActor3D actor in opaqueList)
             {
                 if ((actor.StatusType & StatusType.Update) == StatusType.Update)
+                {
                     actor.Update(gameTime);
+                }
             }
 
             foreach (DrawnActor3D actor in transparentList)
             {
                 if ((actor.StatusType & StatusType.Update) == StatusType.Update)
+                {
                     actor.Update(gameTime);
+                }
             }
         }
+
+        ///// <summary>
+        ///// Called to draw the lists of actors
+        ///// </summary>
+        ///// <see cref="PausableDrawableGameComponent.Draw(GameTime)"/>
+        ///// <param name="gameTime">GameTime object</param>
+        //protected override void ApplyDraw(GameTime gameTime)
+        //{
+        //    foreach (DrawnActor3D actor in opaqueList)
+        //    {
+        //        if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
+        //        {
+        //            actor.Draw(gameTime, cameraManager.ActiveCamera, GraphicsDevice);
+        //        }
+        //    }
+
+        //    foreach (DrawnActor3D actor in transparentList)
+        //    {
+        //        if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
+        //        {
+        //            actor.Draw(gameTime, cameraManager.ActiveCamera, GraphicsDevice);
+        //        }
+        //    }
+        //}
 
         #endregion Constructors & Core
 
@@ -225,7 +260,7 @@ namespace GDLibrary.Managers
 
         public DrawnActor3D GetActorByID(String ID)
         {
-            
+
             foreach (DrawnActor3D actor in opaqueList)
             {
                 if (actor.ID == ID)

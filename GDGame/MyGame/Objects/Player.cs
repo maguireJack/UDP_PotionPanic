@@ -8,13 +8,11 @@ using GDLibrary.Events;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace GDGame.MyGame.Objects
 {
-    public class Player : MoveableObject
+    public class Player : CharacterObject
     {
         #region Fields
 
@@ -48,9 +46,23 @@ namespace GDGame.MyGame.Objects
 
         #region Constructors
 
-        public Player(ObjectManager objectManager, KeyboardManager keyboardManager, GamePadManager gamePadManager,
-            ModelObject modelObject, IController controller, PrimitiveObject helper) :
-            base(modelObject, controller)
+        //public Player(ObjectManager objectManager, KeyboardManager keyboardManager, GamePadManager gamePadManager,
+        //    ModelObject modelObject, IController controller, PrimitiveObject helper) :
+        //    base(modelObject, controller)
+        //{
+        //    this.objectManager = objectManager;
+        //    this.keyBoardManager = keyboardManager;
+        //    this.gamePadManager = gamePadManager;
+        //    this.helper = helper;
+        //    this.handItem = null;
+        //    this.lastListSize = 0;
+        //}
+
+        public Player(ModelObject modelObject,
+            float radius, float height, float accelerationRate, float decelerationRate,
+            ObjectManager objectManager, KeyboardManager keyboardManager, GamePadManager gamePadManager,
+            IController controller, PrimitiveObject helper)
+            : base(modelObject, radius, height, accelerationRate, decelerationRate)
         {
             this.objectManager = objectManager;
             this.keyBoardManager = keyboardManager;
@@ -58,15 +70,17 @@ namespace GDGame.MyGame.Objects
             this.helper = helper;
             this.handItem = null;
             this.lastListSize = 0;
+            ControllerList.Add(controller);
         }
 
         #endregion
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
             FindInteractables();
             UpdateHandItemPos();
+
+            base.Update(gameTime);
         }
 
         private void UpdateInteractableList()

@@ -7,9 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GDGame", "GDGame\GDGame.csp
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "GDLibrary", "GDLibrary\GDLibrary.shproj", "{A0CDBD0E-3A41-42B7-9425-A838BC2C7383}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "JigLibX", "JigLibX\JigLibX.shproj", "{52796A7B-90E4-4E28-81B1-288BA46C5599}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		JigLibX\JigLibX.projitems*{52796a7b-90e4-4e28-81b1-288ba46c5599}*SharedItemsImports = 13
 		GDLibrary\GDLibrary.projitems*{5387615c-7e12-4715-96c5-235005d5b022}*SharedItemsImports = 5
+		JigLibX\JigLibX.projitems*{5387615c-7e12-4715-96c5-235005d5b022}*SharedItemsImports = 5
 		GDLibrary\GDLibrary.projitems*{a0cdbd0e-3a41-42b7-9425-a838bc2c7383}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

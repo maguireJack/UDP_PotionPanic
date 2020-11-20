@@ -12,6 +12,8 @@ using GDLibrary.Factories;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 using GDLibrary.Parameters;
+using JigLibX.Collision;
+using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -82,22 +84,64 @@ namespace GDGame
 
         #endregion Constructors
 
+        #region Debug
+#if DEBUG
+
+        private void InitDebug()
+        {
+            InitDebugInfo(false);
+            InitializeDebugCollisionSkinInfo(false);
+        }
+
+        private void InitDebugInfo(bool bEnable)
+        {
+            if (bEnable)
+            {
+                //create the debug drawer to draw debug info
+                DebugDrawer debugInfoDrawer = new DebugDrawer(this, _spriteBatch, debugFont,
+                    cameraManager, objectManager);
+
+                //set the debug drawer to be drawn AFTER the object manager to the screen
+                debugInfoDrawer.DrawOrder = 2;
+
+                //add the debug drawer to the component list so that it will have its Update/Draw methods called each cycle.
+                Components.Add(debugInfoDrawer);
+            }
+        }
+
+        private void InitializeDebugCollisionSkinInfo(bool bEnable)
+        {
+            if (bEnable)
+            {
+                //show the collision skins
+                PhysicsDebugDrawer physicsDebugDrawer = new PhysicsDebugDrawer(this, StatusType.Update | StatusType.Drawn,
+                    cameraManager, objectManager);
+
+                //set the debug drawer to be drawn AFTER the object manager to the screen
+                physicsDebugDrawer.DrawOrder = 3;
+
+                Components.Add(physicsDebugDrawer);
+
+                //ObjectManager -> Debug -> UIManager -> MenuManager
+            }
+        }
+
+#endif
+        #endregion Debug
+
         #region Initialization - Managers, Cameras, Effects, Textures
 
         protected override void Initialize()
         {
-            #region Demo
-            DemoCurve();
-            DemoViewport();
-            #endregion
-
             //set game title
             Window.Title = "Potion Panic";
 
             //note that we moved this from LoadContent to allow InitDebug to be called in Initialize
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            //create event dispatcher
             InitEventDispatcher();
+
             //managers
             InitManagers();
 
@@ -107,12 +151,15 @@ namespace GDGame
             //resources and effects
             InitVertices();
             InitTextures();
-            InitModels();
             InitFonts();
             InitEffects();
+            InitModels();
 
             //drawn content
             InitDrawnContent();
+
+            //drawn collidable content
+            InitCollidableDrawnContent();
 
             //curves and rails used by cameras
             InitCurves();
@@ -133,15 +180,6 @@ namespace GDGame
             base.Initialize();
         }
 
-        private void InitEventDispatcher()
-        {
-            eventDispatcher = new EventDispatcher(this);
-            Components.Add(eventDispatcher);
-
-            EventDispatcher.Subscribe(EventCategoryType.Pickup, HandleEvent);
-        }
-
-        //TODO Parameters not being passed are textures and modeltype
         private void HandleEvent(EventData eventData)
         {
             if (eventData.EventCategoryType == EventCategoryType.Pickup)
@@ -165,17 +203,10 @@ namespace GDGame
             }
         }
 
-        private void DemoCurve()
+        private void InitEventDispatcher()
         {
-            curve1D = new Curve1D(CurveLoopType.Oscillate);
-            curve1D.Add(100, 2);
-            curve1D.Add(250, 5);
-            curve1D.Add(1500, 8);
-        }
-
-        private void DemoViewport()
-        {
-            halfSizeViewport = new Viewport(250, 50, 300, 400);
+            eventDispatcher = new EventDispatcher(this);
+            Components.Add(eventDispatcher);
         }
 
         private void InitCurves()
@@ -210,6 +241,10 @@ namespace GDGame
 
         private void InitManagers()
         {
+            //physics and CD-CR (moved to top because MouseManager is dependent)
+            physicsManager = new PhysicsManager(this, StatusType.Update, -9.81f * Vector3.UnitY);
+            Components.Add(physicsManager);
+
             //camera
             cameraManager = new CameraManager<Camera3D>(this, StatusType.Update);
             Components.Add(cameraManager);
@@ -218,40 +253,22 @@ namespace GDGame
             keyboardManager = new KeyboardManager(this);
             Components.Add(keyboardManager);
 
+            //mouse
+            mouseManager = new MouseManager(this, true, physicsManager);
+            Components.Add(mouseManager);
+
             //gamepad
             gamePadManager = new GamePadManager(this, 1);
             Components.Add(gamePadManager);
 
-            //mouse
-            mouseManager = new MouseManager(this, false);
-            Components.Add(mouseManager);
-
             //object
             objectManager = new ObjectManager(this, StatusType.Update, 6, 10);
+            Components.Add(objectManager);
 
             //render
             renderManager = new RenderManager(this, StatusType.Drawn, ScreenLayoutType.Single,
                 objectManager, cameraManager);
-
-            //physicsManager = new PhysicsManager(this, StatusType.Update, -9.81f * Vector3.UnitY);
-            //Components.Add(this.physicsManager);
-
             Components.Add(renderManager);
-
-            Components.Add(objectManager);
-        }
-
-        private void InitDebug()
-        {
-            //create the debug drawer to draw debug info
-            DebugDrawer debugDrawer = new DebugDrawer(this, _spriteBatch, debugFont,
-                cameraManager, objectManager);
-
-            //set the debug drawer to be drawn AFTER the object manager to the screen
-            debugDrawer.DrawOrder = 2;
-
-            //add the debug drawer to the component list so that it will have its Update/Draw methods called each cycle.
-            Components.Add(debugDrawer);
         }
 
         private void InitFonts()
@@ -447,28 +464,15 @@ namespace GDGame
 
         #region Initialization - Vertices, Archetypes, Helpers, Drawn Content(e.g. Skybox)
 
-        private void InitDrawnContent() //formerly InitPrimitives
+        private void InitCollidableDrawnContent()
         {
-            //add archetypes that can be cloned
-            InitPrimitiveArchetypes();
+            InitStaticCollidableBoxs();
 
-            //adds origin helper etc
-            InitHelpers();
-
-            //add skybox
-            InitSkybox();
-
-            //add grass plane
-            InitGround();
-
-            //models
-            InitStaticModels();
-            InitIngredientGivers();
+            InitStaticCollidableGround();
         }
 
-        private void InitStaticModels()
+        private void InitStaticCollidableBoxs()
         {
-
             ////////Cauldron
             //transform
             Transform3D transform3D = new Transform3D(GameConstants.cauldronPos,
@@ -482,27 +486,14 @@ namespace GDGame
                 crate,
                 Color.White, 1);
 
-            ModelObject modelObject = new ModelObject("Cauldron", ActorType.Interactable,
+            CollidableObject collidableObject = new CollidableObject("Cauldron", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, cauldronModel);
+                effectParameters, cauldronModel); 
 
-            Cauldron cauldron = new Cauldron(modelObject, "Cauldron", GameConstants.defualtInteractionDist);
+            Cauldron cauldron = new Cauldron(collidableObject, "Cauldron", GameConstants.defualtInteractionDist);
+            cauldron.AddPrimitive(new Sphere(transform3D.Translation, 10), new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             objectManager.Add(cauldron);
-
-
-            /////////Spacebar Helper
-            //transform3D = new Transform3D(GameConstants.cauldronPos,
-            //                new Vector3(0,0,0),
-            //                new Vector3(.14f, .01f, .14f),
-            //                -Vector3.UnitZ,
-            //                Vector3.UnitY);
-            //effectParameters = new EffectParameters(modelEffect,
-            //                   crate,
-            //                   Color.Yellow,
-            //                   1);
-            //ModelObject helper = new ModelObject("helper1", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, grass);
-            //objectManager.Add(helper);
 
 
             ////////Bin
@@ -518,11 +509,13 @@ namespace GDGame
                 crate,
                 Color.White, 1);
 
-            modelObject = new ModelObject("Bin", ActorType.Interactable,
+            collidableObject = new CollidableObject("Bin", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, box);
 
-            Bin bin = new Bin(modelObject, "Bin", GameConstants.defualtInteractionDist);
+            Bin bin = new Bin(collidableObject, "Bin", GameConstants.defualtInteractionDist);
+            bin.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             objectManager.Add(bin);
 
@@ -547,6 +540,57 @@ namespace GDGame
             objectManager.Add(levelObject);
         }
 
+        private void InitStaticCollidableGround()
+        {
+            CollidableObject collidableObject = null;
+            Transform3D transform3D = null;
+            EffectParameters effectParameters = null;
+            Model model = null;
+
+            model = box;
+
+            effectParameters = new EffectParameters(modelEffect,
+                  grass,
+                  Color.White, 1);
+
+            transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, new Vector3(worldScale, 0.001f, worldScale), -Vector3.UnitZ, Vector3.UnitY);
+
+            collidableObject = new CollidableObject("ground", ActorType.CollidableGround,
+                StatusType.Update | StatusType.Drawn,
+                transform3D, effectParameters, model);
+
+            //focus on CDCR specific methods and parameters - plane, sphere, box, capsule
+            collidableObject.AddPrimitive(new JigLibX.Geometry.Plane(transform3D.Up, transform3D.Translation),
+                new MaterialProperties(0.8f, 0.8f, 0.7f));
+
+            collidableObject.Enable(true, 1); //change to false, see what happens.
+
+            objectManager.Add(collidableObject);
+        }
+
+        private void InitDrawnContent() //formerly InitPrimitives
+        {
+            //add archetypes that can be cloned
+            InitPrimitiveArchetypes();
+
+            //adds origin helper etc
+            InitHelpers();
+
+            //add skybox
+            InitSkybox();
+
+            //models
+            InitStaticModels();
+            InitIngredientGivers();
+        }
+
+        #region Static Models
+
+        private void InitStaticModels()
+        {
+
+        }
+
         private void InitIngredientGivers()
         {
             ///////////////////////////////////Red Rock Giver\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -563,13 +607,16 @@ namespace GDGame
                 Color.Red, 1);
 
             //model object
-            ModelObject modelObject = new ModelObject("RedRock", ActorType.Interactable,
+            CollidableObject collidableObject = new CollidableObject("RedRock", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, redRockModel);
 
             //Red rock pickup
-            HandHeldPickup pickup = new HandHeldPickup(modelObject, PickupType.Ingredient, "Red Rock",
+            HandHeldPickup pickup = new HandHeldPickup(collidableObject, PickupType.Ingredient, "Red Rock",
                 GameConstants.defualtInteractionDist, GameConstants.potionRedPos, GameConstants.redSolid);
+
+            pickup.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             ////////////////Giver creation
             /////transform 
@@ -583,12 +630,16 @@ namespace GDGame
                 crate,
                 Color.White, 1);
 
-            modelObject = new ModelObject("RedRockGiver", ActorType.Interactable,
+            collidableObject = new CollidableObject("RedRockGiver", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, box);
 
-            IngredientGiver ingredientGiver = new IngredientGiver(modelObject, "Red Rock Giver",
+            IngredientGiver ingredientGiver = new IngredientGiver(collidableObject, "Red Rock Giver",
                 GameConstants.defualtInteractionDist, pickup);
+
+            ingredientGiver.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
+
             objectManager.Add(ingredientGiver);
 
 
@@ -606,13 +657,16 @@ namespace GDGame
                 Color.White, 1);
 
             //model object
-            modelObject = new ModelObject("BlueFlower", ActorType.Interactable,
+            collidableObject = new CollidableObject("BlueFlower", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, blueFlowerModel);
 
             //Blue flower pickup
-            pickup = new HandHeldPickup(modelObject, PickupType.Ingredient, "Blue Flower",
+            pickup = new HandHeldPickup(collidableObject, PickupType.Ingredient, "Blue Flower",
                 GameConstants.defualtInteractionDist,GameConstants.potionRedPos, GameConstants.blueSolid);
+
+            pickup.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             ////////////////Giver Creation
             //transform 
@@ -626,13 +680,16 @@ namespace GDGame
                 crate,
                 Color.White, 1);
 
-            modelObject = new ModelObject("BlueFlowerGiver", ActorType.Interactable,
+            collidableObject = new CollidableObject("BlueFlowerGiver", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, box);
 
-            ingredientGiver = new IngredientGiver(modelObject, "Blue Flower Giver",
+            ingredientGiver = new IngredientGiver(collidableObject, "Blue Flower Giver",
                 GameConstants.defualtInteractionDist, pickup);
             objectManager.Add(ingredientGiver);
+
+            ingredientGiver.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
 
 
             ///////////////////////////////////Green Herb Giver\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -649,12 +706,15 @@ namespace GDGame
                 Color.White, 1);
 
             //model object
-            modelObject = new ModelObject("GreenMushroom", ActorType.Interactable,
+            collidableObject = new CollidableObject("GreenMushroom", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, greenMushroom);
 
-            pickup = new HandHeldPickup(modelObject, PickupType.Ingredient, "Green Mushroom",
+            pickup = new HandHeldPickup(collidableObject, PickupType.Ingredient, "Green Mushroom",
                 GameConstants.defualtInteractionDist, GameConstants.potionRedPos, GameConstants.greenSolid);
+
+            pickup.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             ////////////////Giver creation
             //transform 
@@ -668,19 +728,25 @@ namespace GDGame
                 crate,
                 Color.White, 1);
 
-            modelObject = new ModelObject("GreenHerbGiver", ActorType.Interactable,
+            collidableObject = new CollidableObject("GreenHerbGiver", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, box);
 
-            ingredientGiver = new IngredientGiver(modelObject, "Green Herb Giver",
+            ingredientGiver = new IngredientGiver(collidableObject, "Green Herb Giver",
                 GameConstants.defualtInteractionDist, pickup);
+
+            ingredientGiver.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
+
             objectManager.Add(ingredientGiver);
         }
+
+        #endregion
 
         private void InitPlayer()
         {
             //transform
-            Transform3D transform3D = new Transform3D(new Vector3(0, 0, 0),
+            Transform3D transform3D = new Transform3D(new Vector3(0, 100, 0),
                                 new Vector3(0, 0, 0),       //rotation
                                 new Vector3(1, 1, 1),        //scale
                                     -Vector3.UnitZ,         //look
@@ -697,7 +763,9 @@ namespace GDGame
                 effectParameters, wizard);
             playerObject.ControllerList.Add(new DriveController("player Controler", ControllerType.FirstPerson,
                 this.keyboardManager, GameConstants.playerMoveSpeed, GameConstants.playerRotateSpeed));
+
             ThirdPersonPlayerController controller = new ThirdPersonPlayerController(
+                "3rd person player controller", ControllerType.ThirdPerson,
                 keyboardManager, mouseManager, cameraManager[0],
                 GameConstants.playerMoveSpeed,
                 GameConstants.playerRotateSpeed,
@@ -713,11 +781,17 @@ namespace GDGame
             interactHelper.Transform3D.RotationInDegrees = new Vector3(90, 180, 0);
             objectManager.Add(interactHelper);
 
-            Player player = new Player(objectManager, keyboardManager, gamePadManager, playerObject, controller, interactHelper);
+            Player player = new Player(playerObject, 20, 1, 2, 2,
+                objectManager, keyboardManager, gamePadManager, controller, interactHelper);
+
+            player.Enable(false, 10);
+
             objectManager.Add(player);
 
             persistantData = new PersistantData();
         }
+
+        #region Vertices, helpers and skybox
 
         private void InitVertices()
         {
@@ -755,7 +829,7 @@ namespace GDGame
                 grass, /*bug*/ Color.White, 1);
 
             IVertexData vertexData = new VertexData<VertexPositionColorTexture>(
-                vertices, PrimitiveType.TriangleStrip, 2);
+                vertices, Microsoft.Xna.Framework.Graphics.PrimitiveType.TriangleStrip, 2);
 
             archetypalTexturedQuad = new PrimitiveObject("original texture quad",
                 ActorType.Decorator,
@@ -768,7 +842,7 @@ namespace GDGame
         private void InitHelpers()
         {
             //to do...add wireframe origin
-            PrimitiveType primitiveType;
+            Microsoft.Xna.Framework.Graphics.PrimitiveType primitiveType;
             int primitiveCount;
 
             //step 1 - vertices
@@ -842,16 +916,7 @@ namespace GDGame
             objectManager.Add(primitiveObject);
         }
 
-        private void InitGround()
-        {
-            //grass
-            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
-            primitiveObject.ID = "grass";
-            primitiveObject.EffectParameters.Texture = grass;
-            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(90, 90, 0);
-            objectManager.Add(primitiveObject);
-        }
+        #endregion
 
         private void InitGraphics(int width, int height)
         {

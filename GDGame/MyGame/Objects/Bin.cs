@@ -12,7 +12,7 @@ namespace GDGame.MyGame.Objects
     {
         #region Constructors
 
-        public Bin(ModelObject modelObject, string name, float interactDistance) :
+        public Bin(CollidableObject modelObject, string name, float interactDistance) :
             base(modelObject, name, interactDistance)
         {
 

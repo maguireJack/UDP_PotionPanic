@@ -6,6 +6,9 @@ using Microsoft.Xna.Framework;
 
 namespace GDLibrary.Controllers
 {
+    /// <summary>
+    /// Moves the target actor along a predefined rail defined by RailParameters
+    /// </summary>
     public class RailController : Controller
     {
         private Actor3D target;
