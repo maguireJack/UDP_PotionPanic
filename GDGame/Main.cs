@@ -511,7 +511,7 @@ namespace GDGame
 
             InitStaticCollidableLevel();
 
-            InitStaticCollidableBoxs();
+            InitStaticCollidableObjects();
         }
 
         private void InitStaticCollidableGround()
@@ -544,25 +544,56 @@ namespace GDGame
 
         private void InitStaticCollidableLevel()
         {
-            ///////wallLeft
+            ///////Floor
             //transform 
             Transform3D transform3D = new Transform3D(new Vector3(0, 0, 0),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(1, 1, 1),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            //effectparameters
+            EffectParameters effectParameters = new EffectParameters(modelEffect,
+                floorTexture,
+                Color.White, 1);
+
+            //model object
+            CollidableObject collidableObject = new CollidableObject("floor", ActorType.CollidableDecorator,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, floor);
+
+            collidableObject.AddPrimitive(new Box(new Vector3(100, 0, 100), Matrix.Identity, new Vector3(800, 53, 800)),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
+
+            collidableObject.Enable(true, 1);
+
+            objectManager.Add(collidableObject);
+
+            ///////wallLeft
+            //transform 
+            transform3D = new Transform3D(new Vector3(0, 0, 0),
                                     new Vector3(0, 0, 0),       //rotation
                                     new Vector3(1, 1, 1),        //scale
                                         -Vector3.UnitZ,         //look
                                         Vector3.UnitY);         //up
 
             //effectparameters
-            EffectParameters effectParameters = new EffectParameters(modelEffect,
+            effectParameters = new EffectParameters(modelEffect,
                 wallLeftTexture,
                 Color.White, 1);
 
             //model object
-            ModelObject modelObject = new ModelObject("wallLeft", ActorType.Decorator,
+            collidableObject = new CollidableObject("wallLeft", ActorType.CollidableDecorator,
                StatusType.Drawn | StatusType.Update, transform3D,
                effectParameters, wallLeft);
 
-            objectManager.Add(modelObject);
+            //collidableObject.AddPrimitive(new Box(new Vector3(460, -229, 249), Matrix.Identity, new Vector3(80, 430, 1030)),
+            collidableObject.AddPrimitive(new JigLibX.Geometry.Plane(transform3D.Up, transform3D.Translation),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
+
+            //collidableObject.Enable(true, 1);
+
+            objectManager.Add(collidableObject);
 
             ///////wallRight
             //transform 
@@ -578,14 +609,19 @@ namespace GDGame
                 Color.White, 1);
 
             //model object
-            modelObject = new ModelObject("wallRight", ActorType.Decorator,
+            collidableObject = new CollidableObject("wallRight", ActorType.CollidableDecorator,
                StatusType.Drawn | StatusType.Update, transform3D,
                effectParameters, wallRight);
 
-            objectManager.Add(modelObject);
+            collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
+
+            collidableObject.Enable(true, 1);
+
+            objectManager.Add(collidableObject);
         }
 
-        private void InitStaticCollidableBoxs()
+        private void InitStaticCollidableObjects()
         {
             ////////Cauldron
             //transform
@@ -605,7 +641,8 @@ namespace GDGame
                 effectParameters, cauldronModel);
 
             Cauldron cauldron = new Cauldron(collidableObject, "Cauldron", GameConstants.defualtInteractionDist);
-            cauldron.AddPrimitive(new Sphere(transform3D.Translation, 60), new MaterialProperties(0.2f, 0.8f, 0.7f));
+            cauldron.AddPrimitive(new Sphere(GameConstants.cauldronPos + new Vector3(100, -50, 100), 50), new MaterialProperties(0.2f, 0.8f, 0.7f));
+            cauldron.Enable(true, 1);
 
             objectManager.Add(cauldron);
 
@@ -628,30 +665,11 @@ namespace GDGame
                 effectParameters, box);
 
             Bin bin = new Bin(collidableObject, "Bin", GameConstants.defualtInteractionDist);
-            bin.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
+            bin.AddPrimitive(new Box(transform3D.Translation + new Vector3(100, -50, 100), Matrix.Identity, transform3D.Scale * 2),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
+            bin.Enable(true, 1);
 
             objectManager.Add(bin);
-
-            ///////Level
-            //transform 
-            transform3D = new Transform3D(new Vector3(0, 0, 0),
-                                new Vector3(0, 0, 0),       //rotation
-                                new Vector3(1, 1, 1),        //scale
-                                    -Vector3.UnitZ,         //look
-                                    Vector3.UnitY);         //up
-
-            //effectparameters
-            effectParameters = new EffectParameters(modelEffect,
-                floorTexture,
-                Color.White, 1);
-
-            //model object
-            ModelObject levelObject = new ModelObject("level", ActorType.Decorator,
-                StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, floor);
-
-            objectManager.Add(levelObject);
         }
 
         private void InitDrawnContent() //formerly InitPrimitives
@@ -720,11 +738,15 @@ namespace GDGame
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, redTableModel);
 
+            
+
             IngredientGiver ingredientGiver = new IngredientGiver(collidableObject, "Red Rock Giver",
                 GameConstants.defualtInteractionDist, pickup);
 
-            ingredientGiver.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale),
+            ingredientGiver.AddPrimitive(new Box(transform3D.Translation + new Vector3(-50, 0, -50), Matrix.Identity, new Vector3(101, 83, 125)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
+
+            
 
             objectManager.Add(ingredientGiver);
 
@@ -774,8 +796,9 @@ namespace GDGame
                 GameConstants.defualtInteractionDist, pickup);
             objectManager.Add(ingredientGiver);
 
-            ingredientGiver.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale),
+            ingredientGiver.AddPrimitive(new Box(transform3D.Translation + new Vector3(-50, 0, 0), Matrix.Identity, new Vector3(125, 83, 101)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
+            
 
 
             ///////////////////////////////////Green Herb Giver\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -821,8 +844,9 @@ namespace GDGame
             ingredientGiver = new IngredientGiver(collidableObject, "Green Herb Giver",
                 GameConstants.defualtInteractionDist, pickup);
 
-            ingredientGiver.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale),
+            ingredientGiver.AddPrimitive(new Box(transform3D.Translation + new Vector3(-70, 0, 0), Matrix.Identity, new Vector3(125, 83, 101)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
+            
 
             objectManager.Add(ingredientGiver);
         }

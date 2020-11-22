@@ -64,6 +64,7 @@ namespace GDLibrary.Actors
             body.ExternalData = this;
             collision = new CollisionSkin(body);
             body.CollisionSkin = collision;
+            
 
             //we will only add this event handling in a class that sub-classes CollidableObject e.g. PickupCollidableObject or PlayerCollidableObject
             //this.body.CollisionSkin.callbackFn += CollisionSkin_callbackFn;
@@ -121,7 +122,7 @@ namespace GDLibrary.Actors
             //calculate the centre of mass
             Vector3 com = SetMass(mass);
             //adjust skin so that it corresponds to the 3D mesh as drawn on screen
-            body.MoveTo(Transform3D.Translation, Matrix.Identity);
+            body.MoveTo(Transform3D.Translation - Collision.GetPrimitiveLocal(0).Transform.Position, Matrix.Identity);
             //set the centre of mass
             collision.ApplyLocalTransform(new Transform(-com, Matrix.Identity));
             //enable so that any applied forces (e.g. gravity) will affect the object

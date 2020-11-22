@@ -108,7 +108,7 @@ namespace GDGame.MyGame.Objects
             {
                 InteractableActor iActor = actor as InteractableActor;
 
-                
+
                 //If the actor is locked, ignore it
                 if (iActor.Locked)
                     continue;
@@ -148,7 +148,7 @@ namespace GDGame.MyGame.Objects
             }
             else
             {
-                if(iActor.Name.Equals("Bin"))
+                if (iActor.Name.Equals("Bin"))
                 {
                     return true;
                 }
@@ -202,7 +202,7 @@ namespace GDGame.MyGame.Objects
                     {
                         interactableList.Remove(handItem);
                         EventDispatcher.Publish(new EventData(EventCategoryType.Object,
-                            EventActionType.OnRemoveActor, new object[]{ handItem }));
+                            EventActionType.OnRemoveActor, new object[] { handItem }));
                         handItem = null;
                         return;
                     }
