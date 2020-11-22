@@ -9,6 +9,7 @@ using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GDGame.MyGame.Objects
 {
@@ -85,6 +86,7 @@ namespace GDGame.MyGame.Objects
 
         private void UpdateInteractableList()
         {
+            Debug.WriteLine("Pos: " + Transform3D.Translation);
             //Check if there size of the object manager has changed, if it has, get and update the interactable list of objects here
             if (lastListSize != objectManager.NewID())
             {
@@ -92,7 +94,9 @@ namespace GDGame.MyGame.Objects
                 //but going to wait to see what Niall does before I update this.
                 lastListSize = objectManager.ListSize();
                 interactableList = objectManager.GetActorList(ActorType.Interactable);
-                //helperList = objectManager.GetActorList(ActorType.Decorator);
+
+                if (handItem != null)
+                    interactableList.Remove(handItem);
             }
         }
 
@@ -127,7 +131,7 @@ namespace GDGame.MyGame.Objects
                 helper.Transform3D.Translation = closestActor.Transform3D.Translation;
                 if (DisplayHelper(closestActor))
                 {
-                    helper.Transform3D.Translation += new Vector3(0, 75, 0);
+                    helper.Transform3D.Translation += GameConstants.helperOffsetPos;
                     helper.StatusType = StatusType.Drawn;
                 }
                 else helper.StatusType = StatusType.Off;

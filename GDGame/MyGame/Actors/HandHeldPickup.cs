@@ -86,6 +86,9 @@ namespace GDGame.MyGame.Actors
                heldCoords,
                ingredient);
 
+            if (Locked)
+                actor.Lock();
+
             //remember if we clone a model then we need to clone any attached controllers
             if (ControllerList != null)
             {
