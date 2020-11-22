@@ -38,7 +38,7 @@ namespace GDGame
         private KeyboardManager keyboardManager;
         private GamePadManager gamePadManager;
         private MouseManager mouseManager;
-        
+
 
         //hashmap (Dictonary in C#) to store useful rails and curves
         private Dictionary<string, Transform3DCurve> transform3DCurveDictionary;
@@ -51,7 +51,9 @@ namespace GDGame
         private float worldScale = 3000;
 
         private VertexPositionColorTexture[] vertices;
-        private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, crate, wizardTexture, mushroomTexture, redRockTexture, redPotionTexture, spacekey;
+        private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, crate, spacekey, wizardTexture,
+            greenHerbTexture, cauldronTexture, floorTexture,
+            wallLeftTexture, wallRightTexture, redTableTexture, blueTableTexture, redRockTexture, blueFlowerTexture;
 
         //font used to show debug info
         private SpriteFont debugFont;
@@ -64,7 +66,8 @@ namespace GDGame
         #endregion
 
         private PrimitiveObject primitiveObject = null;
-        private Model box, wizard, redPotion, level, cauldronModel, redRockModel, blueFlowerModel, greenMushroom;
+        private Model box, wizard, redPotion, floor, cauldronModel, redRockModel, blueFlowerModel,
+            greenHerbModel, greenTableModel, wallLeft, wallRight, redTableModel, blueTableModel;
         private EventDispatcher eventDispatcher;
         private PhysicsManager physicsManager;
         private Viewport halfSizeViewport;
@@ -189,7 +192,7 @@ namespace GDGame
                     ArrayList potion_data = eventData.Parameters[0] as ArrayList;
                     //effectparameters
                     EffectParameters effectParameters = new EffectParameters(modelEffect,
-                        redPotionTexture,
+                        null,
                         Color.White, 1);
 
                     //model object
@@ -414,49 +417,83 @@ namespace GDGame
             grass
               = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/grass1");
 
-            spacekey
-                = Content.Load<Texture2D>("Assets/Textures/Props/Crates/spacekey");
-
             crate
                 = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
 
             wizardTexture
                 = Content.Load<Texture2D>("Assets/Textures/Wizard/wizardTexture");
 
-            mushroomTexture
-                = Content.Load<Texture2D>("Assets/Textures/Props/Ingredients/MushRoom1");
+            greenHerbTexture
+                = Content.Load<Texture2D>("Assets/Textures/Props/Ingredients/greenHerbTexture");
+
+
+            cauldronTexture
+               = Content.Load<Texture2D>("Assets/Textures/props/Cauldron/cauldronTexture");
+
+            floorTexture
+               = Content.Load<Texture2D>("Assets/Textures/Level/floorTexture");
+
+
+            wallLeftTexture
+               = Content.Load<Texture2D>("Assets/Textures/Level/wallLeftTexture");
+
+            wallRightTexture
+               = Content.Load<Texture2D>("Assets/Textures/Level/wallRightTexture");
+
+            redTableTexture
+               = Content.Load<Texture2D>("Assets/Textures/Props/ingredientTables/redTableTexture");
+
+            blueTableTexture
+               = Content.Load<Texture2D>("Assets/Textures/Props/ingredientTables/blueTableTexture");
+
             redRockTexture
-                = Content.Load<Texture2D>("Assets/Textures/Props/Ingredients/RedCrystal");
-            //redPotionTexture
-            //    = Content.Load<Texture2D>("Assets/Textures/Props/Potion/potion texture");
+                = Content.Load<Texture2D>("Assets/Textures/Props/Ingredients/redRockTexture");
+
+            blueFlowerTexture
+                = Content.Load<Texture2D>("Assets/Textures/Props/Ingredients/blueFlowerTexture");
+
         }
 
         private void InitModels()
         {
             box
-                = Content.Load<Model>("Assets/Models/box2");
+                = Content.Load<Model>("Assets/Models/Primitives/box2");
 
             wizard
               = Content.Load<Model>("Assets/Models/wizard");
 
             redPotion
-                = Content.Load<Model>("Assets/Models/potion1");
+                = Content.Load<Model>("Assets/Models/Interactables/potion1");
 
-            level
-                = Content.Load<Model>("Assets/Models/level");
+            floor
+                = Content.Load<Model>("Assets/Models/Level/floor");
 
             cauldronModel
-                = Content.Load<Model>("Assets/Models/cauldron");
-
-            redRockModel
-                = Content.Load<Model>("Assets/Models/RedCrystal");
+                = Content.Load<Model>("Assets/Models/Interactables/cauldron");
 
             blueFlowerModel
-                = Content.Load<Model>("Assets/Models/blueFlower");
+                = Content.Load<Model>("Assets/Models/Ingredients/blueFlower");
 
-            greenMushroom
-                = Content.Load<Model>("Assets/Models/Shrooms");
+            redRockModel
+                = Content.Load<Model>("Assets/Models/Ingredients/redRock");
 
+            greenHerbModel
+                = Content.Load<Model>("Assets/Models/Ingredients/greenHerb");
+
+            greenTableModel
+                = Content.Load<Model>("Assets/Models/Interactables/Tables/greenTable");
+
+            wallLeft
+                = Content.Load<Model>("Assets/Models/Level/wallLeft");
+
+            wallRight
+                = Content.Load<Model>("Assets/Models/Level/wallRight");
+
+            redTableModel
+                = Content.Load<Model>("Assets/Models/Interactables/Tables/redTable");
+
+            blueTableModel
+                = Content.Load<Model>("Assets/Models/Interactables/Tables/blueTable");
 
         }
 
@@ -466,9 +503,83 @@ namespace GDGame
 
         private void InitCollidableDrawnContent()
         {
-            InitStaticCollidableBoxs();
 
             InitStaticCollidableGround();
+
+            InitStaticCollidableLevel();
+
+            InitStaticCollidableBoxs();
+        }
+
+        private void InitStaticCollidableGround()
+        {
+            CollidableObject collidableObject = null;
+            Transform3D transform3D = null;
+            EffectParameters effectParameters = null;
+            Model model = null;
+
+            model = box;
+
+            effectParameters = new EffectParameters(modelEffect,
+                  grass,
+                  Color.White, 1);
+
+            transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, new Vector3(worldScale, 0.001f, worldScale), -Vector3.UnitZ, Vector3.UnitY);
+
+            collidableObject = new CollidableObject("ground", ActorType.CollidableGround,
+                StatusType.Update | StatusType.Drawn,
+                transform3D, effectParameters, model);
+
+            //focus on CDCR specific methods and parameters - plane, sphere, box, capsule
+            collidableObject.AddPrimitive(new JigLibX.Geometry.Plane(transform3D.Up, transform3D.Translation),
+                new MaterialProperties(0.8f, 0.8f, 0.7f));
+
+            collidableObject.Enable(true, 1); //change to false, see what happens.
+
+            objectManager.Add(collidableObject);
+        }
+
+        private void InitStaticCollidableLevel()
+        {
+            ///////wallLeft
+            //transform 
+            Transform3D transform3D = new Transform3D(new Vector3(0, 0, 0),
+                                    new Vector3(0, 0, 0),       //rotation
+                                    new Vector3(1, 1, 1),        //scale
+                                        -Vector3.UnitZ,         //look
+                                        Vector3.UnitY);         //up
+
+            //effectparameters
+            EffectParameters effectParameters = new EffectParameters(modelEffect,
+                wallLeftTexture,
+                Color.White, 1);
+
+            //model object
+            ModelObject modelObject = new ModelObject("wallLeft", ActorType.Decorator,
+               StatusType.Drawn | StatusType.Update, transform3D,
+               effectParameters, wallLeft);
+
+            objectManager.Add(modelObject);
+
+            ///////wallRight
+            //transform 
+            transform3D = new Transform3D(new Vector3(0, 0, 0),
+                                    new Vector3(0, 0, 0),       //rotation
+                                    new Vector3(1, 1, 1),        //scale
+                                        -Vector3.UnitZ,         //look
+                                        Vector3.UnitY);         //up
+
+            //effectparameters
+            effectParameters = new EffectParameters(modelEffect,
+                wallRightTexture,
+                Color.White, 1);
+
+            //model object
+            modelObject = new ModelObject("wallRight", ActorType.Decorator,
+               StatusType.Drawn | StatusType.Update, transform3D,
+               effectParameters, wallRight);
+
+            objectManager.Add(modelObject);
         }
 
         private void InitStaticCollidableBoxs()
@@ -477,18 +588,18 @@ namespace GDGame
             //transform
             Transform3D transform3D = new Transform3D(GameConstants.cauldronPos,
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(0.07f, 0.07f, 0.07f),        //scale
+                                new Vector3(0.8f, 0.8f, 0.8f),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
             //effectparameters
             EffectParameters effectParameters = new EffectParameters(modelEffect,
-                crate,
+                cauldronTexture,
                 Color.White, 1);
 
             CollidableObject collidableObject = new CollidableObject("Cauldron", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, cauldronModel); 
+                effectParameters, cauldronModel);
 
             Cauldron cauldron = new Cauldron(collidableObject, "Cauldron", GameConstants.defualtInteractionDist);
             cauldron.AddPrimitive(new Sphere(transform3D.Translation, 60), new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -521,51 +632,23 @@ namespace GDGame
 
             ///////Level
             //transform 
-            transform3D = new Transform3D(new Vector3(-600, 0, 0),
+            transform3D = new Transform3D(new Vector3(0, 0, 0),
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(2, 2, 2),        //scale
+                                new Vector3(1, 1, 1),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                null,
+                floorTexture,
                 Color.White, 1);
 
             //model object
             ModelObject levelObject = new ModelObject("level", ActorType.Decorator,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, level);
+                effectParameters, floor);
 
             objectManager.Add(levelObject);
-        }
-
-        private void InitStaticCollidableGround()
-        {
-            CollidableObject collidableObject = null;
-            Transform3D transform3D = null;
-            EffectParameters effectParameters = null;
-            Model model = null;
-
-            model = box;
-
-            effectParameters = new EffectParameters(modelEffect,
-                  grass,
-                  Color.White, 1);
-
-            transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, new Vector3(worldScale, 0.001f, worldScale), -Vector3.UnitZ, Vector3.UnitY);
-
-            collidableObject = new CollidableObject("ground", ActorType.CollidableGround,
-                StatusType.Update | StatusType.Drawn,
-                transform3D, effectParameters, model);
-
-            //focus on CDCR specific methods and parameters - plane, sphere, box, capsule
-            collidableObject.AddPrimitive(new JigLibX.Geometry.Plane(transform3D.Up, transform3D.Translation),
-                new MaterialProperties(0.8f, 0.8f, 0.7f));
-
-            collidableObject.Enable(true, 1); //change to false, see what happens.
-
-            objectManager.Add(collidableObject);
         }
 
         private void InitDrawnContent() //formerly InitPrimitives
@@ -595,9 +678,9 @@ namespace GDGame
         {
             ///////////////////////////////////Red Rock Giver\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
             //transform 
-            Transform3D transform3D = new Transform3D(new Vector3(0, 0, -100),
+            Transform3D transform3D = new Transform3D(new Vector3(-350, 10, -250),
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(50, 50, 50),        //scale
+                                new Vector3(0.5f, 0.5f, 0.5f),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
@@ -620,19 +703,19 @@ namespace GDGame
 
             ////////////////Giver creation
             /////transform 
-            transform3D = new Transform3D(new Vector3(0, 0, -100),
+            transform3D = new Transform3D(new Vector3(-350, 10, -250),
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(10, 10, 10),        //scale
+                                new Vector3(0.7f, 0.7f, 0.7f),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
             effectParameters = new EffectParameters(modelEffect,
-                crate,
+                redTableTexture,
                 Color.White, 1);
 
             collidableObject = new CollidableObject("RedRockGiver", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, box);
+                effectParameters, redTableModel);
 
             IngredientGiver ingredientGiver = new IngredientGiver(collidableObject, "Red Rock Giver",
                 GameConstants.defualtInteractionDist, pickup);
@@ -645,15 +728,15 @@ namespace GDGame
 
             ///////////////////////////////////Blue Flower Giver\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
             //transform 
-            transform3D = new Transform3D(new Vector3(100, 0, -100),
+            transform3D = new Transform3D(new Vector3(-200, 10, -370),
                                 new Vector3(0, 90, 0),       //rotation
-                                new Vector3(3, 3, 3),        //scale
+                                new Vector3(1, 1, 1),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                leftSky,
+                blueFlowerTexture,
                 Color.White, 1);
 
             //model object
@@ -663,26 +746,26 @@ namespace GDGame
 
             //Blue flower pickup
             pickup = new HandHeldPickup(collidableObject, PickupType.Ingredient, "Blue Flower",
-                GameConstants.defualtInteractionDist,GameConstants.potionRedPos, GameConstants.blueSolid);
+                GameConstants.defualtInteractionDist, GameConstants.potionRedPos, GameConstants.blueSolid);
 
             pickup.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             ////////////////Giver Creation
             //transform 
-            transform3D = new Transform3D(new Vector3(100, 0, -100),
+            transform3D = new Transform3D(new Vector3(-200, 10, -370),
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(10, 10, 10),        //scale
+                                new Vector3(0.7f, 0.7f, 0.7f),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
             effectParameters = new EffectParameters(modelEffect,
-                crate,
+                blueTableTexture,
                 Color.White, 1);
 
             collidableObject = new CollidableObject("BlueFlowerGiver", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, box);
+                effectParameters, blueTableModel);
 
             ingredientGiver = new IngredientGiver(collidableObject, "Blue Flower Giver",
                 GameConstants.defualtInteractionDist, pickup);
@@ -694,21 +777,21 @@ namespace GDGame
 
             ///////////////////////////////////Green Herb Giver\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
             //transform 
-            transform3D = new Transform3D(new Vector3(-100, 0, -100),
+            transform3D = new Transform3D(new Vector3(100, 30, -350),
                                 new Vector3(0, 90, 0),       //rotation
-                                new Vector3(3, 3, 3),        //scale
+                                new Vector3(1, 1, 1),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                mushroomTexture,
+                greenHerbTexture,
                 Color.White, 1);
 
             //model object
             collidableObject = new CollidableObject("GreenMushroom", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, greenMushroom);
+                effectParameters, greenHerbModel);
 
             pickup = new HandHeldPickup(collidableObject, PickupType.Ingredient, "Green Mushroom",
                 GameConstants.defualtInteractionDist, GameConstants.potionRedPos, GameConstants.greenSolid);
@@ -718,19 +801,19 @@ namespace GDGame
 
             ////////////////Giver creation
             //transform 
-            transform3D = new Transform3D(new Vector3(-100, 0, -100),
-                                new Vector3(0, 0, 0),       //rotation
-                                new Vector3(10, 10, 10),        //scale
+            transform3D = new Transform3D(new Vector3(100, 10, -350),
+                                new Vector3(0, 90, 0),       //rotation
+                                new Vector3(0.7f, 0.7f, 0.7f),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
             effectParameters = new EffectParameters(modelEffect,
-                crate,
+                null,
                 Color.White, 1);
 
             collidableObject = new CollidableObject("GreenHerbGiver", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, box);
+                effectParameters, greenTableModel);
 
             ingredientGiver = new IngredientGiver(collidableObject, "Green Herb Giver",
                 GameConstants.defualtInteractionDist, pickup);

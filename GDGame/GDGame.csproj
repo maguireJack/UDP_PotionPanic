@@ -27,6 +27,7 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Assets\Textures\Props\Cauldron\" />
     <Folder Include="MyGame\Actors\" />
   </ItemGroup>
   <Import Project="..\GDLibrary\GDLibrary.projitems" Label="Shared" />
