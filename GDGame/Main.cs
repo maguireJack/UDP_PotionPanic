@@ -51,7 +51,7 @@ namespace GDGame
         private float worldScale = 3000;
 
         private VertexPositionColorTexture[] vertices;
-        private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, crate, spacekey, wizardTexture,
+        private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, crate, spacekey, wizardTexture, greenTableTexture,
             greenHerbTexture, cauldronTexture, floorTexture,
             wallLeftTexture, wallRightTexture, redTableTexture, blueTableTexture, redRockTexture, blueFlowerTexture;
 
@@ -422,6 +422,9 @@ namespace GDGame
 
             wizardTexture
                 = Content.Load<Texture2D>("Assets/Textures/Wizard/wizardTexture");
+
+            greenTableTexture
+               = Content.Load<Texture2D>("Assets/Textures/Props/ingredientTables/greenTableTexture");
 
             greenHerbTexture
                 = Content.Load<Texture2D>("Assets/Textures/Props/Ingredients/greenHerbTexture");
@@ -801,14 +804,14 @@ namespace GDGame
 
             ////////////////Giver creation
             //transform 
-            transform3D = new Transform3D(new Vector3(100, 10, -350),
+            transform3D = new Transform3D(new Vector3(100, 30, -350),
                                 new Vector3(0, 90, 0),       //rotation
-                                new Vector3(0.7f, 0.7f, 0.7f),        //scale
+                                new Vector3(0.5f, 0.5f, 0.5f),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
             effectParameters = new EffectParameters(modelEffect,
-                null,
+                greenTableTexture,
                 Color.White, 1);
 
             collidableObject = new CollidableObject("GreenHerbGiver", ActorType.Interactable,
