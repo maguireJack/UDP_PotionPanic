@@ -51,9 +51,9 @@ namespace GDGame
         private float worldScale = 3000;
 
         private VertexPositionColorTexture[] vertices;
-        private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, crate, spacekey, wizardTexture, greenTableTexture,
+        private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, nebula, crate, spacekey, wizardTexture, greenTableTexture,
             greenHerbTexture, cauldronTexture, floorTexture,
-            wallLeftTexture, wallRightTexture, redTableTexture, blueTableTexture, redRockTexture, blueFlowerTexture;
+            wallLeftTexture, wallRightTexture, redTableTexture, blueTableTexture, redRockTexture, blueFlowerTexture, grindTableTexture, liquidTableTexture, lecternTexture;
 
         //font used to show debug info
         private SpriteFont debugFont;
@@ -67,7 +67,7 @@ namespace GDGame
 
         private PrimitiveObject primitiveObject = null;
         private Model box, wizard, redPotion, floor, cauldronModel, redRockModel, blueFlowerModel,
-            greenHerbModel, greenTableModel, wallLeft, wallRight, redTableModel, blueTableModel;
+            greenHerbModel, greenTableModel, wallLeft, wallRight, redTableModel, blueTableModel, grindTableModel, liquidTableModel, lecternModel;
         private EventDispatcher eventDispatcher;
         private PhysicsManager physicsManager;
         private Viewport halfSizeViewport;
@@ -417,6 +417,9 @@ namespace GDGame
             grass
               = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/grass1");
 
+            nebula
+              = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/NebulaRed");
+
             crate
                 = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
 
@@ -455,6 +458,14 @@ namespace GDGame
             blueFlowerTexture
                 = Content.Load<Texture2D>("Assets/Textures/Props/Ingredients/blueFlowerTexture");
 
+            grindTableTexture
+               = Content.Load<Texture2D>("Assets/Textures/Props/ingredientTables/grindTableTexture");
+
+            liquidTableTexture
+               = Content.Load<Texture2D>("Assets/Textures/Props/ingredientTables/liquidTableTexture");
+
+            lecternTexture
+               = Content.Load<Texture2D>("Assets/Textures/Props/ingredientTables/lectern");
         }
 
         private void InitModels()
@@ -498,6 +509,15 @@ namespace GDGame
             blueTableModel
                 = Content.Load<Model>("Assets/Models/Interactables/Tables/blueTable");
 
+            grindTableModel
+                = Content.Load<Model>("Assets/Models/Interactables/Tables/grindTable");
+
+            liquidTableModel
+                = Content.Load<Model>("Assets/Models/Interactables/Tables/liquidTable");
+
+            lecternModel
+                = Content.Load<Model>("Assets/Models/Interactables/Tables/lectern");
+
         }
 
         #endregion Initialization - Managers, Cameras, Effects, Textures
@@ -524,7 +544,7 @@ namespace GDGame
             model = box;
 
             effectParameters = new EffectParameters(modelEffect,
-                  grass,
+                  nebula,
                   Color.White, 1);
 
             transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, new Vector3(worldScale, 0.001f, worldScale), -Vector3.UnitZ, Vector3.UnitY);
@@ -846,9 +866,64 @@ namespace GDGame
 
             ingredientGiver.AddPrimitive(new Box(transform3D.Translation + new Vector3(-70, 0, 0), Matrix.Identity, new Vector3(125, 83, 101)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
-            
 
             objectManager.Add(ingredientGiver);
+
+            ////////////////Grind Table
+            /////transform 
+            transform3D = new Transform3D(new Vector3(200, 90, -200),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(1, 1, 1),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            effectParameters = new EffectParameters(modelEffect,
+                grindTableTexture,
+                Color.White, 1);
+
+            collidableObject = new CollidableObject("GrindTable", ActorType.Decorator,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, grindTableModel);
+
+            objectManager.Add(collidableObject);
+
+            ////////////////Liquid Table
+            /////transform 
+            transform3D = new Transform3D(new Vector3(175, 35, 0),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(1, 1, 1),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            effectParameters = new EffectParameters(modelEffect,
+                liquidTableTexture,
+                Color.White, 1);
+
+            collidableObject = new CollidableObject("LiquidTable", ActorType.Decorator,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, liquidTableModel);
+
+            objectManager.Add(collidableObject);
+
+            ////////////////Lectern
+            /////transform 
+            transform3D = new Transform3D(new Vector3(175, 35, 200),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(1, 1, 1),        //scale
+                                    -Vector3.UnitZ,         //look
+                                    Vector3.UnitY);         //up
+
+            effectParameters = new EffectParameters(modelEffect,
+                lecternTexture,
+                Color.White, 1);
+
+            collidableObject = new CollidableObject("Lectern", ActorType.Decorator,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, lecternModel);
+
+            objectManager.Add(collidableObject);
+
+
         }
 
         #endregion
