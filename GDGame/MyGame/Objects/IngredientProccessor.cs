@@ -22,7 +22,7 @@ namespace GDGame
         private Timer timer;
         private bool timerCanStart = false;
 
-        public IngredientProccessor(ModelObject modelObject, string name, float interactDistance, IngredientState inputState) :
+        public IngredientProccessor(CollidableObject modelObject, string name, float interactDistance, IngredientState inputState) :
             base(modelObject, name, interactDistance)
         {
             this.inputState = inputState;

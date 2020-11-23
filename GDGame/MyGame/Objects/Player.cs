@@ -47,18 +47,6 @@ namespace GDGame.MyGame.Objects
 
         #region Constructors
 
-        //public Player(ObjectManager objectManager, KeyboardManager keyboardManager, GamePadManager gamePadManager,
-        //    ModelObject modelObject, IController controller, PrimitiveObject helper) :
-        //    base(modelObject, controller)
-        //{
-        //    this.objectManager = objectManager;
-        //    this.keyBoardManager = keyboardManager;
-        //    this.gamePadManager = gamePadManager;
-        //    this.helper = helper;
-        //    this.handItem = null;
-        //    this.lastListSize = 0;
-        //}
-
         public Player(ModelObject modelObject,
             float radius, float height, float accelerationRate, float decelerationRate,
             ObjectManager objectManager, KeyboardManager keyboardManager, GamePadManager gamePadManager,
@@ -86,7 +74,6 @@ namespace GDGame.MyGame.Objects
 
         private void UpdateInteractableList()
         {
-            Debug.WriteLine("Pos: " + Transform3D.Translation);
             //Check if there size of the object manager has changed, if it has, get and update the interactable list of objects here
             if (lastListSize != objectManager.NewID())
             {

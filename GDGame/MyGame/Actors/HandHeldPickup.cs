@@ -52,7 +52,7 @@ namespace GDGame.MyGame.Actors
 
         #region Constructors
 
-        public HandHeldPickup(ModelObject modelObject, PickupType pickupType,
+        public HandHeldPickup(CollidableObject modelObject, PickupType pickupType,
             string name, float interactDistance, Vector3 heldCoords) :
             base(modelObject, name, interactDistance)
         {
@@ -61,7 +61,7 @@ namespace GDGame.MyGame.Actors
             this.ingredient = null;
         }
 
-        public HandHeldPickup(ModelObject modelObject, PickupType pickupType,
+        public HandHeldPickup(CollidableObject modelObject, PickupType pickupType,
             string name, float interactDistance, Vector3 heldCoords, Ingredient ingredient) :
             base(modelObject, name, interactDistance)
         {
@@ -74,7 +74,7 @@ namespace GDGame.MyGame.Actors
 
         public new object Clone()
         {
-            HandHeldPickup actor = new HandHeldPickup(new ModelObject("clone - " + ID,
+            HandHeldPickup actor = new HandHeldPickup(new CollidableObject("clone - " + ID,
                ActorType,   //deep
                StatusType,
                Transform3D.Clone() as Transform3D,  //deep

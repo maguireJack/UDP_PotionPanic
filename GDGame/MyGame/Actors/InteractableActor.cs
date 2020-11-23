@@ -46,7 +46,7 @@ namespace GDGame.MyGame.Actors
 
         #region Constructors
 
-        public InteractableActor(ModelObject modelObject,
+        public InteractableActor(CollidableObject modelObject,
             string name, float interactDistance) : base(modelObject)
         {
             this.name = name;

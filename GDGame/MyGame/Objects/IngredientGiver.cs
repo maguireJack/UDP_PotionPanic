@@ -16,7 +16,7 @@ namespace GDGame.MyGame.Objects
 
         #region Constructors
 
-        public IngredientGiver(ModelObject modelObject, string name, float interactDistance, HandHeldPickup item) :
+        public IngredientGiver(CollidableObject modelObject, string name, float interactDistance, HandHeldPickup item) :
             base(modelObject, name, interactDistance)
         {
             this.item = item;
