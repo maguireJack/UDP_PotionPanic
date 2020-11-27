@@ -53,7 +53,7 @@ namespace GDGame
         private VertexPositionColorTexture[] vertices;
         private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, nebula, crate, spacekey, wizardTexture, greenTableTexture,
             greenHerbTexture, cauldronTexture, floorTexture, wallLeftTexture, wallRightTexture, redTableTexture, blueTableTexture,
-            redRockTexture, blueFlowerTexture, grindTableTexture, liquidTableTexture, lecternTexture;
+            redRockTexture, blueFlowerTexture, grindTableTexture, liquidTableTexture, lecternTexture, lavaTexture, pressSpaceTexture;
 
         //font used to show debug info
         private SpriteFont debugFont;
@@ -67,7 +67,7 @@ namespace GDGame
 
         private PrimitiveObject primitiveObject = null;
         private Model box, wizard, redPotion, floor, cauldronModel, redRockModel, blueFlowerModel,
-                    greenHerbModel, greenTableModel, wallLeft, wallRight, redTableModel, blueTableModel, grindTableModel, liquidTableModel, lecternModel, chestModel;
+                    greenHerbModel, greenTableModel, wallLeft, wallRight, redTableModel, blueTableModel, grindTableModel, liquidTableModel, lecternModel, chestModel, railing, outerWalls, outerWallsRight, lava;
         private EventDispatcher eventDispatcher;
         private PhysicsManager physicsManager;
         private Viewport halfSizeViewport;
@@ -175,7 +175,7 @@ namespace GDGame
             InitPlayer();
 
             //graphic settings - see https://en.wikipedia.org/wiki/Display_resolution#/media/File:Vector_Video_Standards8.svg
-            InitGraphics(1024, 768);
+            InitGraphics(1440, 1080);
 
             //debug info
             InitDebug();
@@ -285,7 +285,7 @@ namespace GDGame
         {
             Transform3D transform3D = null;
             Camera3D camera3D = null;
-            Viewport viewPort = new Viewport(0, 0, 1024, 768);
+            Viewport viewPort = new Viewport(0, 0, 1440, 1080);
 
             #region Camera -  Third Person Player Camera
 
@@ -468,6 +468,14 @@ namespace GDGame
 
             lecternTexture
                = Content.Load<Texture2D>("Assets/Textures/Props/ingredientTables/lectern");
+
+            lavaTexture
+               = Content.Load<Texture2D>("Assets/Textures/Level/lava");
+
+            pressSpaceTexture
+               = Content.Load<Texture2D>("Assets/Textures/UI/pressSpace");
+
+
         }
 
         private void InitModels()
@@ -522,6 +530,18 @@ namespace GDGame
 
             chestModel
                 = Content.Load<Model>("Assets/Models/Interactables/chest");
+
+            railing
+                = Content.Load<Model>("Assets/Models/Level/railing");
+
+            outerWalls
+                = Content.Load<Model>("Assets/Models/Level/outerWalls");
+
+            outerWallsRight
+                = Content.Load<Model>("Assets/Models/Level/outerWallsRight");
+
+            lava
+                = Content.Load<Model>("Assets/Models/Level/lava");
         }
 
         #endregion Initialization - Managers, Cameras, Effects, Textures
@@ -531,40 +551,40 @@ namespace GDGame
         private void InitCollidableDrawnContent()
         {
 
-            InitStaticCollidableGround();
+           // InitStaticCollidableGround();
 
             InitStaticCollidableLevel();
 
             InitStaticCollidableObjects();
         }
 
-        private void InitStaticCollidableGround()
-        {
-            CollidableObject collidableObject = null;
-            Transform3D transform3D = null;
-            EffectParameters effectParameters = null;
-            Model model = null;
+        //private void InitStaticCollidableGround()
+        //{
+        //    CollidableObject collidableObject = null;
+        //    Transform3D transform3D = null;
+        //    EffectParameters effectParameters = null;
+        //    Model model = null;
 
-            model = box;
+        //    model = box;
 
-            effectParameters = new EffectParameters(modelEffect,
-                  nebula,
-                  Color.White, 1);
+        //    effectParameters = new EffectParameters(modelEffect,
+        //          nebula,
+        //          Color.White, 1);
 
-            transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, new Vector3(worldScale, 1, worldScale), -Vector3.UnitZ, Vector3.UnitY);
+        //    transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, new Vector3(worldScale, 1, worldScale), -Vector3.UnitZ, Vector3.UnitY);
 
-            collidableObject = new CollidableObject("ground", ActorType.CollidableGround,
-                StatusType.Update | StatusType.Drawn,
-                transform3D, effectParameters, model);
+        //    collidableObject = new CollidableObject("ground", ActorType.CollidableGround,
+        //        StatusType.Update | StatusType.Drawn,
+        //        transform3D, effectParameters, model);
 
-            //focus on CDCR specific methods and parameters - plane, sphere, box, capsule
-            collidableObject.AddPrimitive(new JigLibX.Geometry.Plane(transform3D.Up, transform3D.Translation),
-                new MaterialProperties(0.8f, 0.8f, 0.7f));
+        //    //focus on CDCR specific methods and parameters - plane, sphere, box, capsule
+        //    collidableObject.AddPrimitive(new JigLibX.Geometry.Plane(transform3D.Up, transform3D.Translation),
+        //        new MaterialProperties(0.8f, 0.8f, 0.7f));
 
-            collidableObject.Enable(true, 1); //change to false, see what happens.
+        //    collidableObject.Enable(true, 1); //change to false, see what happens.
 
-            objectManager.Add(collidableObject);
-        }
+        //    objectManager.Add(collidableObject);
+        //}
 
         private void InitStaticCollidableLevel()
         {
@@ -637,6 +657,107 @@ namespace GDGame
                effectParameters, wallRight);
 
             collidableObject.AddPrimitive(new Box(new Vector3(-100, 230, -460), Matrix.Identity, new Vector3(800, 430, 123)),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
+
+            collidableObject.Enable(true, 1);
+
+            objectManager.Add(collidableObject);
+
+
+            ///////railing
+            //transform 
+            transform3D = new Transform3D(new Vector3(0, 0, 0),
+                                    new Vector3(0, 0, 0),       //rotation
+                                    new Vector3(1, 1, 1),        //scale
+                                        -Vector3.UnitZ,         //look
+                                        Vector3.UnitY);         //up
+
+            //effectparameters
+            effectParameters = new EffectParameters(modelEffect,
+                null,
+                Color.White, 1);
+
+            //model object
+            collidableObject = new CollidableObject("wallRight", ActorType.CollidableDecorator,
+               StatusType.Drawn | StatusType.Update, transform3D,
+               effectParameters, railing);
+
+            collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
+
+            collidableObject.Enable(true, 1);
+
+            objectManager.Add(collidableObject);
+
+            ///////outerWalls
+            //transform 
+            transform3D = new Transform3D(new Vector3(0, 0, 0),
+                                    new Vector3(0, 0, 0),       //rotation
+                                    new Vector3(1, 1, 1),        //scale
+                                        -Vector3.UnitZ,         //look
+                                        Vector3.UnitY);         //up
+
+            //effectparameters
+            effectParameters = new EffectParameters(modelEffect,
+                null,
+                Color.White, 1);
+
+            //model object
+            collidableObject = new CollidableObject("outerWalls", ActorType.CollidableDecorator,
+               StatusType.Drawn | StatusType.Update, transform3D,
+               effectParameters, outerWalls);
+
+            collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
+
+            collidableObject.Enable(true, 1);
+
+            objectManager.Add(collidableObject);
+
+            ///////outerWallsRight
+            //transform 
+            transform3D = new Transform3D(new Vector3(0, 0, 0),
+                                    new Vector3(0, 0, 0),       //rotation
+                                    new Vector3(1, 1, 1),        //scale
+                                        -Vector3.UnitZ,         //look
+                                        Vector3.UnitY);         //up
+
+            //effectparameters
+            effectParameters = new EffectParameters(modelEffect,
+                null,
+                Color.White, 1);
+
+            //model object
+            collidableObject = new CollidableObject("lava", ActorType.CollidableDecorator,
+               StatusType.Drawn | StatusType.Update, transform3D,
+               effectParameters, outerWallsRight);
+
+            collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
+
+            collidableObject.Enable(true, 1);
+
+            objectManager.Add(collidableObject);
+
+            ///////lava
+            //transform 
+            transform3D = new Transform3D(new Vector3(0, 0, 0),
+                                    new Vector3(0, 0, 0),       //rotation
+                                    new Vector3(1, 1, 1),        //scale
+                                        -Vector3.UnitZ,         //look
+                                        Vector3.UnitY);         //up
+
+            //effectparameters
+            effectParameters = new EffectParameters(modelEffect,
+                lavaTexture,
+                Color.White, 1);
+
+            //model object
+            collidableObject = new CollidableObject("outerWalls", ActorType.CollidableDecorator,
+               StatusType.Drawn | StatusType.Update, transform3D,
+               effectParameters, lava);
+
+            collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             collidableObject.Enable(true, 1);
@@ -1049,11 +1170,11 @@ namespace GDGame
             //interact helper
             PrimitiveObject interactHelper = archetypalTexturedQuad.Clone() as PrimitiveObject;
             interactHelper.ID = "spacebar helper";
-            interactHelper.EffectParameters.Texture = spacekey;
-            interactHelper.Transform3D.Scale = new Vector3(70, 35, 0);
+            interactHelper.EffectParameters.Texture = pressSpaceTexture;
+            interactHelper.Transform3D.Scale = new Vector3(80, 56, 0);
             interactHelper.StatusType = StatusType.Off;
             interactHelper.ActorType = ActorType.Decorator;
-            interactHelper.Transform3D.RotationInDegrees = new Vector3(90, 180, 0);
+            interactHelper.Transform3D.RotationInDegrees = new Vector3(-45, 0, 0);
             objectManager.Add(interactHelper);
 
             Player player = new Player(playerObject, 20, 1, 2, 2,

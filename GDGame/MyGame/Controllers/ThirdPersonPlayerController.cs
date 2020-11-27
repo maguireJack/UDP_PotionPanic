@@ -8,7 +8,7 @@ using GDLibrary.Enums;
 using GDGame.MyGame.Constants;
 using GDLibrary.Events;
 using GDLibrary.Controllers;
-using System.Diagnostics;
+using GDLibrary;
 
 namespace GDGame.MyGame.Controllers
 {
@@ -33,7 +33,7 @@ namespace GDGame.MyGame.Controllers
             Camera3D camera3D,
             float moveSpeed, float rotationSpeed,
             Keys[][] moveKeys)
-            : base (id, controllerType)
+            : base(id, controllerType)
         {
             this.keyboardManager = keyboardManager;
             this.mouseManager = mouseManager;
@@ -70,7 +70,7 @@ namespace GDGame.MyGame.Controllers
                     HandleControlerMovement(gameTime, parent, capabilities);
                 }
                 else
-                { 
+                {
                     HandleMovement(gameTime, parent);
                 }
                 HandleCameraFollow(gameTime, parent);
@@ -88,7 +88,7 @@ namespace GDGame.MyGame.Controllers
                 moveVector.X = state.ThumbSticks.Left.X * moveSpeed;
                 moveVector.Z = -state.ThumbSticks.Left.Y * moveSpeed;
             }
-                parent.Transform3D.RotateAroundUpBy(CalculateRotation(parent, moveVector) * rotationSpeed);
+            parent.Transform3D.RotateAroundUpBy(MathUtility.CalculateRotationToVector(parent.Transform3D.Look, moveVector) * rotationSpeed);
             parent.Transform3D.TranslateBy(moveVector * gameTime.ElapsedGameTime.Milliseconds);
         }
 
@@ -130,44 +130,16 @@ namespace GDGame.MyGame.Controllers
                 moveVector.Z += moveSpeed;
             //Move Left
             if (keyboardManager.IsAnyKeyPressed(moveKeys, 2))
-                    moveVector.X -= moveSpeed;
+                moveVector.X -= moveSpeed;
             //Move Right
             else if (keyboardManager.IsAnyKeyPressed(moveKeys, 3))
-                    moveVector.X += moveSpeed;
+                moveVector.X += moveSpeed;
 
-            if(moveVector == Vector3.Zero)
+            if (moveVector == Vector3.Zero)
                 character.CharacterBody.DesiredVelocity = Vector3.Zero;
 
-            parent.Transform3D.RotateAroundUpBy(CalculateRotation(parent, moveVector) * rotationSpeed);
+            parent.Transform3D.RotateAroundUpBy(MathUtility.CalculateRotationToVector(parent.Transform3D.Look, moveVector) * rotationSpeed);
             character.CharacterBody.Velocity += moveVector * gameTime.ElapsedGameTime.Milliseconds;
-        }
-
-        private float CalculateRotation(Actor3D parent, Vector3 moveVector)
-        {
-            //Convert look direction to angle in radians
-            float currentAngle = (float)Math.Atan2(parent.Transform3D.Look.Z, parent.Transform3D.Look.X);
-            float turnAngle = 0;
-
-            //If moveVector not Zero, turn towards move direction
-            if (moveVector != Vector3.Zero)
-            {
-                turnAngle = (float)Math.Atan2(moveVector.Z, moveVector.X);
-                turnAngle = currentAngle - turnAngle;
-            }
-            else turnAngle = 0;
-
-            if (turnAngle > Math.PI)
-            {
-                //if angle is bigger than 180, flip rotation
-                turnAngle -= (float)(2 * Math.PI);
-            }
-            else if (turnAngle < -Math.PI)
-            {
-                //if angle is less than -180, flip rotation
-                turnAngle += (float)(2 * Math.PI);
-            }
-
-            return turnAngle;
         }
 
         public object Clone()

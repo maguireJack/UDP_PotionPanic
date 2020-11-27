@@ -88,5 +88,33 @@ namespace GDLibrary
             //camera to target object vector
             return Vector3.Normalize(target.Translation - start.Translation);
         }
+
+        public static float CalculateRotationToVector(Vector3 startVector, Vector3 targetVector)
+        {
+            //Convert startVector to angle in radians
+            float currentAngle = (float)Math.Atan2(startVector.Z, startVector.X);
+            float turnAngle = 0;
+
+            //If targetVector is not Zero, turn towards targetVector
+            if (targetVector != Vector3.Zero)
+            {
+                turnAngle = (float)Math.Atan2(targetVector.Z, targetVector.X);
+                turnAngle = currentAngle - turnAngle;
+            }
+            else turnAngle = 0;
+
+            if (turnAngle > Math.PI)
+            {
+                //if angle is bigger than 180, flip rotation
+                turnAngle -= (float)(2 * Math.PI);
+            }
+            else if (turnAngle < -Math.PI)
+            {
+                //if angle is less than -180, flip rotation
+                turnAngle += (float)(2 * Math.PI);
+            }
+
+            return turnAngle;
+        }
     }
 }

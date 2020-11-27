@@ -58,11 +58,11 @@ namespace GDGame.MyGame.Constants
         public static readonly float playerMoveSpeed = 4f;
         public static readonly float playerRotateSpeed = 4f;
 
-        public static readonly float playerCamOffsetY = 300;
-        public static readonly float playerCamOffsetZ = 300;
+        public static readonly float playerCamOffsetY = 500;
+        public static readonly float playerCamOffsetZ = 500;
 
         public static readonly Vector3 playerHoldPos = new Vector3(32, 40, 3);
-        public static readonly Vector3 helperOffsetPos = new Vector3(0, 80, 0);
+        public static readonly Vector3 helperOffsetPos = new Vector3(0, 140, 0);
         public static readonly Vector3 potionRedPos = new Vector3(4, 18, -1.5f);
 
         public static readonly Keys[] playerInteractKeys = { Keys.Space, Keys.RightControl };

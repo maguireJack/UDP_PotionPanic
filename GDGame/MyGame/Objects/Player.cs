@@ -207,7 +207,24 @@ namespace GDGame.MyGame.Objects
             //If we have an item, update it's position constantly to our hand pos
             if (handItem != null)
             {
-                handItem.Transform3D.Translation = HandPos - handItem.HeldCoords;
+                //Translate the potions hold position to players hand pos
+                Vector3 newHandPos = HandPos - handItem.HeldCoords;
+
+                //Get players rotation
+                float rotation = Transform3D.RotationInDegrees.Y;
+
+                //Rotate hand item around the player's position
+                newHandPos = Vector3.Transform(
+                    newHandPos - Transform3D.Translation,
+                    Matrix.CreateRotationY(MathHelper.ToRadians(rotation)))
+                    + Transform3D.Translation;
+
+                //Set handitems translation
+                handItem.Transform3D.Translation = newHandPos;
+
+                //Rotate item to the players look direction
+                handItem.Transform3D.RotateAroundUpBy(GDLibrary.MathUtility.CalculateRotationToVector(
+                    handItem.Transform3D.Look, Transform3D.Look) * 10);
             }
         }
 
