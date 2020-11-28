@@ -8,8 +8,8 @@ namespace GDLibrary.Containers
     /// <summary>
     /// Provide generic map to load and store game content and allow Dispose() to be called on all content
     /// </summary>
-    /// <typeparam name="V">Class type that implements IDisposable</typeparam>
-    public class ContentDictionary<V> : IDisposable where V : IDisposable
+    /// <typeparam name="V">MonoGame or user-defined class that optionally implements IDisposable</typeparam>
+    public class ContentDictionary<V> : IDisposable
     {
         #region Fields
 
@@ -29,7 +29,7 @@ namespace GDLibrary.Containers
             }
         }
 
-        public V this[string key]
+        public V this[string key] //indexer
         {
             get
             {
@@ -63,7 +63,7 @@ namespace GDLibrary.Containers
             dictionary = new Dictionary<string, V>();
         }
 
-        public virtual bool Load(string assetPath, string key)
+        public virtual bool Load(string assetPath, string key)  //"Assets/Props/crates", cratesBig
         {
             if (!dictionary.ContainsKey(key))
             {
@@ -74,7 +74,7 @@ namespace GDLibrary.Containers
         }
 
         //same as Load() above but uses assetPath to form key string from regex
-        public virtual bool Load(string assetPath)
+        public virtual bool Load(string assetPath)  //"Assets/Props/crates", crates
         {
             return Load(assetPath, StringUtility.ParseNameFromPath(assetPath));
         }

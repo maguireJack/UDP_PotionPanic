@@ -142,12 +142,12 @@ namespace GDGame.MyGame.Controllers
             character.CharacterBody.Velocity += moveVector * gameTime.ElapsedGameTime.Milliseconds;
         }
 
-        public object Clone()
+        public new object Clone()
         {
             throw new NotImplementedException();
         }
 
-        public ControllerType GetControllerType()
+        public new ControllerType GetControllerType()
         {
             throw new NotImplementedException();
         }

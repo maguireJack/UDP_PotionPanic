@@ -4,6 +4,7 @@ using GDGame.MyGame.Controllers;
 using GDGame.MyGame.Enums;
 using GDGame.MyGame.Objects;
 using GDLibrary.Actors;
+using GDLibrary.Containers;
 using GDLibrary.Controllers;
 using GDLibrary.Debug;
 using GDLibrary.Enums;
@@ -38,7 +39,20 @@ namespace GDGame
         private KeyboardManager keyboardManager;
         private GamePadManager gamePadManager;
         private MouseManager mouseManager;
+        private EventDispatcher eventDispatcher;
+        private PhysicsManager physicsManager;
+        private RenderManager renderManager;
+        private PersistantData persistantData;
+        private UIManager uiManager;
+        private MenuManager menuManager;
 
+        //store useful game resources (e.g. effects, models, rails and curves)
+        private Dictionary<string, BasicEffect> effectDictionary;
+
+        //use ContentDictionary to store assets (i.e. file content) that need the Content.Load() method to be called
+        private ContentDictionary<Texture2D> textureDictionary;
+        private ContentDictionary<SpriteFont> fontDictionary;
+        private ContentDictionary<Model> modelDictionary;
 
         //hashmap (Dictonary in C#) to store useful rails and curves
         private Dictionary<string, Transform3DCurve> transform3DCurveDictionary;
@@ -51,9 +65,6 @@ namespace GDGame
         private float worldScale = 3000;
 
         private VertexPositionColorTexture[] vertices;
-        private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass, nebula, crate, spacekey, wizardTexture, greenTableTexture,
-            greenHerbTexture, cauldronTexture, floorTexture, wallLeftTexture, wallRightTexture, redTableTexture, blueTableTexture,
-            redRockTexture, blueFlowerTexture, grindTableTexture, liquidTableTexture, lecternTexture, lavaTexture, pressSpaceTexture;
 
         //font used to show debug info
         private SpriteFont debugFont;
@@ -66,13 +77,7 @@ namespace GDGame
         #endregion
 
         private PrimitiveObject primitiveObject = null;
-        private Model box, wizard, redPotion, floor, cauldronModel, redRockModel, blueFlowerModel,
-                    greenHerbModel, greenTableModel, wallLeft, wallRight, redTableModel, blueTableModel, grindTableModel, liquidTableModel, lecternModel, chestModel, railing, outerWalls, outerWallsRight, lava;
-        private EventDispatcher eventDispatcher;
-        private PhysicsManager physicsManager;
         private Viewport halfSizeViewport;
-        private RenderManager renderManager;
-        private PersistantData persistantData;
 
         #endregion Fields
 
@@ -101,7 +106,8 @@ namespace GDGame
             if (bEnable)
             {
                 //create the debug drawer to draw debug info
-                DebugDrawer debugInfoDrawer = new DebugDrawer(this, _spriteBatch, debugFont,
+                DebugDrawer debugInfoDrawer = new DebugDrawer(this, _spriteBatch,
+                    Content.Load<SpriteFont>("Assets/Fonts/debug"),
                     cameraManager, objectManager);
 
                 //set the debug drawer to be drawn AFTER the object manager to the screen
@@ -132,6 +138,146 @@ namespace GDGame
 #endif
         #endregion Debug
 
+        #region Load - Assets
+
+        private void LoadEffects()
+        {
+            //to do...
+            unlitTexturedEffect = new BasicEffect(_graphics.GraphicsDevice);
+            unlitTexturedEffect.VertexColorEnabled = true; //otherwise we wont see RGB
+            unlitTexturedEffect.TextureEnabled = true;
+
+            //wireframe primitives with no lighting and no texture
+            unlitWireframeEffect = new BasicEffect(_graphics.GraphicsDevice);
+            unlitWireframeEffect.VertexColorEnabled = true;
+
+            //model effect
+            //add a ModelObject
+            modelEffect = new BasicEffect(_graphics.GraphicsDevice);
+            modelEffect.TextureEnabled = true;
+            modelEffect.LightingEnabled = true;
+            modelEffect.PreferPerPixelLighting = true;
+            //   this.modelEffect.SpecularPower = 512;
+            //  this.modelEffect.SpecularColor = Color.Red.ToVector3();
+            modelEffect.EnableDefaultLighting();
+        }
+
+        private void LoadTextures()
+        {
+            //sky
+            textureDictionary.Load("Assets/Textures/Skybox/sky_back");
+            textureDictionary.Load("Assets/Textures/Skybox/sky_left");
+            textureDictionary.Load("Assets/Textures/Skybox/sky_right");
+            textureDictionary.Load("Assets/Textures/Skybox/sky_front");
+            textureDictionary.Load("Assets/Textures/Skybox/sky");
+
+            //floor
+            textureDictionary.Load("Assets/Textures/Foliage/Ground/grass1");
+            textureDictionary.Load("Assets/Textures/Level/nebula_red");
+            textureDictionary.Load("Assets/Textures/Level/floor");
+            textureDictionary.Load("Assets/Textures/Level/lava");
+
+            //ui
+            textureDictionary.Load("Assets/Textures/UI/helper_space");
+
+            //menu
+
+            //walls
+            textureDictionary.Load("Assets/Textures/Level/wall_left");
+            textureDictionary.Load("Assets/Textures/Level/wall_right");
+
+            //interactables
+            textureDictionary.Load("Assets/Textures/Props/ingredientTables/lectern");
+            textureDictionary.Load("Assets/Textures/props/Cauldron/cauldron");
+            textureDictionary.Load("Assets/Textures/props/Chest/chest");
+
+            textureDictionary.Load("Assets/Textures/Props/ingredientTables/table_red");
+            textureDictionary.Load("Assets/Textures/Props/ingredientTables/table_blue");
+            textureDictionary.Load("Assets/Textures/Props/ingredientTables/table_green");
+            textureDictionary.Load("Assets/Textures/Props/ingredientTables/table_grinder");
+            textureDictionary.Load("Assets/Textures/Props/ingredientTables/table_liquid");
+
+            //ingredients
+            textureDictionary.Load("Assets/Textures/Props/Ingredients/red_solid");
+            textureDictionary.Load("Assets/Textures/Props/Ingredients/blue_solid");
+            textureDictionary.Load("Assets/Textures/Props/Ingredients/green_solid");
+
+            //other
+            textureDictionary.Load("Assets/Textures/Props/Crates/crate");
+            textureDictionary.Load("Assets/Textures/Wizard/wizard");
+            textureDictionary.Load("Assets/Textures/Props/Potion/potion1");
+        }
+
+        private void LoadModels()
+        {
+            //level
+            modelDictionary.Load("Assets/Models/Level/wall_left");
+            modelDictionary.Load("Assets/Models/Level/wall_right");
+            modelDictionary.Load("Assets/Models/Level/floor");
+            modelDictionary.Load("Assets/Models/Level/railing");
+
+            //outer level
+            modelDictionary.Load("Assets/Models/Level/outerWalls");
+            modelDictionary.Load("Assets/Models/Level/outerWallsRight");
+            modelDictionary.Load("Assets/Models/Level/lava");
+
+            //interactables
+            modelDictionary.Load("Assets/Models/Interactables/cauldron");
+            modelDictionary.Load("Assets/Models/Interactables/Tables/lectern");
+            modelDictionary.Load("Assets/Models/Interactables/chest");
+
+            modelDictionary.Load("Assets/Models/Interactables/Tables/table_red");
+            modelDictionary.Load("Assets/Models/Interactables/Tables/table_blue");
+            modelDictionary.Load("Assets/Models/Interactables/Tables/table_green");
+            modelDictionary.Load("Assets/Models/Interactables/Tables/table_grinder");
+            modelDictionary.Load("Assets/Models/Interactables/Tables/table_liquid");
+
+            //ingredients
+            modelDictionary.Load("Assets/Models/Ingredients/blue_solid");
+            modelDictionary.Load("Assets/Models/Ingredients/red_solid");
+            modelDictionary.Load("Assets/Models/Ingredients/green_solid");
+
+            //other
+            modelDictionary.Load("Assets/Models/wizard");
+            modelDictionary.Load("Assets/Models/Primitives/box2");
+            modelDictionary.Load("Assets/Models/Interactables/potion1");
+        }
+
+        private void LoadFonts()
+        {
+            fontDictionary.Load("Assets/Fonts/debug");
+            fontDictionary.Load("Assets/Fonts/ui");
+        }
+
+        private void LoadVertices()
+        {
+            vertices
+                = new VertexPositionColorTexture[4];
+
+            float halfLength = 0.5f;
+            //TL
+            vertices[0] = new VertexPositionColorTexture(
+                new Vector3(-halfLength, halfLength, 0),
+                new Color(255, 255, 255, 255), new Vector2(0, 0));
+
+            //BL
+            vertices[1] = new VertexPositionColorTexture(
+                new Vector3(-halfLength, -halfLength, 0),
+                Color.White, new Vector2(0, 1));
+
+            //TR
+            vertices[2] = new VertexPositionColorTexture(
+                new Vector3(halfLength, halfLength, 0),
+                Color.White, new Vector2(1, 0));
+
+            //BR
+            vertices[3] = new VertexPositionColorTexture(
+                new Vector3(halfLength, -halfLength, 0),
+                Color.White, new Vector2(1, 1));
+        }
+
+        #endregion
+
         #region Initialization - Managers, Cameras, Effects, Textures
 
         protected override void Initialize()
@@ -151,12 +297,16 @@ namespace GDGame
             //dictionaries
             InitDictionaries();
 
-            //resources and effects
-            InitVertices();
-            InitTextures();
-            InitFonts();
-            InitEffects();
-            InitModels();
+            //load from file or initialize assets, effects and vertices
+            LoadEffects();
+            LoadTextures();
+            LoadVertices();
+            LoadModels();
+            LoadFonts();
+
+            //ui
+            InitUI();
+            InitMenu();
 
             //drawn content
             InitDrawnContent();
@@ -183,6 +333,72 @@ namespace GDGame
             base.Initialize();
         }
 
+        private void InitGraphics(int width, int height)
+        {
+            //set resolution
+            _graphics.PreferredBackBufferWidth = width;
+            _graphics.PreferredBackBufferHeight = height;
+
+            //dont forget to apply resolution changes otherwise we wont see the new WxH
+            _graphics.ApplyChanges();
+
+            //set screen centre based on resolution
+            screenCentre = new Vector2(width / 2, height / 2);
+
+            //set cull mode to show front and back faces - inefficient but we will change later
+            RasterizerState rs = new RasterizerState();
+            rs.CullMode = CullMode.None;
+            _graphics.GraphicsDevice.RasterizerState = rs;
+
+            //we use a sampler state to set the texture address mode to solve the aliasing problem between skybox planes
+            SamplerState samplerState = new SamplerState();
+            samplerState.AddressU = TextureAddressMode.Clamp;
+            samplerState.AddressV = TextureAddressMode.Clamp;
+            _graphics.GraphicsDevice.SamplerStates[0] = samplerState;
+
+            //set blending
+            _graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+
+            //set screen centre for use when centering mouse
+            screenCentre = new Vector2(width / 2, height / 2);
+
+            //add this code to centre the mouse when the game starts
+            mouseManager.SetPosition(screenCentre);
+        }
+
+        private void InitUI()
+        {
+            Transform2D transform2D = null;
+            Texture2D texture = null;
+            SpriteFont spriteFont = null;
+        }
+
+        private void InitMenu()
+        {
+            //uncomment and try to instanciate the two UIObjects and add to menu
+            /*
+            UITextureObject mainBackgroundTextureObject = null;
+            UIButtonObject mainPlayButtonObject = null;
+
+            //homework - 27/11/20 - try instanciate a UITextureObject (e.g. mainBackgroundTextureObject to show main menu background) and a UIButtonObject (e.g. mainPlayButtonObject to show play button) and add to the manager
+
+            //add to main menu scene
+            menuManager.Add("main", mainBackgroundTextureObject);
+            menuManager.Add("main", mainPlayButtonObject);
+
+            //dont forget to say which menu scene you want to be updated and drawn i.e. shown!
+            menuManager.SetScene("main");
+            */
+        }
+
+        private void InitEventDispatcher()
+        {
+            eventDispatcher = new EventDispatcher(this);
+            Components.Add(eventDispatcher);
+
+            EventDispatcher.Subscribe(EventCategoryType.Pickup, HandleEvent);
+        }
+
         private void HandleEvent(EventData eventData)
         {
             if (eventData.EventCategoryType == EventCategoryType.Pickup)
@@ -192,26 +408,18 @@ namespace GDGame
                     ArrayList potion_data = eventData.Parameters[0] as ArrayList;
                     //effectparameters
                     EffectParameters effectParameters = new EffectParameters(modelEffect,
-                        null,
+                        null, //textureDictionary["textureName"],
                         Color.White, 1);
 
                     //model object
                     CollidableObject potionObject = new CollidableObject((string)potion_data[0] + objectManager.NewID(), ActorType.Interactable,
                         StatusType.Drawn | StatusType.Update, ((Transform3D)potion_data[3]).Clone() as Transform3D,
-                        effectParameters, redPotion);
+                        effectParameters, modelDictionary["potion_red"]);
 
                     HandHeldPickup potion = new HandHeldPickup(potionObject, PickupType.Potion, (string)potion_data[0], GameConstants.defualtInteractionDist, (Vector3)potion_data[2]);
                     objectManager.Add(potion);
                 }
             }
-        }
-
-        private void InitEventDispatcher()
-        {
-            eventDispatcher = new EventDispatcher(this);
-            Components.Add(eventDispatcher);
-
-            EventDispatcher.Subscribe(EventCategoryType.Pickup, HandleEvent);
         }
 
         private void InitCurves()
@@ -237,6 +445,14 @@ namespace GDGame
 
         private void InitDictionaries()
         {
+            //stores effects
+            effectDictionary = new Dictionary<string, BasicEffect>();
+
+            //stores textures, fonts & models
+            modelDictionary = new ContentDictionary<Model>("models", Content);
+            textureDictionary = new ContentDictionary<Texture2D>("textures", Content);
+            fontDictionary = new ContentDictionary<SpriteFont>("fonts", Content);
+
             //curves - notice we use a basic Dictionary and not a ContentDictionary since curves and rails are NOT media content
             transform3DCurveDictionary = new Dictionary<string, Transform3DCurve>();
 
@@ -274,11 +490,16 @@ namespace GDGame
             renderManager = new RenderManager(this, StatusType.Drawn, ScreenLayoutType.Single,
                 objectManager, cameraManager);
             Components.Add(renderManager);
-        }
 
-        private void InitFonts()
-        {
-            debugFont = Content.Load<SpriteFont>("Assets/Fonts/debug");
+            //add in-game ui
+            uiManager = new UIManager(this, StatusType.Drawn | StatusType.Update, _spriteBatch, 10);
+            uiManager.DrawOrder = 4;
+            Components.Add(uiManager);
+
+            //add menu
+            menuManager = new MenuManager(this, StatusType.Update | StatusType.Drawn, _spriteBatch);
+            menuManager.DrawOrder = 5; //highest number of all drawable managers since we want it drawn on top!
+            Components.Add(menuManager);
         }
 
         private void InitCameras3D()
@@ -380,179 +601,12 @@ namespace GDGame
             cameraManager.ActiveCameraIndex = 0; //0, 1, 2, 3
         }
 
-        private void InitEffects()
-        {
-            //to do...
-            unlitTexturedEffect = new BasicEffect(_graphics.GraphicsDevice);
-            unlitTexturedEffect.VertexColorEnabled = true; //otherwise we wont see RGB
-            unlitTexturedEffect.TextureEnabled = true;
-
-            //wireframe primitives with no lighting and no texture
-            unlitWireframeEffect = new BasicEffect(_graphics.GraphicsDevice);
-            unlitWireframeEffect.VertexColorEnabled = true;
-
-            //model effect
-            //add a ModelObject
-            modelEffect = new BasicEffect(_graphics.GraphicsDevice);
-            modelEffect.TextureEnabled = true;
-            modelEffect.LightingEnabled = true;
-            modelEffect.PreferPerPixelLighting = true;
-            //   this.modelEffect.SpecularPower = 512;
-            //  this.modelEffect.SpecularColor = Color.Red.ToVector3();
-            modelEffect.EnableDefaultLighting();
-        }
-
-        private void InitTextures()
-        {
-            //step 1 - texture
-            backSky
-                = Content.Load<Texture2D>("Assets/Textures/Skybox/back");
-            leftSky
-               = Content.Load<Texture2D>("Assets/Textures/Skybox/left");
-            rightSky
-              = Content.Load<Texture2D>("Assets/Textures/Skybox/right");
-            frontSky
-              = Content.Load<Texture2D>("Assets/Textures/Skybox/front");
-            topSky
-              = Content.Load<Texture2D>("Assets/Textures/Skybox/sky");
-
-            grass
-              = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/grass1");
-
-            nebula
-                = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/NebulaRed");
-
-            crate
-                = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
-
-            wizardTexture
-                = Content.Load<Texture2D>("Assets/Textures/Wizard/wizardTexture");
-
-            greenTableTexture
-               = Content.Load<Texture2D>("Assets/Textures/Props/ingredientTables/greenTableTexture");
-
-            greenHerbTexture
-                = Content.Load<Texture2D>("Assets/Textures/Props/Ingredients/greenHerbTexture");
-
-
-            cauldronTexture
-               = Content.Load<Texture2D>("Assets/Textures/props/Cauldron/cauldronTexture");
-
-            floorTexture
-               = Content.Load<Texture2D>("Assets/Textures/Level/floorTexture");
-
-
-            wallLeftTexture
-               = Content.Load<Texture2D>("Assets/Textures/Level/wallLeftTexture");
-
-            wallRightTexture
-               = Content.Load<Texture2D>("Assets/Textures/Level/wallRightTexture");
-
-            redTableTexture
-               = Content.Load<Texture2D>("Assets/Textures/Props/ingredientTables/redTableTexture");
-
-            blueTableTexture
-               = Content.Load<Texture2D>("Assets/Textures/Props/ingredientTables/blueTableTexture");
-
-            redRockTexture
-                = Content.Load<Texture2D>("Assets/Textures/Props/Ingredients/redRockTexture");
-
-            blueFlowerTexture
-                = Content.Load<Texture2D>("Assets/Textures/Props/Ingredients/blueFlowerTexture");
-
-            grindTableTexture
-                           = Content.Load<Texture2D>("Assets/Textures/Props/ingredientTables/grindTableTexture");
-
-            liquidTableTexture
-               = Content.Load<Texture2D>("Assets/Textures/Props/ingredientTables/liquidTableTexture");
-
-            lecternTexture
-               = Content.Load<Texture2D>("Assets/Textures/Props/ingredientTables/lectern");
-
-            lavaTexture
-               = Content.Load<Texture2D>("Assets/Textures/Level/lava");
-
-            pressSpaceTexture
-               = Content.Load<Texture2D>("Assets/Textures/UI/pressSpace");
-
-
-        }
-
-        private void InitModels()
-        {
-            box
-                = Content.Load<Model>("Assets/Models/Primitives/box2");
-
-            wizard
-              = Content.Load<Model>("Assets/Models/wizard");
-
-            redPotion
-                = Content.Load<Model>("Assets/Models/Interactables/potion1");
-
-            floor
-                = Content.Load<Model>("Assets/Models/Level/floor");
-
-            cauldronModel
-                = Content.Load<Model>("Assets/Models/Interactables/cauldron");
-
-            blueFlowerModel
-                = Content.Load<Model>("Assets/Models/Ingredients/blueFlower");
-
-            redRockModel
-                = Content.Load<Model>("Assets/Models/Ingredients/redRock");
-
-            greenHerbModel
-                = Content.Load<Model>("Assets/Models/Ingredients/greenHerb");
-
-            greenTableModel
-                = Content.Load<Model>("Assets/Models/Interactables/Tables/greenTable");
-
-            wallLeft
-                = Content.Load<Model>("Assets/Models/Level/wallLeft");
-
-            wallRight
-                = Content.Load<Model>("Assets/Models/Level/wallRight");
-
-            redTableModel
-                = Content.Load<Model>("Assets/Models/Interactables/Tables/redTable");
-
-            blueTableModel
-                = Content.Load<Model>("Assets/Models/Interactables/Tables/blueTable");
-
-            grindTableModel
-                = Content.Load<Model>("Assets/Models/Interactables/Tables/grindTable");
-
-            liquidTableModel
-                = Content.Load<Model>("Assets/Models/Interactables/Tables/liquidTable");
-
-            lecternModel
-                = Content.Load<Model>("Assets/Models/Interactables/Tables/lectern");
-
-            chestModel
-                = Content.Load<Model>("Assets/Models/Interactables/chest");
-
-            railing
-                = Content.Load<Model>("Assets/Models/Level/railing");
-
-            outerWalls
-                = Content.Load<Model>("Assets/Models/Level/outerWalls");
-
-            outerWallsRight
-                = Content.Load<Model>("Assets/Models/Level/outerWallsRight");
-
-            lava
-                = Content.Load<Model>("Assets/Models/Level/lava");
-        }
-
         #endregion Initialization - Managers, Cameras, Effects, Textures
 
-        #region Initialization - Vertices, Archetypes, Helpers, Drawn Content(e.g. Skybox)
+        #region Initialization - Drawn Content
 
         private void InitCollidableDrawnContent()
         {
-
-           // InitStaticCollidableGround();
-
             InitStaticCollidableLevel();
 
             InitStaticCollidableObjects();
@@ -598,13 +652,13 @@ namespace GDGame
 
             //effectparameters
             EffectParameters effectParameters = new EffectParameters(modelEffect,
-                floorTexture,
+                textureDictionary["floor"],
                 Color.White, 1);
 
             //model object
             CollidableObject collidableObject = new CollidableObject("floor", ActorType.CollidableDecorator,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, floor);
+                effectParameters, modelDictionary["floor"]);
 
             collidableObject.AddPrimitive(new Box(new Vector3(-100, 0, -100), Matrix.Identity, new Vector3(800, 53, 800)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -623,13 +677,13 @@ namespace GDGame
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                wallLeftTexture,
+                textureDictionary["wall_left"],
                 Color.White, 1);
 
             //model object
             collidableObject = new CollidableObject("wallLeft", ActorType.CollidableDecorator,
                StatusType.Drawn | StatusType.Update, transform3D,
-               effectParameters, wallLeft);
+               effectParameters, modelDictionary["wall_left"]);
 
             collidableObject.AddPrimitive(new Box(new Vector3(-460, 230, -100), Matrix.Identity, new Vector3(110, 430, 800)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -648,13 +702,13 @@ namespace GDGame
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                wallRightTexture,
+                textureDictionary["wall_right"],
                 Color.White, 1);
 
             //model object
             collidableObject = new CollidableObject("wallRight", ActorType.CollidableDecorator,
                StatusType.Drawn | StatusType.Update, transform3D,
-               effectParameters, wallRight);
+               effectParameters, modelDictionary["wall_right"]);
 
             collidableObject.AddPrimitive(new Box(new Vector3(-100, 230, -460), Matrix.Identity, new Vector3(800, 430, 123)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -680,7 +734,7 @@ namespace GDGame
             //model object
             collidableObject = new CollidableObject("wallRight", ActorType.CollidableDecorator,
                StatusType.Drawn | StatusType.Update, transform3D,
-               effectParameters, railing);
+               effectParameters, modelDictionary["railing"]);
 
             collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -705,7 +759,7 @@ namespace GDGame
             //model object
             collidableObject = new CollidableObject("outerWalls", ActorType.CollidableDecorator,
                StatusType.Drawn | StatusType.Update, transform3D,
-               effectParameters, outerWalls);
+               effectParameters, modelDictionary["outerWalls"]);
 
             collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -728,9 +782,9 @@ namespace GDGame
                 Color.White, 1);
 
             //model object
-            collidableObject = new CollidableObject("lava", ActorType.CollidableDecorator,
+            collidableObject = new CollidableObject("outer walls right", ActorType.CollidableDecorator,
                StatusType.Drawn | StatusType.Update, transform3D,
-               effectParameters, outerWallsRight);
+               effectParameters, modelDictionary["outerWallsRight"]);
 
             collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -749,13 +803,13 @@ namespace GDGame
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                lavaTexture,
+                textureDictionary["lava"],
                 Color.White, 1);
 
             //model object
             collidableObject = new CollidableObject("outerWalls", ActorType.CollidableDecorator,
                StatusType.Drawn | StatusType.Update, transform3D,
-               effectParameters, lava);
+               effectParameters, modelDictionary["lava"]);
 
             collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -779,12 +833,12 @@ namespace GDGame
 
             //effectparameters
             EffectParameters effectParameters = new EffectParameters(modelEffect,
-                cauldronTexture,
+                textureDictionary["cauldron"],
                 Color.White, 1);
 
             CollidableObject collidableObject = new CollidableObject("Cauldron", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, cauldronModel);
+                effectParameters, modelDictionary["cauldron"]);
 
             Cauldron cauldron = new Cauldron(collidableObject, "Cauldron", GameConstants.defualtInteractionDist);
             cauldron.AddPrimitive(new Sphere(new Vector3(0, 0, 0), 50), new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -806,12 +860,12 @@ namespace GDGame
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                crate,
+                textureDictionary["crate"],
                 Color.White, 1);
 
             collidableObject = new CollidableObject("Bin", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, box);
+                effectParameters, modelDictionary["box2"]);
 
             Bin bin = new Bin(collidableObject, "Bin", GameConstants.defualtInteractionDist);
             bin.AddPrimitive(new Box(new Vector3(0, 0, 0), Matrix.Identity, transform3D.Scale * 2.14f),
@@ -832,12 +886,12 @@ namespace GDGame
                                     Vector3.UnitY);         //up
 
             effectParameters = new EffectParameters(modelEffect,
-                grindTableTexture,
+                textureDictionary["table_grinder"],
                 Color.White, 1);
 
             collidableObject = new CollidableObject("GrindTable", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, grindTableModel);
+                effectParameters, modelDictionary["table_grinder"]);
 
             IngredientProccessor proccessor = new IngredientProccessor(collidableObject, "Grind Table", 
                 GameConstants.defualtInteractionDist, IngredientState.Solid);
@@ -862,12 +916,12 @@ namespace GDGame
                                     Vector3.UnitY);         //up
 
             effectParameters = new EffectParameters(modelEffect,
-                liquidTableTexture,
+                textureDictionary["table_liquid"],
                 Color.White, 1);
 
             collidableObject = new CollidableObject("LiquidTable", ActorType.Decorator,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, liquidTableModel);
+                effectParameters, modelDictionary["table_liquid"]);
 
             proccessor = new IngredientProccessor(collidableObject, "Liquid Table",
                 GameConstants.defualtInteractionDist, IngredientState.Solid);
@@ -881,7 +935,7 @@ namespace GDGame
 
             #endregion
 
-            #region Lecturn
+            #region Lectern
 
             ////////////////Lectern
             /////transform 
@@ -892,12 +946,12 @@ namespace GDGame
                                     Vector3.UnitY);         //up
 
             effectParameters = new EffectParameters(modelEffect,
-                lecternTexture,
+                textureDictionary["lectern"],
                 Color.White, 1);
 
             collidableObject = new CollidableObject("Lectern", ActorType.CollidableDecorator,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, lecternModel);
+                effectParameters, modelDictionary["lectern"]);
 
             collidableObject.AddPrimitive(new Box(new Vector3(0, 50, 0), Matrix.Identity, new Vector3(72, 111, 71)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -918,12 +972,12 @@ namespace GDGame
                                     Vector3.UnitY);         //up
 
             effectParameters = new EffectParameters(modelEffect,
-                crate,
+                textureDictionary["chest"],
                 Color.White, 1);
 
             collidableObject = new CollidableObject("Chest", ActorType.CollidableDecorator,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, chestModel);
+                effectParameters, modelDictionary["chest"]);
 
             collidableObject.AddPrimitive(new Box(new Vector3(30, 0, 0), Matrix.Identity, new Vector3(75, 94, 112)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -946,13 +1000,13 @@ namespace GDGame
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                redRockTexture,
+                textureDictionary["red_solid"],
                 Color.Red, 1);
 
             //model object
             collidableObject = new CollidableObject("RedRock", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, redRockModel);
+                effectParameters, modelDictionary["red_solid"]);
 
             //Red rock pickup
             HandHeldPickup pickup = new HandHeldPickup(collidableObject, PickupType.Ingredient, "Red Rock",
@@ -974,12 +1028,12 @@ namespace GDGame
                                     Vector3.UnitY);         //up
 
             effectParameters = new EffectParameters(modelEffect,
-                redTableTexture,
+                textureDictionary["table_red"],
                 Color.White, 1);
 
             collidableObject = new CollidableObject("RedRockGiver", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, redTableModel);
+                effectParameters, modelDictionary["table_red"]);
 
 
 
@@ -1007,13 +1061,13 @@ namespace GDGame
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                blueFlowerTexture,
+                textureDictionary["blue_solid"],
                 Color.White, 1);
 
             //model object
             collidableObject = new CollidableObject("BlueFlower", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, blueFlowerModel);
+                effectParameters, modelDictionary["blue_solid"]);
 
             //Blue flower pickup
             pickup = new HandHeldPickup(collidableObject, PickupType.Ingredient, "Blue Flower",
@@ -1035,12 +1089,12 @@ namespace GDGame
                                     Vector3.UnitY);         //up
 
             effectParameters = new EffectParameters(modelEffect,
-                blueTableTexture,
+                textureDictionary["table_blue"],
                 Color.White, 1);
 
             collidableObject = new CollidableObject("BlueFlowerGiver", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, blueTableModel);
+                effectParameters, modelDictionary["table_blue"]);
 
             ingredientGiver = new IngredientGiver(collidableObject, "Blue Flower Giver",
                 GameConstants.defualtInteractionDist, pickup);
@@ -1066,13 +1120,13 @@ namespace GDGame
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                greenHerbTexture,
+                textureDictionary["green_solid"],
                 Color.White, 1);
 
             //model object
             collidableObject = new CollidableObject("GreenMushroom", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, greenHerbModel);
+                effectParameters, modelDictionary["green_solid"]);
 
             pickup = new HandHeldPickup(collidableObject, PickupType.Ingredient, "Green Mushroom",
                 GameConstants.defualtInteractionDist, GameConstants.potionRedPos, GameConstants.greenSolid);
@@ -1093,12 +1147,12 @@ namespace GDGame
                                     Vector3.UnitY);         //up
 
             effectParameters = new EffectParameters(modelEffect,
-                greenTableTexture,
+                textureDictionary["table_green"],
                 Color.White, 1);
 
             collidableObject = new CollidableObject("GreenHerbGiver", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, greenTableModel);
+                effectParameters, modelDictionary["table_green"]);
 
             ingredientGiver = new IngredientGiver(collidableObject, "Green Herb Giver",
                 GameConstants.defualtInteractionDist, pickup);
@@ -1129,19 +1183,15 @@ namespace GDGame
             InitStaticModels();
         }
 
-        #region Static Models
-
         private void InitStaticModels()
         {
 
         }
 
-        #endregion`
-
         private void InitPlayer()
         {
             //transform
-            Transform3D transform3D = new Transform3D(new Vector3(0, 100, 0),
+            Transform3D transform3D = new Transform3D(new Vector3(0, 200, 0),
                                 new Vector3(0, 0, 0),       //rotation
                                 new Vector3(1, 1, 1),        //scale
                                     -Vector3.UnitZ,         //look
@@ -1149,13 +1199,13 @@ namespace GDGame
 
             //effectparameters
             EffectParameters effectParameters = new EffectParameters(modelEffect,
-                wizardTexture,
+                textureDictionary["wizard"],
                 Color.White, 1);
 
             //model object
             ModelObject playerObject = new ModelObject("Wizard", ActorType.Player,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, wizard);
+                effectParameters, modelDictionary["wizard"]);
 
             playerObject.ControllerList.Add(new DriveController("player Controler", ControllerType.FirstPerson,
                 this.keyboardManager, GameConstants.playerMoveSpeed, GameConstants.playerRotateSpeed));
@@ -1170,7 +1220,7 @@ namespace GDGame
             //interact helper
             PrimitiveObject interactHelper = archetypalTexturedQuad.Clone() as PrimitiveObject;
             interactHelper.ID = "spacebar helper";
-            interactHelper.EffectParameters.Texture = pressSpaceTexture;
+            interactHelper.EffectParameters.Texture = textureDictionary["helper_space"];
             interactHelper.Transform3D.Scale = new Vector3(80, 56, 0);
             interactHelper.StatusType = StatusType.Off;
             interactHelper.ActorType = ActorType.Decorator;
@@ -1187,34 +1237,9 @@ namespace GDGame
             persistantData = new PersistantData();
         }
 
+        #endregion Initialization - Drawn Content
+
         #region Vertices, helpers and skybox
-
-        private void InitVertices()
-        {
-            vertices
-                = new VertexPositionColorTexture[4];
-
-            float halfLength = 0.5f;
-            //TL
-            vertices[0] = new VertexPositionColorTexture(
-                new Vector3(-halfLength, halfLength, 0),
-                new Color(255, 255, 255, 255), new Vector2(0, 0));
-
-            //BL
-            vertices[1] = new VertexPositionColorTexture(
-                new Vector3(-halfLength, -halfLength, 0),
-                Color.White, new Vector2(0, 1));
-
-            //TR
-            vertices[2] = new VertexPositionColorTexture(
-                new Vector3(halfLength, halfLength, 0),
-                Color.White, new Vector2(1, 0));
-
-            //BR
-            vertices[3] = new VertexPositionColorTexture(
-                new Vector3(halfLength, -halfLength, 0),
-                Color.White, new Vector2(1, 1));
-        }
 
         private void InitPrimitiveArchetypes() //formerly InitTexturedQuad
         {
@@ -1222,7 +1247,7 @@ namespace GDGame
                Vector3.One, Vector3.UnitZ, Vector3.UnitY);
 
             EffectParameters effectParameters = new EffectParameters(unlitTexturedEffect,
-                grass, /*bug*/ Color.White, 1);
+                textureDictionary["grass1"], /*bug*/ Color.White, 1);
 
             IVertexData vertexData = new VertexData<VertexPositionColorTexture>(
                 vertices, Microsoft.Xna.Framework.Graphics.PrimitiveType.TriangleStrip, 2);
@@ -1270,79 +1295,51 @@ namespace GDGame
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
             //  primitiveObject.StatusType = StatusType.Off; //Experiment of the effect of StatusType
             primitiveObject.ID = "sky back";
-            primitiveObject.EffectParameters.Texture = backSky;
+            primitiveObject.EffectParameters.Texture = textureDictionary["sky_back"]; ;
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
             objectManager.Add(primitiveObject);
 
             //left
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "left back";
-            primitiveObject.EffectParameters.Texture = leftSky;
+            primitiveObject.EffectParameters.Texture = textureDictionary["sky_left"]; ;
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
             primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 90, 0);
-            primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
+            primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
             objectManager.Add(primitiveObject);
 
             //right
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "sky right";
-            primitiveObject.EffectParameters.Texture = rightSky;
+            primitiveObject.EffectParameters.Texture = textureDictionary["sky_right"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 20);
             primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, -90, 0);
-            primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
+            primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
             objectManager.Add(primitiveObject);
 
             //top
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "sky top";
-            primitiveObject.EffectParameters.Texture = topSky;
+            primitiveObject.EffectParameters.Texture = textureDictionary["sky"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(-90, -90, 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(90, -90, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, worldScale / 2.0f, 0);
             objectManager.Add(primitiveObject);
 
             //front
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "sky front";
-            primitiveObject.EffectParameters.Texture = frontSky;
+            primitiveObject.EffectParameters.Texture = textureDictionary["sky_front"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, worldScale / 2.0f);
             objectManager.Add(primitiveObject);
         }
 
-        #endregion
+        #endregion Vertices, helpers and skybox
 
-        private void InitGraphics(int width, int height)
-        {
-            //set resolution
-            _graphics.PreferredBackBufferWidth = width;
-            _graphics.PreferredBackBufferHeight = height;
-
-            //dont forget to apply resolution changes otherwise we wont see the new WxH
-            _graphics.ApplyChanges();
-
-            //set screen centre based on resolution
-            screenCentre = new Vector2(width / 2, height / 2);
-
-            //set cull mode to show front and back faces - inefficient but we will change later
-            RasterizerState rs = new RasterizerState();
-            rs.CullMode = CullMode.None;
-            _graphics.GraphicsDevice.RasterizerState = rs;
-
-            //we use a sampler state to set the texture address mode to solve the aliasing problem between skybox planes
-            SamplerState samplerState = new SamplerState();
-            samplerState.AddressU = TextureAddressMode.Clamp;
-            samplerState.AddressV = TextureAddressMode.Clamp;
-            _graphics.GraphicsDevice.SamplerStates[0] = samplerState;
-
-            //set blending
-            _graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-
-            //set screen centre for use when centering mouse
-            screenCentre = new Vector2(width / 2, height / 2);
-        }
+        #region Load & Unload Game Assets
 
         protected override void LoadContent()
         {
@@ -1353,7 +1350,7 @@ namespace GDGame
             base.UnloadContent();
         }
 
-        #endregion Initialization - Vertices, Archetypes, Helpers, Drawn Content(e.g. Skybox)
+        #endregion Load & Unload Game Assets
 
         #region Update & Draw
 

@@ -11,9 +11,7 @@ namespace GDLibrary.GameComponents
     public class PausableGameComponent : GameComponent
     {
         #region Fields
-
         private StatusType statusType;
-
         #endregion Fields
 
         #region Properties

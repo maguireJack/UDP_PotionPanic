@@ -13,7 +13,6 @@ namespace GDLibrary.Managers
     public class MouseManager : GameComponent
     {
         #region Fields
-
         private PhysicsManager physicsManager;
         private MouseState newState, oldState;
 
@@ -251,9 +250,9 @@ namespace GDLibrary.Managers
         #endregion Constructors & Core
 
         #region Ray Picking
-
         private float frac;
         private CollisionSkin skin;
+
         /// <summary>
         /// Used when in 1st person collidable camera mode start distance allows us to start the ray outside the
         /// collidable skin of the 1st person colliable camera object, otherwise the only thing we would ever collide

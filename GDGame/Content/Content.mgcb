@@ -13,14 +13,33 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Assets/Fonts/File.spritefont
+#begin Assets/Debug/Textures/checkerboard.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Debug/Textures/checkerboard.png
+
+#begin Assets/Fonts/debug.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Assets/Fonts/File.spritefont;Assets/Fonts/debug.spritefont
+/build:Assets/Fonts/debug.spritefont
 
-#begin Assets/Models/Ingredients/blueFlower.3ds
+#begin Assets/Fonts/ui.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Assets/Fonts/ui.spritefont
+
+#begin Assets/Models/Ingredients/blue_solid.3ds
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -37,9 +56,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Ingredients/blueFlower.3ds
+/build:Assets/Models/Ingredients/blue_solid.3ds
 
-#begin Assets/Models/Ingredients/greenHerb.3ds
+#begin Assets/Models/Ingredients/green_solid.3ds
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -56,9 +75,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Ingredients/greenHerb.3ds
+/build:Assets/Models/Ingredients/green_solid.3ds
 
-#begin Assets/Models/Ingredients/redRock.3ds
+#begin Assets/Models/Ingredients/red_solid.3ds
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -75,7 +94,7 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Ingredients/redRock.3ds
+/build:Assets/Models/Ingredients/red_solid.3ds
 
 #begin Assets/Models/Interactables/cauldron.fbx
 /importer:FbxImporter
@@ -134,63 +153,6 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Models/Interactables/potion1.3ds
 
-#begin Assets/Models/Interactables/Tables/blueTable.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Assets/Models/Interactables/Tables/blueTable.fbx
-
-#begin Assets/Models/Interactables/Tables/greenTable.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Assets/Models/Interactables/Tables/greenTable.fbx
-
-#begin Assets/Models/Interactables/Tables/grindTable.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Assets/Models/Interactables/Tables/grindTable.fbx
-
 #begin Assets/Models/Interactables/Tables/lectern.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -210,7 +172,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Models/Interactables/Tables/lectern.fbx
 
-#begin Assets/Models/Interactables/Tables/liquidTable.fbx
+#begin Assets/Models/Interactables/Tables/table_blue.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -227,9 +189,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Interactables/Tables/liquidTable.fbx
+/build:Assets/Models/Interactables/Tables/table_blue.fbx
 
-#begin Assets/Models/Interactables/Tables/redTable.fbx
+#begin Assets/Models/Interactables/Tables/table_green.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -246,7 +208,64 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Interactables/Tables/redTable.fbx
+/build:Assets/Models/Interactables/Tables/table_green.fbx
+
+#begin Assets/Models/Interactables/Tables/table_grinder.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Assets/Models/Interactables/Tables/table_grinder.fbx
+
+#begin Assets/Models/Interactables/Tables/table_liquid.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Assets/Models/Interactables/Tables/table_liquid.fbx
+
+#begin Assets/Models/Interactables/Tables/table_red.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Assets/Models/Interactables/Tables/table_red.fbx
 
 #begin Assets/Models/Level/floor.fbx
 /importer:FbxImporter
@@ -343,7 +362,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Models/Level/railing.fbx
 
-#begin Assets/Models/Level/wallLeft.fbx
+#begin Assets/Models/Level/wall_left.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -360,9 +379,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Level/wallLeft.fbx
+/build:Assets/Models/Level/wall_left.fbx
 
-#begin Assets/Models/Level/wallRight.fbx
+#begin Assets/Models/Level/wall_right.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -379,7 +398,7 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Level/wallRight.fbx
+/build:Assets/Models/Level/wall_right.fbx
 
 #begin Assets/Models/Primitives/box2.FBX
 /importer:FbxImporter
@@ -593,18 +612,6 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Foliage/Ground/grass1.jpg
 
-#begin Assets/Textures/Foliage/Ground/NebulaRed.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/Foliage/Ground/NebulaRed.png
-
 #begin Assets/Textures/Foliage/Trees/tree1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -665,7 +672,7 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Foliage/Trees/tree5.png
 
-#begin Assets/Textures/level/floorTexture.png
+#begin Assets/Textures/level/floor.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -675,7 +682,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/level/floorTexture.png
+/build:Assets/Textures/level/floor.png
 
 #begin Assets/Textures/level/lava.jpg
 /importer:TextureImporter
@@ -689,7 +696,7 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/level/lava.jpg
 
-#begin Assets/Textures/level/wallLeftTexture.png
+#begin Assets/Textures/level/nebula_red.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -699,9 +706,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/level/wallLeftTexture.png
+/build:Assets/Textures/level/nebula_red.png
 
-#begin Assets/Textures/level/wallRightTexture.png
+#begin Assets/Textures/level/wall_left.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -711,9 +718,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/level/wallRightTexture.png
+/build:Assets/Textures/level/wall_left.png
 
-#begin Assets/Textures/Props/Cauldron/cauldronTexture.png
+#begin Assets/Textures/level/wall_right.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -723,9 +730,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/Cauldron/cauldronTexture.png
+/build:Assets/Textures/level/wall_right.png
 
-#begin Assets/Textures/Props/Chest/chestTexture.png
+#begin Assets/Textures/Props/Cauldron/cauldron.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -735,9 +742,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/Chest/chestTexture.png
+/build:Assets/Textures/Props/Cauldron/cauldron.png
 
-#begin Assets/Textures/Props/Crates/crate1.jpg
+#begin Assets/Textures/Props/Chest/chest.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -747,9 +754,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/Crates/crate1.jpg
+/build:Assets/Textures/Props/Chest/chest.png
 
-#begin Assets/Textures/Props/Crates/crate5.jpg
+#begin Assets/Textures/Props/Crates/crate.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -759,9 +766,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/Crates/crate5.jpg
+/build:Assets/Textures/Props/Crates/crate.jpg
 
-#begin Assets/Textures/Props/Crates/spacekey.png
+#begin Assets/Textures/Props/Ingredients/blue_solid.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -771,9 +778,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/Crates/spacekey.png
+/build:Assets/Textures/Props/Ingredients/blue_solid.png
 
-#begin Assets/Textures/Props/Ingredients/blueFlowerTexture.png
+#begin Assets/Textures/Props/Ingredients/green_solid.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -783,9 +790,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/Ingredients/blueFlowerTexture.png
+/build:Assets/Textures/Props/Ingredients/green_solid.png
 
-#begin Assets/Textures/Props/Ingredients/greenHerbTexture.png
+#begin Assets/Textures/Props/Ingredients/red_solid.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -795,55 +802,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/Ingredients/greenHerbTexture.png
-
-#begin Assets/Textures/Props/Ingredients/redRockTexture.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/Ingredients/redRockTexture.png
-
-#begin Assets/Textures/Props/ingredientTables/blueTableTexture.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/ingredientTables/blueTableTexture.png
-
-#begin Assets/Textures/Props/ingredientTables/greenTableTexture.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/ingredientTables/greenTableTexture.png
-
-#begin Assets/Textures/Props/ingredientTables/grindTableTexture.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/ingredientTables/grindTableTexture.png
+/build:Assets/Textures/Props/Ingredients/red_solid.png
 
 #begin Assets/Textures/Props/ingredientTables/lectern.png
 /importer:TextureImporter
@@ -857,7 +816,7 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Props/ingredientTables/lectern.png
 
-#begin Assets/Textures/Props/ingredientTables/liquidTableTexture.png
+#begin Assets/Textures/Props/ingredientTables/table_blue.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -867,9 +826,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/ingredientTables/liquidTableTexture.png
+/build:Assets/Textures/Props/ingredientTables/table_blue.png
 
-#begin Assets/Textures/Props/ingredientTables/redTableTexture.png
+#begin Assets/Textures/Props/ingredientTables/table_green.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -879,9 +838,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/ingredientTables/redTableTexture.png
+/build:Assets/Textures/Props/ingredientTables/table_green.png
 
-#begin Assets/Textures/Props/Player/wizard_atlas.png
+#begin Assets/Textures/Props/ingredientTables/table_grinder.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -891,9 +850,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/Player/wizard_atlas.png
+/build:Assets/Textures/Props/ingredientTables/table_grinder.png
 
-#begin Assets/Textures/Props/Potion/potion texture.png
+#begin Assets/Textures/Props/ingredientTables/table_liquid.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -903,7 +862,31 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/Potion/potion texture.png
+/build:Assets/Textures/Props/ingredientTables/table_liquid.png
+
+#begin Assets/Textures/Props/ingredientTables/table_red.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Props/ingredientTables/table_red.png
+
+#begin Assets/Textures/Props/Potion/potion1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Props/Potion/potion1.png
 
 #begin Assets/Textures/Props/Potion/red.png
 /importer:TextureImporter
@@ -917,54 +900,6 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Props/Potion/red.png
 
-#begin Assets/Textures/Skybox/back.bmp
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/Skybox/back.bmp
-
-#begin Assets/Textures/Skybox/front.bmp
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/Skybox/front.bmp
-
-#begin Assets/Textures/Skybox/left.bmp
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/Skybox/left.bmp
-
-#begin Assets/Textures/Skybox/right.bmp
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/Skybox/right.bmp
-
 #begin Assets/Textures/Skybox/sky.bmp
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -977,7 +912,7 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Skybox/sky.bmp
 
-#begin Assets/Textures/UI/pressSpace.png
+#begin Assets/Textures/Skybox/sky_back.bmp
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -987,9 +922,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/UI/pressSpace.png
+/build:Assets/Textures/Skybox/sky_back.bmp
 
-#begin Assets/Textures/Wizard/wizardTexture.png
+#begin Assets/Textures/Skybox/sky_front.bmp
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -999,5 +934,65 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/Wizard/wizardTexture.png
+/build:Assets/Textures/Skybox/sky_front.bmp
+
+#begin Assets/Textures/Skybox/sky_left.bmp
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Skybox/sky_left.bmp
+
+#begin Assets/Textures/Skybox/sky_right.bmp
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Skybox/sky_right.bmp
+
+#begin Assets/Textures/UI/helper_space.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/helper_space.png
+
+#begin Assets/Textures/UI/key_space.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/key_space.png
+
+#begin Assets/Textures/Wizard/wizard.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Wizard/wizard.png
 

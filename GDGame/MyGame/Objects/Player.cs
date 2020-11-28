@@ -9,7 +9,6 @@ using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace GDGame.MyGame.Objects
 {

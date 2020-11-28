@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace GDLibrary.Parameters
 {
@@ -8,171 +8,147 @@ namespace GDLibrary.Parameters
     /// </summary>
     public class Transform2D : ICloneable
     {
-        #region Statics
-        public static Transform2D One
-        {
-            get
-            {
-                return new Transform2D(Vector2.One);
-            }
-        }
-        #endregion
-
         #region Fields
         private Vector2 translation, scale;
         private float rotationInDegrees, rotationInRadians;
         private Vector2 origin;
-
-        private bool bBoundsDirty;
-        private Matrix originMatrix, translationMatrix, rotationMatrix, scaleMatrix;
-
         private Rectangle bounds;
         private Integer2 originalDimensions;
+        private Rectangle originalBounds;
+        private Matrix world;
+        private bool isDirty = true;
+        #endregion Fields
 
-        #endregion
+        #region Properties
 
-        #region Properties     
-        protected Matrix RotationMatrix
-        {
-            get
-            {
-                return this.rotationMatrix;
-            }
-        }
-        protected Matrix PositionMatrix
-        {
-            get
-            {
-                return this.translationMatrix;
-            }
-        }
         public Vector2 Translation
         {
             get
             {
-                return this.translation;
+                return translation;
             }
             set
             {
-                this.translation = value;
-                this.translationMatrix = Matrix.CreateTranslation(new Vector3(this.translation, 0));
-                this.bBoundsDirty = true;
+                translation = value;
+                isDirty = true;
             }
         }
+
         public float RotationInDegrees
         {
             get
             {
-                return this.rotationInDegrees;
+                return rotationInDegrees;
             }
             set
             {
-                this.rotationInDegrees = value;
-                this.rotationInDegrees %= 360;
-                this.rotationInRadians = MathHelper.ToRadians(rotationInDegrees);
-                this.rotationMatrix = Matrix.CreateRotationZ(this.rotationInRadians);
-                this.bBoundsDirty = true;
+                //wraps the value so only ever 0 - 359
+                rotationInDegrees = value % 360;
+                //automatically generate radians value to save time when we call Draw()
+                rotationInRadians = MathHelper.ToRadians(rotationInDegrees);
+                isDirty = true;
             }
         }
+
         public float RotationInRadians
         {
             get
             {
-                return this.rotationInRadians;
+                return rotationInRadians;
             }
         }
+
         public Vector2 Scale
         {
             get
             {
-                return this.scale;
+                return scale;
             }
             set
             {
                 //do not allow scale to go to zero
-                this.scale = (value != Vector2.Zero) ? value : Vector2.One;
-                this.scaleMatrix = Matrix.CreateScale(new Vector3(this.scale, 1));
-                this.bBoundsDirty = true;
+                scale = (value != Vector2.Zero) ? value : Vector2.One;
+                isDirty = true;
             }
         }
+
         public Vector2 Origin
         {
             get
             {
-                return this.origin;
+                return origin;
             }
             set
             {
-                this.origin = value;
-                this.originMatrix = Matrix.CreateTranslation(new Vector3(-origin, 0));
-                this.bBoundsDirty = true;
+                origin = value;
+                isDirty = true;
             }
         }
-
-        private Rectangle originalBounds;
 
         public Matrix World
         {
             get
             {
-                return originMatrix * scaleMatrix * rotationMatrix * translationMatrix;
+                if (isDirty)
+                {
+                    //used to generate World matrix which in turn is used to move bounding box from its start position
+                    world = Matrix.CreateTranslation(new Vector3(-origin, 0))
+                        * Matrix.CreateScale(new Vector3(scale, 1))
+                        * Matrix.CreateRotationZ(rotationInRadians)
+                        * Matrix.CreateTranslation(new Vector3(translation, 0));
+                }
+
+                return world;
             }
         }
+
         public Rectangle Bounds
         {
             get
             {
-                if (this.bBoundsDirty)
+                if (isDirty)
                 {
                     //calculate where the new bounding box is in screen space based on the ISRoT transformation from the World matrix
-                    this.bounds = CollisionUtility.CalculateTransformedBoundingRectangle(this.originalBounds, this.World);
-                    this.bBoundsDirty = false;
+                    bounds = CollisionUtility.CalculateTransformedBoundingRectangle(originalBounds, World);
+                    isDirty = false;
                 }
 
-                return this.bounds;
+                return bounds;
             }
         }
-        #endregion
 
-        //used by dynamic sprites i.e. which need a look and right vector for movement
+        #endregion Properties
+
+        /// <summary>
+        /// Creates the transform2D object specific to an Actor2D
+        /// </summary>
+        /// <param name="translation">Drawn position of the origin of the Actor2D on screen</param>
+        /// <param name="rotationInDegrees">Rotation in degrees around the Z-axis</param>
+        /// <param name="scale">Scale (x,y)</param>
+        /// <param name="origin">Origin (x,y) normally (0,0) but will need to be set if we want to rotate the Actor2D around its centre</param>
+        /// <param name="dimensions">Dimensions of the unscaled bounding box that we want to place around the Actor2D</param>
         public Transform2D(Vector2 translation, float rotationInDegrees, Vector2 scale,
             Vector2 origin, Integer2 dimensions)
         {
-            Initialize(translation, rotationInDegrees, scale, origin, dimensions);
-        }
+            Translation = translation;
+            Scale = scale;
+            RotationInDegrees = rotationInDegrees;
+            Origin = origin;
 
-        //used by static background sprites that cover the entire screen OR more than the entire screen
-        public Transform2D(Vector2 scale) : this(Vector2.Zero, 0, scale, Vector2.Zero, Integer2.Zero)
-        {
-
+            //original bounding box based on the texture source rectangle dimensions
+            originalBounds = new Rectangle(0, 0, dimensions.X, dimensions.Y);
+            originalDimensions = dimensions;
         }
 
         //used internally when creating the originalTransform object
         private Transform2D()
         {
-
         }
-
-        //called by constructor to setup the object
-        protected void Initialize(Vector2 translation, float rotationInDegrees, Vector2 scale, Vector2 origin, Integer2 dimensions)
-        {
-            this.Translation = translation;
-            this.Scale = scale;
-            this.RotationInDegrees = rotationInDegrees;
-            this.Origin = origin;
-
-            //original bounding box based on the texture source rectangle dimensions
-            this.originalBounds = new Rectangle(0, 0, dimensions.X, dimensions.Y);
-            this.originalDimensions = dimensions;
-        }
-
 
         public object Clone()
         {
             //deep because all variables are either C# types (e.g. primitives, structs, or enums) or  XNA types
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
-
-
 }
