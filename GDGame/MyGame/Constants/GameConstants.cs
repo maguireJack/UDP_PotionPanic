@@ -73,7 +73,7 @@ namespace GDGame.MyGame.Constants
 
         #region Objects
 
-        public static readonly Vector3 cauldronPos = new Vector3(-100, 40, -100);
+        public static readonly Vector3 cauldronPos = new Vector3(-50, 40, 90);
         public static readonly Vector3 binPos = new Vector3(-370, 53, -100);
 
         #endregion

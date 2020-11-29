@@ -827,7 +827,7 @@ namespace GDGame
             //transform
             Transform3D transform3D = new Transform3D(GameConstants.cauldronPos,
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(0.8f, 0.8f, 0.8f),        //scale
+                                new Vector3(1, 1, 1),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
