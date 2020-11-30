@@ -4,9 +4,12 @@ using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 
 namespace GDGame.MyGame.Constants
 {
@@ -14,7 +17,7 @@ namespace GDGame.MyGame.Constants
     {
         #region Common
 
-        public static readonly Keys[][] MoveKeys = { 
+        public static readonly Keys[][] MoveKeys = {
             new Keys[]{ Keys.W, Keys.S, Keys.A, Keys.D },
             new Keys[]{ Keys.Up, Keys.Down, Keys.Left, Keys.Right }
         };
@@ -82,7 +85,7 @@ namespace GDGame.MyGame.Constants
 
         //Name, Upgrade Action, { TierNum, Cost, Value } - value = value to pass via event
         public static readonly Upgrade upgradeSpeed = new Upgrade("Move Speed", EventActionType.MoveSpeedUp,
-        new Dictionary<int, Tuple<int, float>>(){ 
+        new Dictionary<int, Tuple<int, float>>(){
             { 1, new Tuple<int, float>(100, 10) },
             { 2, new Tuple<int, float>(150, 25) },
             { 3, new Tuple<int, float>(250, 50) }
@@ -101,53 +104,91 @@ namespace GDGame.MyGame.Constants
 
         #region Ingredients
 
-        public static readonly Ingredient redSolid = new Ingredient(IngredientType.Red, IngredientState.Solid);
-        public static readonly Ingredient redDust = new Ingredient(IngredientType.Red, IngredientState.Dust);
-        public static readonly Ingredient redLiquid = new Ingredient(IngredientType.Red, IngredientState.Liquid);
-
-        public static readonly Ingredient blueSolid = new Ingredient(IngredientType.Blue, IngredientState.Solid);
-        public static readonly Ingredient blueDust = new Ingredient(IngredientType.Blue, IngredientState.Dust);
-        public static readonly Ingredient blueLiquid = new Ingredient(IngredientType.Blue, IngredientState.Liquid);
-
-        public static readonly Ingredient greenSolid = new Ingredient(IngredientType.Green, IngredientState.Solid);
-        public static readonly Ingredient greenDust = new Ingredient(IngredientType.Green, IngredientState.Dust);
-        public static readonly Ingredient greenLiquid = new Ingredient(IngredientType.Green, IngredientState.Liquid);
-
+        public static readonly Dictionary<string, Objects.Ingredient> ingredients = new Dictionary<string, Objects.Ingredient>()
+        {
+            { "Red_Solid", new Objects.Ingredient(IngredientType.Red, IngredientState.Solid) },
+            { "Red_Dust", new Objects.Ingredient(IngredientType.Red, IngredientState.Dust) },
+            { "Red_Liquid", new Objects.Ingredient(IngredientType.Red, IngredientState.Liquid) },
+            { "Blue_Solid", new Objects.Ingredient(IngredientType.Blue, IngredientState.Solid) },
+            { "Blue_Dust", new Objects.Ingredient(IngredientType.Blue, IngredientState.Dust) },
+            { "Blue_Liquid", new Objects.Ingredient(IngredientType.Blue, IngredientState.Liquid) },
+            { "Green_Solid", new Objects.Ingredient(IngredientType.Green, IngredientState.Solid) },
+            { "Green_Dust", new Objects.Ingredient(IngredientType.Green, IngredientState.Dust) },
+            { "Green_Liquid", new Objects.Ingredient(IngredientType.Green, IngredientState.Liquid) }
+        };
 
         #endregion
 
-        #region Potion Data
+        #region Load Data
 
-        //Name, Points, HandPos, Transform3D
-        public static readonly ArrayList potion1_data = new ArrayList { "Potion of Healing", 5, new Vector3(4, 18, -1.5f),
-            new Transform3D(new Vector3(cauldronPos.X, cauldronPos.Y + 60, cauldronPos.Z),   //translation
-                Vector3.Zero,           //rotation
-                new Vector3(2, 2, 2),   //scale
-                -Vector3.UnitZ,         //look
-                Vector3.UnitY)          //up
-        };
-        public static readonly ArrayList potion2_data = new ArrayList { "Potion of Something", 6, new Vector3(4, 18, -1.5f),
-        new Transform3D(new Vector3(cauldronPos.X, cauldronPos.Y + 60, cauldronPos.Z),   //translation
-                Vector3.Zero,           //rotation
-                new Vector3(2, 2, 2),   //scale
-                -Vector3.UnitZ,         //look
-                Vector3.UnitY)          //up
-        };
-
+        public static readonly Dictionary<string, ArrayList> modelData = new Dictionary<string, ArrayList>();
         public static readonly Dictionary<Recipe, ArrayList> potions = new Dictionary<Recipe, ArrayList>();
+        public static readonly float potionSpawnHeight = 100;
 
-        public static void InitPotions()
+        private class ModelData
         {
-            Recipe recipe = new Recipe();
-            recipe.Add(redSolid, 2);
-            recipe.Add(blueSolid, 1);
-            potions.Add(recipe, potion1_data);
-
-            recipe = new Recipe();
-            recipe.Add(redSolid, 1);
-            recipe.Add(blueSolid, 2);
-            potions.Add(recipe, potion2_data);
+            public string ModelName { get; set; }
+            public List<float> HoldPosition { get; set; }
+            public List<float> Scale { get; set; }
         }
+
+        private class Ingredient
+        {
+            public string Type { get; set; }
+            public string State { get; set; }
+            public int Count { get; set; }
+        }
+
+        private class PotionRecipe
+        {
+            [JsonProperty("Name:")]
+            public string Name { get; set; }
+            public string ModelName { get; set; }
+            public List<Ingredient> Ingredients { get; set; }
+        }
+
+        private class Root
+        {
+            public List<ModelData> ModelData { get; set; }
+            public List<PotionRecipe> PotionRecipes { get; set; }
+        }
+
+
+        public static void LoadPotions()
+        {
+            try
+            {
+                Root root;
+                using (StreamReader r = new StreamReader("Content/Assets/Data/Data.json"))
+                {
+                    string json = r.ReadToEnd();
+                    root = JsonConvert.DeserializeObject<Root>(json);
+                }
+
+                foreach (ModelData data in root.ModelData)
+                {
+                    Vector3 holdPos = new Vector3(data.HoldPosition[0], data.HoldPosition[1], data.HoldPosition[2]);
+                    Vector3 scale = new Vector3(data.Scale[0], data.Scale[1], data.Scale[2]);
+                    modelData.Add(data.ModelName, new ArrayList { holdPos, scale });
+                }
+
+                foreach (PotionRecipe pr in root.PotionRecipes)
+                {
+                    Recipe recipe = new Recipe();
+                    foreach (Ingredient ingredient in pr.Ingredients)
+                    {
+                        recipe.Add(ingredients[ingredient.Type + "_" + ingredient.State], ingredient.Count);
+                    }
+                    potions.Add(recipe, new ArrayList { pr.Name, pr.ModelName });
+                }
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
 
         #endregion
     }

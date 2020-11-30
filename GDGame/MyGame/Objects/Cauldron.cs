@@ -30,7 +30,7 @@ namespace GDGame.MyGame.Objects
         {
             if(eventData.EventCategoryType == EventCategoryType.Interactable)
             {
-                if (eventData.EventActionType == EventActionType.OnUnlock)
+                if (eventData.EventActionType == EventActionType.OnUnlock && ((string)eventData.Parameters[0]).Equals("Cauldron"))
                     Unlock();
             }
         }
@@ -39,7 +39,6 @@ namespace GDGame.MyGame.Objects
 
         public override void Update(GameTime gameTime)
         {
-            Recipes();
             base.Update(gameTime);
         }
 
@@ -49,6 +48,7 @@ namespace GDGame.MyGame.Objects
             {
                 case PickupType.Ingredient:
                     Add(item.Ingredient);
+                    MakePotion();
                     break;
                 default:
                     return false;
@@ -66,28 +66,20 @@ namespace GDGame.MyGame.Objects
             else inventory.Add(item, 1);
         }
 
-        private void Recipes()
+        private void MakePotion()
         {
-            int count = 0;
-            foreach(int value in inventory.Ingredients.Values)
+            //for each key (recipe) check to see if the inventory of the cauldron matches the recipe
+            foreach (Recipe key in GameConstants.potions.Keys)
             {
-                count += value;
-            }
-            if(count > 2)
-            {
-                //for each key (recipe) check to see if the inventory of the cauldron matches the recipe
-                foreach (Recipe key in GameConstants.potions.Keys)
+                if (inventory.Equals(key))
                 {
-                    if (inventory.Equals(key))
-                    {
-                        //If it does, get the data of the potion and dispatch an event
-                        EventDispatcher.Publish(new EventData(EventCategoryType.Pickup,
-                            EventActionType.OnCreate, new object[] { GameConstants.potions[key] }));
-                        Lock(); //Lock the cauldron so the player cannot put items in until the potion is taken away 
-                        break;
-                    }
+                    //If it does, get the data of the potion and dispatch an event
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Pickup,
+                        EventActionType.OnCreate, new object[] { GameConstants.potions[key] }));
+                    Lock(); //Lock the cauldron so the player cannot put items in until the potion is taken away 
+                    inventory.Clear();
+                    break;
                 }
-                inventory.Clear();
             }
         }
     }

@@ -65,11 +65,12 @@ namespace GDGame.MyGame.Objects
                             return false;
                         }
                         //do the same keys have the same values
-                        if(ingredients[key] == other.ingredients[key])
+                        if(ingredients[key] != other.ingredients[key])
                         {
-                            return true;
+                            return false;
                         }
                     }
+                    return true;
                 }
             }
             return false;

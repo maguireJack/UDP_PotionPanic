@@ -48,8 +48,12 @@ namespace GDLibrary.Core.Parameters.Time
         public bool IsDone(GameTime gameTime)
         {
             elapsedTime = gameTime.TotalGameTime.TotalMilliseconds - startTime;
-            isRunning = false;
-            return elapsedTime >= timerLengthMS;
+            if(elapsedTime >= timerLengthMS)
+            {
+                isRunning = false;
+                return true;
+            }
+            return false;
         }
     }
 }

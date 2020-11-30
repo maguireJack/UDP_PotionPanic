@@ -173,6 +173,7 @@
         OnSpawn,
 
         OnCreate,
+        OnProcess,
 
         //sent to interactable actors to prevent them from being interacted with
         OnLock,

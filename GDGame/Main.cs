@@ -198,9 +198,15 @@ namespace GDGame
             textureDictionary.Load("Assets/Textures/Props/ingredientTables/table_liquid");
 
             //ingredients
-            textureDictionary.Load("Assets/Textures/Props/Ingredients/red_solid");
-            textureDictionary.Load("Assets/Textures/Props/Ingredients/blue_solid");
-            textureDictionary.Load("Assets/Textures/Props/Ingredients/green_solid");
+            textureDictionary.Load("Assets/Textures/Props/Ingredients/Red_Solid");
+            textureDictionary.Load("Assets/Textures/Props/Ingredients/Blue_Solid");
+            textureDictionary.Load("Assets/Textures/Props/Ingredients/Green_Solid");
+            textureDictionary.Load("Assets/Textures/Props/Ingredients/Red_Dust");
+            textureDictionary.Load("Assets/Textures/Props/Ingredients/Blue_Dust");
+            textureDictionary.Load("Assets/Textures/Props/Ingredients/Green_Dust");
+            textureDictionary.Load("Assets/Textures/Props/Ingredients/Red_Liquid");
+            textureDictionary.Load("Assets/Textures/Props/Ingredients/Blue_Liquid");
+            textureDictionary.Load("Assets/Textures/Props/Ingredients/Green_Liquid");
 
             //other
             textureDictionary.Load("Assets/Textures/Props/Crates/crate");
@@ -233,9 +239,15 @@ namespace GDGame
             modelDictionary.Load("Assets/Models/Interactables/Tables/table_liquid");
 
             //ingredients
-            modelDictionary.Load("Assets/Models/Ingredients/blue_solid");
-            modelDictionary.Load("Assets/Models/Ingredients/red_solid");
-            modelDictionary.Load("Assets/Models/Ingredients/green_solid");
+            modelDictionary.Load("Assets/Models/Ingredients/Red_Solid");
+            modelDictionary.Load("Assets/Models/Ingredients/Blue_Solid");
+            modelDictionary.Load("Assets/Models/Ingredients/Green_Solid");
+            modelDictionary.Load("Assets/Models/Ingredients/Red_Dust");
+            modelDictionary.Load("Assets/Models/Ingredients/Blue_Dust");
+            modelDictionary.Load("Assets/Models/Ingredients/Green_Dust");
+            modelDictionary.Load("Assets/Models/Ingredients/Red_Liquid");
+            modelDictionary.Load("Assets/Models/Ingredients/Blue_Liquid");
+            modelDictionary.Load("Assets/Models/Ingredients/Green_Liquid");
 
             //other
             modelDictionary.Load("Assets/Models/wizard");
@@ -321,7 +333,7 @@ namespace GDGame
             //cameras - notice we moved the camera creation BELOW where we created the drawn content - see DriveController
             InitCameras3D();
 
-            GameConstants.InitPotions();
+            GameConstants.LoadPotions();
             InitPlayer();
 
             //graphic settings - see https://en.wikipedia.org/wiki/Display_resolution#/media/File:Vector_Video_Standards8.svg
@@ -406,18 +418,59 @@ namespace GDGame
                 if (eventData.EventActionType == EventActionType.OnCreate)
                 {
                     ArrayList potion_data = eventData.Parameters[0] as ArrayList;
+                    string modelName = potion_data[1] as string;
+                    ArrayList modelData = GameConstants.modelData[modelName];
+
+                    Transform3D transform3D = new Transform3D(
+                        new Vector3(GameConstants.cauldronPos.X, GameConstants.potionSpawnHeight, GameConstants.cauldronPos.Z), //Translation
+                        Vector3.Zero,               //Rotation
+                        (Vector3) modelData[1], //Scale
+                        -Vector3.UnitZ,             //Look
+                        Vector3.UnitY);             //Up
+
                     //effectparameters
                     EffectParameters effectParameters = new EffectParameters(modelEffect,
-                        null, //textureDictionary["textureName"],
+                        textureDictionary[modelName],
                         Color.White, 1);
 
                     //model object
                     CollidableObject potionObject = new CollidableObject((string)potion_data[0] + objectManager.NewID(), ActorType.Interactable,
-                        StatusType.Drawn | StatusType.Update, ((Transform3D)potion_data[3]).Clone() as Transform3D,
-                        effectParameters, modelDictionary["potion_red"]);
+                        StatusType.Drawn | StatusType.Update, transform3D,
+                        effectParameters, modelDictionary[modelName]);
 
-                    HandHeldPickup potion = new HandHeldPickup(potionObject, PickupType.Potion, (string)potion_data[0], GameConstants.defualtInteractionDist, (Vector3)potion_data[2]);
+                    HandHeldPickup potion = new HandHeldPickup(potionObject, PickupType.Potion, (string)potion_data[0],
+                        GameConstants.defualtInteractionDist, (Vector3) modelData[1]);
+
                     objectManager.Add(potion);
+                }
+                else if(eventData.EventActionType == EventActionType.OnProcess)
+                {
+                    string name = eventData.Parameters[0] as string;
+                    Vector3 tablePos = (Vector3)eventData.Parameters[1];
+
+                    ArrayList modelData = GameConstants.modelData[name];
+
+                    Transform3D transform3D = new Transform3D(
+                        new Vector3(tablePos.X, GameConstants.potionSpawnHeight, tablePos.Z), //Translation + Offset
+                        Vector3.Zero,               //Rotation
+                        (Vector3)modelData[1],      //Scale
+                        -Vector3.UnitZ,             //Look
+                        Vector3.UnitY);             //Up
+
+                    //effectparameters
+                    EffectParameters effectParameters = new EffectParameters(modelEffect,
+                        textureDictionary[name],
+                        Color.White, 1);
+
+                    //model object
+                    CollidableObject ingredientObject = new CollidableObject(name + objectManager.NewID(), ActorType.Interactable,
+                        StatusType.Drawn | StatusType.Update, transform3D,
+                        effectParameters, modelDictionary[name]);
+
+                    HandHeldPickup ingredient = new HandHeldPickup(ingredientObject, PickupType.Ingredient, name,
+                        GameConstants.defualtInteractionDist, (Vector3)modelData[1], GameConstants.ingredients[name]);
+
+                    objectManager.Add(ingredient);
                 }
             }
         }
@@ -492,9 +545,10 @@ namespace GDGame
             Components.Add(renderManager);
 
             //add in-game ui
-            uiManager = new UIManager(this, StatusType.Drawn | StatusType.Update, _spriteBatch, 10);
-            uiManager.DrawOrder = 4;
-            Components.Add(uiManager);
+            //Breaks helper? (will only draw 1 side, the wrong one) spritebatch begin/end?
+            //uiManager = new UIManager(this, StatusType.Drawn | StatusType.Update, _spriteBatch, 10);
+            //uiManager.DrawOrder = 4;
+            //Components.Add(uiManager);
 
             //add menu
             menuManager = new MenuManager(this, StatusType.Update | StatusType.Drawn, _spriteBatch);
@@ -919,12 +973,12 @@ namespace GDGame
                 textureDictionary["table_liquid"],
                 Color.White, 1);
 
-            collidableObject = new CollidableObject("LiquidTable", ActorType.Decorator,
+            collidableObject = new CollidableObject("LiquidTable", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, modelDictionary["table_liquid"]);
 
             proccessor = new IngredientProccessor(collidableObject, "Liquid Table",
-                GameConstants.defualtInteractionDist, IngredientState.Solid);
+                GameConstants.defualtInteractionDist, IngredientState.Dust);
 
             proccessor.AddPrimitive(new Box(new Vector3(15, 60, 0), Matrix.Identity, new Vector3(90, 125, 96)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -1000,17 +1054,17 @@ namespace GDGame
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                textureDictionary["red_solid"],
+                textureDictionary["Red_Solid"],
                 Color.Red, 1);
 
             //model object
             collidableObject = new CollidableObject("RedRock", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, modelDictionary["red_solid"]);
+                effectParameters, modelDictionary["Red_Solid"]);
 
             //Red rock pickup
             HandHeldPickup pickup = new HandHeldPickup(collidableObject, PickupType.Ingredient, "Red Rock",
-                GameConstants.defualtInteractionDist, GameConstants.potionRedPos, GameConstants.redSolid);
+                GameConstants.defualtInteractionDist, GameConstants.potionRedPos, GameConstants.ingredients["Red_Solid"]);
 
             pickup.AddPrimitive(new Box(Vector3.Zero, Matrix.Identity, transform3D.Scale),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -1061,17 +1115,17 @@ namespace GDGame
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                textureDictionary["blue_solid"],
+                textureDictionary["Blue_Solid"],
                 Color.White, 1);
 
             //model object
             collidableObject = new CollidableObject("BlueFlower", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, modelDictionary["blue_solid"]);
+                effectParameters, modelDictionary["Blue_Solid"]);
 
             //Blue flower pickup
             pickup = new HandHeldPickup(collidableObject, PickupType.Ingredient, "Blue Flower",
-                GameConstants.defualtInteractionDist, GameConstants.potionRedPos, GameConstants.blueSolid);
+                GameConstants.defualtInteractionDist, GameConstants.potionRedPos, GameConstants.ingredients["Blue_Solid"]);
 
             pickup.AddPrimitive(new Box(Vector3.Zero, Matrix.Identity, transform3D.Scale),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -1120,16 +1174,16 @@ namespace GDGame
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                textureDictionary["green_solid"],
+                textureDictionary["Green_Solid"],
                 Color.White, 1);
 
             //model object
             collidableObject = new CollidableObject("GreenMushroom", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, modelDictionary["green_solid"]);
+                effectParameters, modelDictionary["Green_Solid"]);
 
             pickup = new HandHeldPickup(collidableObject, PickupType.Ingredient, "Green Mushroom",
-                GameConstants.defualtInteractionDist, GameConstants.potionRedPos, GameConstants.greenSolid);
+                GameConstants.defualtInteractionDist, GameConstants.potionRedPos, GameConstants.ingredients["Green_Solid"]);
 
             pickup.AddPrimitive(new Box(Vector3.Zero, Matrix.Identity, transform3D.Scale),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -1191,7 +1245,7 @@ namespace GDGame
         private void InitPlayer()
         {
             //transform
-            Transform3D transform3D = new Transform3D(new Vector3(0, 200, 0),
+            Transform3D transform3D = new Transform3D(new Vector3(0, 50, 0),
                                 new Vector3(0, 0, 0),       //rotation
                                 new Vector3(1, 1, 1),        //scale
                                     -Vector3.UnitZ,         //look
@@ -1207,9 +1261,6 @@ namespace GDGame
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, modelDictionary["wizard"]);
 
-            playerObject.ControllerList.Add(new DriveController("player Controler", ControllerType.FirstPerson,
-                this.keyboardManager, GameConstants.playerMoveSpeed, GameConstants.playerRotateSpeed));
-
             ThirdPersonPlayerController controller = new ThirdPersonPlayerController(
                 "3rd person player controller", ControllerType.ThirdPerson,
                 keyboardManager, mouseManager, cameraManager[0],
@@ -1221,10 +1272,11 @@ namespace GDGame
             PrimitiveObject interactHelper = archetypalTexturedQuad.Clone() as PrimitiveObject;
             interactHelper.ID = "spacebar helper";
             interactHelper.EffectParameters.Texture = textureDictionary["helper_space"];
-            interactHelper.Transform3D.Scale = new Vector3(80, 56, 0);
-            interactHelper.StatusType = StatusType.Off;
+            interactHelper.StatusType = StatusType.Drawn;
             interactHelper.ActorType = ActorType.Decorator;
+            interactHelper.Transform3D.Scale = new Vector3(80, 56, 0);
             interactHelper.Transform3D.RotationInDegrees = new Vector3(-45, 0, 0);
+
             objectManager.Add(interactHelper);
 
             Player player = new Player(playerObject, 20, 1, 2, 2,
@@ -1297,6 +1349,7 @@ namespace GDGame
             primitiveObject.ID = "sky back";
             primitiveObject.EffectParameters.Texture = textureDictionary["sky_back"]; ;
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
             objectManager.Add(primitiveObject);
 
@@ -1306,7 +1359,7 @@ namespace GDGame
             primitiveObject.EffectParameters.Texture = textureDictionary["sky_left"]; ;
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
             primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 90, 0);
-            primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
+            primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
             objectManager.Add(primitiveObject);
 
             //right
@@ -1315,7 +1368,7 @@ namespace GDGame
             primitiveObject.EffectParameters.Texture = textureDictionary["sky_right"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 20);
             primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, -90, 0);
-            primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
+            primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
             objectManager.Add(primitiveObject);
 
             //top
@@ -1323,7 +1376,7 @@ namespace GDGame
             primitiveObject.ID = "sky top";
             primitiveObject.EffectParameters.Texture = textureDictionary["sky"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(90, -90, 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(-90, -90, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, worldScale / 2.0f, 0);
             objectManager.Add(primitiveObject);
 
@@ -1332,7 +1385,6 @@ namespace GDGame
             primitiveObject.ID = "sky front";
             primitiveObject.EffectParameters.Texture = textureDictionary["sky_front"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, worldScale / 2.0f);
             objectManager.Add(primitiveObject);
         }
@@ -1347,6 +1399,12 @@ namespace GDGame
 
         protected override void UnloadContent()
         {
+            //housekeeping - unload content
+            textureDictionary.Dispose();
+            modelDictionary.Dispose();
+            fontDictionary.Dispose();
+            modelDictionary.Dispose();
+
             base.UnloadContent();
         }
 

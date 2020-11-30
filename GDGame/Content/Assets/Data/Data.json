@@ -1,0 +1,89 @@
+{
+  "ModelData": [
+    {
+      "ModelName": "potion1",
+      "HoldPosition": [ 4, 18, -1.5 ],
+      "Scale": [ 2, 2, 2 ]
+    },
+    {
+      "ModelName": "Red_Solid",
+      "HoldPosition": [ 4, 18, -1.5 ],
+      "Scale": [ 2, 2, 2 ]
+    },
+    {
+      "ModelName": "Red_Dust",
+      "HoldPosition": [ 4, 18, -1.5 ],
+      "Scale": [ 2, 2, 2 ]
+    },
+    {
+      "ModelName": "Red_Liquid",
+      "HoldPosition": [ 4, 18, -1.5 ],
+      "Scale": [ 2, 2, 2 ]
+    },
+    {
+      "ModelName": "Blue_Solid",
+      "HoldPosition": [ 4, 18, -1.5 ],
+      "Scale": [ 2, 2, 2 ]
+    },
+    {
+      "ModelName": "Blue_Dust",
+      "HoldPosition": [ 4, 18, -1.5 ],
+      "Scale": [ 2, 2, 2 ]
+    },
+    {
+      "ModelName": "Blue_Liquid",
+      "HoldPosition": [ 4, 18, -1.5 ],
+      "Scale": [ 2, 2, 2 ]
+    },
+    {
+      "ModelName": "Green_Solid",
+      "HoldPosition": [ 4, 18, -1.5 ],
+      "Scale": [ 2, 2, 2 ]
+    },
+    {
+      "ModelName": "Green_Dust",
+      "HoldPosition": [ 4, 18, -1.5 ],
+      "Scale": [ 2, 2, 2 ]
+    },
+    {
+      "ModelName": "Green_Liquid",
+      "HoldPosition": [ 4, 18, -1.5 ],
+      "Scale": [ 2, 2, 2 ]
+    }
+  ],
+  "PotionRecipes": [
+    {
+      "Name:": "Potion of Healing",
+      "ModelName": "potion1",
+      "Ingredients": [
+        {
+          "Type": "Red",
+          "State": "Solid",
+          "Count": 2
+        },
+        {
+          "Type": "Blue",
+          "State": "Solid",
+          "Count": 1
+        }
+      ]
+    },
+    {
+      "Name:": "Potion of Something",
+      "ModelName": "potion_red",
+      "Ingredients": [
+        {
+          "Type": "Red",
+          "State": "Solid",
+          "Count": 1
+        },
+        {
+          "Type": "Blue",
+          "State": "Solid",
+          "Count": 2
+        }
+      ]
+    }
+
+  ]
+}

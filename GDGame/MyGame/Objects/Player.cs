@@ -117,7 +117,10 @@ namespace GDGame.MyGame.Objects
                 helper.Transform3D.Translation = closestActor.Transform3D.Translation;
                 if (DisplayHelper(closestActor))
                 {
-                    helper.Transform3D.Translation += GameConstants.helperOffsetPos;
+                    helper.Transform3D.Translation = new Vector3(
+                        closestActor.Transform3D.Translation.X + GameConstants.helperOffsetPos.X,
+                        GameConstants.helperOffsetPos.Y,
+                        closestActor.Transform3D.Translation.Z + GameConstants.helperOffsetPos.Z);
                     helper.StatusType = StatusType.Drawn;
                 }
                 else helper.StatusType = StatusType.Off;
@@ -142,11 +145,19 @@ namespace GDGame.MyGame.Objects
                 {
                     return true;
                 }
-                if (handItem.PickupType == PickupType.Ingredient)
+                else if (handItem.PickupType == PickupType.Ingredient)
                 {
                     if (iActor is Cauldron)
                     {
                         return true;
+                    }
+                    else if(iActor is IngredientProccessor)
+                    {
+                        IngredientProccessor proccessor = iActor as IngredientProccessor;
+                        if(proccessor.InputState == HandItem.Ingredient.IngredientState)
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -169,11 +180,20 @@ namespace GDGame.MyGame.Objects
                     {
                         handItem = iActor as HandHeldPickup;
 
-                        if (handItem.PickupType == Enums.PickupType.Potion)
+                        if (handItem.PickupType == PickupType.Potion)
                         {
                             //if potion, unlock the cauldron
                             EventDispatcher.Publish(new EventData(EventCategoryType.Interactable,
-                                EventActionType.OnUnlock, new object[] { }));
+                                EventActionType.OnUnlock, new object[] { "Cauldron" }));
+                        }
+                        else if(handItem.PickupType == PickupType.Ingredient)
+                        {
+                            if(handItem.Ingredient.IngredientState != IngredientState.Solid)
+                            {
+                                //unlock ingredient processors
+                                EventDispatcher.Publish(new EventData(EventCategoryType.Interactable,
+                                    EventActionType.OnUnlock, new object[] { handItem.Ingredient.IngredientState.ToString() }));
+                            }
                         }
                     }
                     //else actor is an ingredient giver, place item in hand

@@ -17,16 +17,41 @@ namespace GDGame
 
     public class IngredientProccessor : InteractableActor, IContainerInteractable
     {
+        #region Fields
+
         private IngredientState inputState;
         private Ingredient storedIngredient;
         private Timer timer;
         private bool timerCanStart = false;
 
+        #endregion
+
+        #region Properties
+
+        public IngredientState InputState 
+        { 
+            get { return inputState; }
+        }
+
+        #endregion
+
         public IngredientProccessor(CollidableObject modelObject, string name, float interactDistance, IngredientState inputState) :
             base(modelObject, name, interactDistance)
         {
             this.inputState = inputState;
+            this.timerCanStart = false;
             this.timer = new Timer(6000);
+
+            EventDispatcher.Subscribe(EventCategoryType.Interactable, HandleEvent);
+        }
+
+        private void HandleEvent(EventData eventData)
+        {
+            if (eventData.EventCategoryType == EventCategoryType.Interactable)
+            {
+                if (eventData.EventActionType == EventActionType.OnUnlock && ((string)eventData.Parameters[0]).Equals(inputState))
+                    Unlock();
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -60,8 +85,12 @@ namespace GDGame
                 if (timer.IsDone(gameTime))
                 {
                     storedIngredient.Process();
-                    //EventDispatcher.Publish(new EventData(EventCategoryType.Pickup, 
-                    //    EventActionType.OnCreate, new object[] { storedIngredient }));
+                    string name = storedIngredient.IngredientType + "_" + storedIngredient.IngredientState;
+
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Pickup, 
+                        EventActionType.OnProcess, new object[] { name, Transform3D.Translation }));
+
+                    storedIngredient = null;
                     return true;
                 }
             }
