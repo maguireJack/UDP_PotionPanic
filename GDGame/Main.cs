@@ -46,6 +46,10 @@ namespace GDGame
         private UIManager uiManager;
         private MenuManager menuManager;
 
+        //Debug
+        DebugDrawer debugInfoDrawer;
+        PhysicsDebugDrawer physicsDebugDrawer;
+
         //store useful game resources (e.g. effects, models, rails and curves)
         private Dictionary<string, BasicEffect> effectDictionary;
 
@@ -97,7 +101,7 @@ namespace GDGame
 
         private void InitDebug()
         {
-            InitDebugInfo(false);
+            InitDebugInfo(true);
             InitializeDebugCollisionSkinInfo(true);
         }
 
@@ -106,7 +110,7 @@ namespace GDGame
             if (bEnable)
             {
                 //create the debug drawer to draw debug info
-                DebugDrawer debugInfoDrawer = new DebugDrawer(this, _spriteBatch,
+                debugInfoDrawer = new DebugDrawer(this, _spriteBatch,
                     Content.Load<SpriteFont>("Assets/Fonts/debug"),
                     cameraManager, objectManager);
 
@@ -123,7 +127,7 @@ namespace GDGame
             if (bEnable)
             {
                 //show the collision skins
-                PhysicsDebugDrawer physicsDebugDrawer = new PhysicsDebugDrawer(this, StatusType.Update | StatusType.Drawn,
+                physicsDebugDrawer = new PhysicsDebugDrawer(this, StatusType.Update | StatusType.Drawn,
                     cameraManager, objectManager);
 
                 //set the debug drawer to be drawn AFTER the object manager to the screen
@@ -179,6 +183,8 @@ namespace GDGame
 
             //ui
             textureDictionary.Load("Assets/Textures/UI/helper_space");
+            textureDictionary.Load("Assets/Textures/UI/ring");
+            textureDictionary.Load("Assets/Textures/UI/ball");
 
             //menu
 
@@ -297,6 +303,8 @@ namespace GDGame
             //set game title
             Window.Title = "Potion Panic";
 
+            screenCentre = GameConstants.screenCentre;
+
             //note that we moved this from LoadContent to allow InitDebug to be called in Initialize
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -320,6 +328,9 @@ namespace GDGame
             InitUI();
             InitMenu();
 
+            //minigames ui
+            InitCircleMinigame();
+
             //drawn content
             InitDrawnContent();
 
@@ -341,6 +352,8 @@ namespace GDGame
 
             //debug info
             InitDebug();
+            debugInfoDrawer.Visible = false;
+            physicsDebugDrawer.Visible = false;
 
             base.Initialize();
         }
@@ -353,9 +366,6 @@ namespace GDGame
 
             //dont forget to apply resolution changes otherwise we wont see the new WxH
             _graphics.ApplyChanges();
-
-            //set screen centre based on resolution
-            screenCentre = new Vector2(width / 2, height / 2);
 
             //set cull mode to show front and back faces - inefficient but we will change later
             RasterizerState rs = new RasterizerState();
@@ -371,17 +381,14 @@ namespace GDGame
             //set blending
             _graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
 
-            //set screen centre for use when centering mouse
-            screenCentre = new Vector2(width / 2, height / 2);
-
             //add this code to centre the mouse when the game starts
             mouseManager.SetPosition(screenCentre);
         }
 
         private void InitUI()
         {
-            Transform2D transform2D = null;
             Texture2D texture = null;
+            Transform2D transform2D = null;
             SpriteFont spriteFont = null;
         }
 
@@ -401,6 +408,42 @@ namespace GDGame
             //dont forget to say which menu scene you want to be updated and drawn i.e. shown!
             menuManager.SetScene("main");
             */
+        }
+
+        private void InitCircleMinigame()
+        {
+            Texture2D texture = textureDictionary["ring"];
+
+            Transform2D transform2D = new Transform2D(screenCentre, 0,
+                Vector2.One,
+                new Vector2(texture.Width / 2, texture.Height / 2),
+                new Integer2(texture.Width, texture.Height));
+
+            UITextureObject background = new UITextureObject("ring", ActorType.UITextureObject,
+                StatusType.Drawn, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            texture = textureDictionary["ball"];
+
+            transform2D = new Transform2D(screenCentre, 0,
+                Vector2.One,
+                new Vector2(texture.Width / 2, texture.Height / 2),
+                new Integer2(texture.Width, texture.Height));
+
+            UITextureObject ball = new UITextureObject("ball", ActorType.UITextureObject,
+                StatusType.Drawn | StatusType.Update, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            float radius = background.Texture.Width/2 - ball.Texture.Width/4;
+
+            CircleMinigameController circleMinigame = new CircleMinigameController("CircleMinigame",
+                ControllerType.MouseOver,
+                mouseManager, background, radius);
+
+            ball.ControllerList.Add(circleMinigame);
+
+            uiManager.Add(background);
+            uiManager.Add(ball);
         }
 
         private void InitEventDispatcher()
@@ -546,9 +589,9 @@ namespace GDGame
 
             //add in-game ui
             //Breaks helper? (will only draw 1 side, the wrong one) spritebatch begin/end?
-            //uiManager = new UIManager(this, StatusType.Drawn | StatusType.Update, _spriteBatch, 10);
-            //uiManager.DrawOrder = 4;
-            //Components.Add(uiManager);
+            uiManager = new UIManager(this, StatusType.Drawn | StatusType.Update, _spriteBatch, 10);
+            uiManager.DrawOrder = 4;
+            Components.Add(uiManager);
 
             //add menu
             menuManager = new MenuManager(this, StatusType.Update | StatusType.Drawn, _spriteBatch);
@@ -1033,7 +1076,7 @@ namespace GDGame
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, modelDictionary["chest"]);
 
-            collidableObject.AddPrimitive(new Box(new Vector3(30, 0, 0), Matrix.Identity, new Vector3(75, 94, 112)),
+            collidableObject.AddPrimitive(new Box(new Vector3(0, 0, 0), Matrix.Identity, new Vector3(75, 94, 112)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             collidableObject.Enable(true, 1);
@@ -1341,7 +1384,7 @@ namespace GDGame
             objectManager.Add(primitiveObject);
         }
 
-        private void InitSkybox()
+private void InitSkybox()
         {
             //back
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
@@ -1349,7 +1392,6 @@ namespace GDGame
             primitiveObject.ID = "sky back";
             primitiveObject.EffectParameters.Texture = textureDictionary["sky_back"]; ;
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
             objectManager.Add(primitiveObject);
 
@@ -1359,7 +1401,7 @@ namespace GDGame
             primitiveObject.EffectParameters.Texture = textureDictionary["sky_left"]; ;
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
             primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 90, 0);
-            primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
+            primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
             objectManager.Add(primitiveObject);
 
             //right
@@ -1368,7 +1410,7 @@ namespace GDGame
             primitiveObject.EffectParameters.Texture = textureDictionary["sky_right"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 20);
             primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, -90, 0);
-            primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
+            primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
             objectManager.Add(primitiveObject);
 
             //top
@@ -1376,7 +1418,7 @@ namespace GDGame
             primitiveObject.ID = "sky top";
             primitiveObject.EffectParameters.Texture = textureDictionary["sky"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(-90, -90, 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(90, -90, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, worldScale / 2.0f, 0);
             objectManager.Add(primitiveObject);
 
@@ -1385,6 +1427,7 @@ namespace GDGame
             primitiveObject.ID = "sky front";
             primitiveObject.EffectParameters.Texture = textureDictionary["sky_front"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, worldScale / 2.0f);
             objectManager.Add(primitiveObject);
         }
@@ -1429,6 +1472,21 @@ namespace GDGame
             if (keyboardManager.IsFirstKeyPress(Keys.C))
             {
                 cameraManager.CycleActiveCamera();
+            }
+
+            if (keyboardManager.IsFirstKeyPress(Keys.F1))
+            {
+                if (debugInfoDrawer.Visible)
+                {
+                    debugInfoDrawer.Visible = false;
+                    physicsDebugDrawer.Visible = false;
+                }
+                else
+                {
+                    debugInfoDrawer.Visible = true;
+                    physicsDebugDrawer.Visible = true;
+                }
+
             }
 
             base.Update(gameTime);

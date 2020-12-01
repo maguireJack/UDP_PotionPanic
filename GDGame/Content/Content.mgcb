@@ -1149,6 +1149,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Skybox/sky_right.bmp
 
+#begin Assets/Textures/UI/ball.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/ball.png
+
 #begin Assets/Textures/UI/helper_space.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1172,6 +1184,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/key_space.png
+
+#begin Assets/Textures/UI/ring.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/ring.png
 
 #begin Assets/Textures/Wizard/wizard.png
 /importer:TextureImporter

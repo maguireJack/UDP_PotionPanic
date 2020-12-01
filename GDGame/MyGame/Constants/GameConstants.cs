@@ -17,6 +17,10 @@ namespace GDGame.MyGame.Constants
     {
         #region Common
 
+        public static readonly int screenWidth = 1440;
+        public static readonly int screenHeight = 1080;
+        public static readonly Vector2 screenCentre = new Vector2(screenWidth/2, screenHeight/2);
+
         public static readonly Keys[][] MoveKeys = {
             new Keys[]{ Keys.W, Keys.S, Keys.A, Keys.D },
             new Keys[]{ Keys.Up, Keys.Down, Keys.Left, Keys.Right }
