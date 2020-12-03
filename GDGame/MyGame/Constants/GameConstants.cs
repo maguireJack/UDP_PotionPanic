@@ -125,7 +125,8 @@ namespace GDGame.MyGame.Constants
 
         #region Load Data
 
-        public static readonly Dictionary<string, ArrayList> modelData = new Dictionary<string, ArrayList>();
+        //[0] = Hold pos, [1] = scale
+        public static readonly Dictionary<string, ArrayList> pickupModelData = new Dictionary<string, ArrayList>();
         public static readonly Dictionary<Recipe, ArrayList> potions = new Dictionary<Recipe, ArrayList>();
         public static readonly float potionSpawnHeight = 100;
 
@@ -158,7 +159,7 @@ namespace GDGame.MyGame.Constants
         }
 
 
-        public static void LoadPotions()
+        public static void LoadData()
         {
             try
             {
@@ -173,7 +174,7 @@ namespace GDGame.MyGame.Constants
                 {
                     Vector3 holdPos = new Vector3(data.HoldPosition[0], data.HoldPosition[1], data.HoldPosition[2]);
                     Vector3 scale = new Vector3(data.Scale[0], data.Scale[1], data.Scale[2]);
-                    modelData.Add(data.ModelName, new ArrayList { holdPos, scale });
+                    pickupModelData.Add(data.ModelName, new ArrayList { holdPos, scale });
                 }
 
                 foreach (PotionRecipe pr in root.PotionRecipes)
