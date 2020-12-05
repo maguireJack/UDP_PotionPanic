@@ -25,6 +25,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
   <ItemGroup>
+    <MonoGameContentReference Include="Content\Content.mgcb" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Content\Assets\Textures\Props\Cauldron\" />
     <Folder Include="MyGame\Actors\" />
   </ItemGroup>

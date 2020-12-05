@@ -21,6 +21,9 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections;
 using System.Collections.Generic;
 
+//remove this be4fore pus=h
+using System.Diagnostics;
+
 namespace GDGame
 {
     public class Main : Game
@@ -187,6 +190,7 @@ namespace GDGame
             textureDictionary.Load("Assets/Textures/UI/ball");
 
             //menu
+            textureDictionary.Load("Assets/Textures/UI/Aidan'sPotion");
 
             //walls
             textureDictionary.Load("Assets/Textures/Level/wall_left");
@@ -325,9 +329,10 @@ namespace GDGame
             LoadFonts();
 
             //ui
-            InitUI();
+            InitUI(); 
             InitMenu();
 
+            InitPage();
             //minigames ui
             InitCircleMinigame();
 
@@ -444,6 +449,27 @@ namespace GDGame
 
             uiManager.Add(background);
             uiManager.Add(ball);
+        }
+
+        private void InitPage()
+        {
+            Texture2D texture = textureDictionary["Aidan'sPotion"];
+
+            Transform2D transform2D = new Transform2D(screenCentre, 0,
+                Vector2.One,
+                new Vector2(texture.Width / 2, texture.Height / 2),
+                new Integer2(texture.Width, texture.Height));
+
+            UITextureObject background = new UITextureObject("Aidan'sPotion", ActorType.UITextureObject,
+                StatusType.Drawn | StatusType.Update, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            Debug.WriteLine("Made it here");
+            GrindingMinigameController grindingMinigame = new GrindingMinigameController("GrindingMinigame", 
+                ControllerType.MouseOver, keyboardManager, GameConstants.MoveKeys);
+
+            background.ControllerList.Add(grindingMinigame);
+            uiManager.Add(background);
         }
 
         private void InitEventDispatcher()
