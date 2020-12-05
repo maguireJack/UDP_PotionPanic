@@ -322,6 +322,7 @@ namespace GDGame
             InitDictionaries();
 
             //load from file or initialize assets, effects and vertices
+            GameConstants.LoadData();
             LoadEffects();
             LoadTextures();
             LoadVertices();
@@ -334,7 +335,7 @@ namespace GDGame
 
             InitPage();
             //minigames ui
-            InitCircleMinigame();
+            ///InitCircleMinigame();
 
             //drawn content
             InitDrawnContent();
@@ -349,7 +350,6 @@ namespace GDGame
             //cameras - notice we moved the camera creation BELOW where we created the drawn content - see DriveController
             InitCameras3D();
 
-            GameConstants.LoadPotions();
             InitPlayer();
 
             //graphic settings - see https://en.wikipedia.org/wiki/Display_resolution#/media/File:Vector_Video_Standards8.svg
@@ -488,7 +488,7 @@ namespace GDGame
                 {
                     ArrayList potion_data = eventData.Parameters[0] as ArrayList;
                     string modelName = potion_data[1] as string;
-                    ArrayList modelData = GameConstants.modelData[modelName];
+                    ArrayList modelData = GameConstants.pickupModelData[modelName];
 
                     Transform3D transform3D = new Transform3D(
                         new Vector3(GameConstants.cauldronPos.X, GameConstants.potionSpawnHeight, GameConstants.cauldronPos.Z), //Translation
@@ -517,7 +517,7 @@ namespace GDGame
                     string name = eventData.Parameters[0] as string;
                     Vector3 tablePos = (Vector3)eventData.Parameters[1];
 
-                    ArrayList modelData = GameConstants.modelData[name];
+                    ArrayList modelData = GameConstants.pickupModelData[name];
 
                     Transform3D transform3D = new Transform3D(
                         new Vector3(tablePos.X, GameConstants.potionSpawnHeight, tablePos.Z), //Translation + Offset
@@ -1117,7 +1117,7 @@ namespace GDGame
             //transform 
             transform3D = new Transform3D(new Vector3(-350, 10, -250),
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(0.5f, 0.5f, 0.5f),        //scale
+                                (Vector3)GameConstants.pickupModelData["Red_Solid"][1], //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
@@ -1178,7 +1178,7 @@ namespace GDGame
             //transform 
             transform3D = new Transform3D(new Vector3(-200, 10, -370),
                                 new Vector3(0, 90, 0),       //rotation
-                                new Vector3(1, 1, 1),        //scale
+                                (Vector3)GameConstants.pickupModelData["Blue_Solid"][1],        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
@@ -1237,7 +1237,7 @@ namespace GDGame
             //transform 
             transform3D = new Transform3D(new Vector3(100, 30, -350),
                                 new Vector3(0, 90, 0),       //rotation
-                                new Vector3(1, 1, 1),        //scale
+                                (Vector3)GameConstants.pickupModelData["Green_Solid"][1], //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
@@ -1524,6 +1524,8 @@ private void InitSkybox()
             DepthStencilState dss = new DepthStencilState();
             dss.DepthBufferEnable = true;
             _graphics.GraphicsDevice.DepthStencilState = dss;
+
+            _spriteBatch.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
 
             base.Draw(gameTime);
         }
