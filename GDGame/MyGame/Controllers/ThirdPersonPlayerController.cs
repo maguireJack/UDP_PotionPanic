@@ -81,6 +81,7 @@ namespace GDGame.MyGame.Controllers
 
         private void HandleControlerMovement(GameTime gameTime, Actor3D parent, GamePadCapabilities capabilities)
         {
+            CharacterObject character = parent as CharacterObject;
             Vector3 moveVector = Vector3.Zero;
             GamePadState state = GamePad.GetState(PlayerIndex.One);
             if (capabilities.HasLeftXThumbStick)
@@ -89,7 +90,7 @@ namespace GDGame.MyGame.Controllers
                 moveVector.Z = -state.ThumbSticks.Left.Y * moveSpeed;
             }
             parent.Transform3D.RotateAroundUpBy(MathUtility.CalculateRotationToVector(parent.Transform3D.Look, moveVector) * rotationSpeed);
-            parent.Transform3D.TranslateBy(moveVector * gameTime.ElapsedGameTime.Milliseconds);
+            character.CharacterBody.Velocity += moveVector * gameTime.ElapsedGameTime.Milliseconds;
         }
 
         private void HandleCameraFollow(GameTime gameTime, Actor3D parent)

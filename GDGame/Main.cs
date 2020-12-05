@@ -337,7 +337,7 @@ namespace GDGame
 
             //minigames ui
             //InitCircleMinigame();
-            //InitGrindingMinigame();
+            InitGrindingMinigame();
 
             //drawn content
             InitDrawnContent();
