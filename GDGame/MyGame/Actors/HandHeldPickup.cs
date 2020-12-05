@@ -84,7 +84,7 @@ namespace GDGame.MyGame.Actors
                Name,
                InteractDistance,
                heldCoords,
-               ingredient);
+               Ingredient.Clone() as Ingredient);
 
             if (Locked)
                 actor.Lock();

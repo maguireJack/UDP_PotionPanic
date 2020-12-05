@@ -85,6 +85,7 @@ namespace GDGame
 
         private PrimitiveObject primitiveObject = null;
         private Viewport halfSizeViewport;
+        private bool isPaused;
 
         #endregion Fields
 
@@ -308,6 +309,7 @@ namespace GDGame
             Window.Title = "Potion Panic";
 
             screenCentre = GameConstants.screenCentre;
+            isPaused = false;
 
             //note that we moved this from LoadContent to allow InitDebug to be called in Initialize
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -333,9 +335,9 @@ namespace GDGame
             InitUI(); 
             InitMenu();
 
-            InitPage();
             //minigames ui
-            ///InitCircleMinigame();
+            //InitCircleMinigame();
+            //InitGrindingMinigame();
 
             //drawn content
             InitDrawnContent();
@@ -451,7 +453,7 @@ namespace GDGame
             uiManager.Add(ball);
         }
 
-        private void InitPage()
+        private void InitGrindingMinigame()
         {
             Texture2D texture = textureDictionary["Aidan'sPotion"];
 
@@ -464,7 +466,6 @@ namespace GDGame
                 StatusType.Drawn | StatusType.Update, transform2D, Color.White, 30, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
-            Debug.WriteLine("Made it here");
             GrindingMinigameController grindingMinigame = new GrindingMinigameController("GrindingMinigame", 
                 ControllerType.MouseOver, keyboardManager, GameConstants.MoveKeys);
 
@@ -1493,6 +1494,21 @@ private void InitSkybox()
             {
                 persistantData.SaveData();
                 Exit();
+            }
+
+            if (keyboardManager.IsFirstKeyPress(Keys.F2))
+            {
+                if (isPaused) //menu -> game
+                {
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPause,
+                        new object[] { gameTime }));
+                }
+                else //game -> menu
+                {
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay,
+                    new object[] { gameTime }));
+                }
+                isPaused = !isPaused;
             }
 
             if (keyboardManager.IsFirstKeyPress(Keys.C))

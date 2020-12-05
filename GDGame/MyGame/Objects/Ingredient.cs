@@ -59,7 +59,7 @@ namespace GDGame.MyGame.Objects
             return HashCode.Combine(ingredientType, ingredientState);
         }
 
-        public object Clone()
+        public new object Clone()
         {
             return new Ingredient(IngredientType, IngredientState);
         }

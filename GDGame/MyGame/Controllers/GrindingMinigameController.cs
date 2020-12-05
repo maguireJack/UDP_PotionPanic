@@ -69,7 +69,7 @@ namespace GDGame.MyGame.Controllers
                 else if (keyboardManager.IsFirstKeyPress(Keys.A))
                 {
                     BCount++;
-//                    Debug.WriteLine("B pressed = " +BCount);
+                    //Debug.WriteLine("B pressed = " +BCount);
                 }
                 
             }

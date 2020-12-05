@@ -49,7 +49,7 @@ namespace GDGame
         {
             if (eventData.EventCategoryType == EventCategoryType.Interactable)
             {
-                if (eventData.EventActionType == EventActionType.OnUnlock && ((string)eventData.Parameters[0]).Equals(inputState))
+                if (eventData.EventActionType == EventActionType.OnUnlock && ((string)eventData.Parameters[0]).Equals((inputState + 1).ToString()))
                     Unlock();
             }
         }
