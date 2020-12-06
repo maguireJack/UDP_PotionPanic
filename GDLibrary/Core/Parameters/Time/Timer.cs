@@ -2,7 +2,7 @@
 using GDLibrary.Events;
 using Microsoft.Xna.Framework;
 
-namespace GDLibrary.Core.Parameters.Time
+namespace GDLibrary.Parameters
 {
     public class Timer
     {
@@ -27,6 +27,11 @@ namespace GDLibrary.Core.Parameters.Time
             set { timerLengthMS = value; }
         }
 
+        public double ElapsedTime
+        {
+            get { return elapsedTime; }
+        }
+
         public bool IsRunning
         {
             get { return isRunning; }
@@ -44,6 +49,14 @@ namespace GDLibrary.Core.Parameters.Time
         public Timer(double timerLengthMS)
         {
             this.timerLengthMS = timerLengthMS;
+            isRunning = false;
+            isPaused = false;
+            EventDispatcher.Subscribe(EventCategoryType.Menu, HandleEvent);
+        }
+
+        public Timer()
+        {
+            timerLengthMS = 0;
             isRunning = false;
             isPaused = false;
             EventDispatcher.Subscribe(EventCategoryType.Menu, HandleEvent);
@@ -87,6 +100,20 @@ namespace GDLibrary.Core.Parameters.Time
             isPaused = false;
             totalPauseTimeMS += gameTime.TotalGameTime.TotalMilliseconds - startPause;
             startPause = 0;
+        }
+
+        public void StopTimer(GameTime gameTime)
+        {
+            elapsedTime = gameTime.TotalGameTime.TotalMilliseconds - startTime - totalPauseTimeMS;
+            isRunning = false;
+            isPaused = false;
+            startPause = 0;
+            totalPauseTimeMS = 0;
+        }
+
+        public void UpdateTime(GameTime gameTime)
+        {
+            elapsedTime = gameTime.TotalGameTime.TotalMilliseconds - startTime - totalPauseTimeMS;
         }
 
         public bool IsDone(GameTime gameTime)

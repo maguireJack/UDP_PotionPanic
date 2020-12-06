@@ -335,10 +335,6 @@ namespace GDGame
             InitUI(); 
             InitMenu();
 
-            //minigames ui
-            //InitCircleMinigame();
-            InitGrindingMinigame();
-
             //drawn content
             InitDrawnContent();
 
@@ -394,9 +390,26 @@ namespace GDGame
 
         private void InitUI()
         {
-            Texture2D texture = null;
-            Transform2D transform2D = null;
-            SpriteFont spriteFont = null;
+            SpriteFont spriteFont = fontDictionary["ui"];
+
+            string text = "Score: 0";
+            Vector2 originalDimensions = spriteFont.MeasureString(text);
+
+            Transform2D transform2D = new Transform2D(
+                new Vector2(originalDimensions.X/2, originalDimensions.Y/2), 0,
+                Vector2.One,
+                new Vector2(originalDimensions.X / 2, originalDimensions.Y / 2),
+                new Integer2(originalDimensions));
+
+            UITextObject score = new UITextObject("score", ActorType.UIText,
+                StatusType.Drawn, transform2D,
+                Color.Red, 0, SpriteEffects.None,
+                text, spriteFont);
+
+            ScoreController controller = new ScoreController("scoreController", ControllerType.Progress, score);
+            score.ControllerList.Add(controller);
+
+            uiManager.Add(score);
         }
 
         private void InitMenu()
@@ -415,62 +428,6 @@ namespace GDGame
             //dont forget to say which menu scene you want to be updated and drawn i.e. shown!
             menuManager.SetScene("main");
             */
-        }
-
-        private void InitCircleMinigame()
-        {
-            Texture2D texture = textureDictionary["ring"];
-
-            Transform2D transform2D = new Transform2D(screenCentre, 0,
-                Vector2.One,
-                new Vector2(texture.Width / 2, texture.Height / 2),
-                new Integer2(texture.Width, texture.Height));
-
-            UITextureObject background = new UITextureObject("ring", ActorType.UITextureObject,
-                StatusType.Drawn, transform2D, Color.White, 30, SpriteEffects.None, texture,
-                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
-
-            texture = textureDictionary["ball"];
-
-            transform2D = new Transform2D(screenCentre, 0,
-                Vector2.One,
-                new Vector2(texture.Width / 2, texture.Height / 2),
-                new Integer2(texture.Width, texture.Height));
-
-            UITextureObject ball = new UITextureObject("ball", ActorType.UITextureObject,
-                StatusType.Drawn | StatusType.Update, transform2D, Color.White, 30, SpriteEffects.None, texture,
-                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
-
-            float radius = background.Texture.Width/2 - ball.Texture.Width/4;
-
-            CircleMinigameController circleMinigame = new CircleMinigameController("CircleMinigame",
-                ControllerType.MouseOver,
-                mouseManager, background, radius);
-
-            ball.ControllerList.Add(circleMinigame);
-
-            uiManager.Add(background);
-            uiManager.Add(ball);
-        }
-
-        private void InitGrindingMinigame()
-        {
-            Texture2D texture = textureDictionary["Aidan'sPotion"];
-
-            Transform2D transform2D = new Transform2D(screenCentre, 0,
-                Vector2.One,
-                new Vector2(texture.Width / 2, texture.Height / 2),
-                new Integer2(texture.Width, texture.Height));
-
-            UITextureObject background = new UITextureObject("Aidan'sPotion", ActorType.UITextureObject,
-                StatusType.Drawn | StatusType.Update, transform2D, Color.White, 30, SpriteEffects.None, texture,
-                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
-
-            GrindingMinigameController grindingMinigame = new GrindingMinigameController("GrindingMinigame", 
-                ControllerType.MouseOver, keyboardManager, GameConstants.MoveKeys);
-
-            background.ControllerList.Add(grindingMinigame);
-            uiManager.Add(background);
         }
 
         private void InitEventDispatcher()
@@ -964,7 +921,9 @@ namespace GDGame
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, modelDictionary["cauldron"]);
 
-            Cauldron cauldron = new Cauldron(collidableObject, "Cauldron", GameConstants.defualtInteractionDist);
+            Cauldron cauldron = new Cauldron(collidableObject, "Cauldron",
+                GameConstants.defualtInteractionDist, InitStirringMinigame());
+
             cauldron.AddPrimitive(new Sphere(new Vector3(0, 0, 0), 50), new MaterialProperties(0.2f, 0.8f, 0.7f));
             cauldron.Enable(true, 1);
 
@@ -1018,7 +977,7 @@ namespace GDGame
                 effectParameters, modelDictionary["table_grinder"]);
 
             IngredientProccessor proccessor = new IngredientProccessor(collidableObject, "Grind Table", 
-                GameConstants.defualtInteractionDist, IngredientState.Solid);
+                GameConstants.defualtInteractionDist, IngredientState.Solid, InitGrindingMinigame());
 
             proccessor.AddPrimitive(new Box(new Vector3(-5, 0, 0), Matrix.Identity, new Vector3(90, 105, 96)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -1048,7 +1007,7 @@ namespace GDGame
                 effectParameters, modelDictionary["table_liquid"]);
 
             proccessor = new IngredientProccessor(collidableObject, "Liquid Table",
-                GameConstants.defualtInteractionDist, IngredientState.Dust);
+                GameConstants.defualtInteractionDist, IngredientState.Dust, InitGrindingMinigame());
 
             proccessor.AddPrimitive(new Box(new Vector3(15, 60, 0), Matrix.Identity, new Vector3(90, 125, 96)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -1291,6 +1250,62 @@ namespace GDGame
             #endregion Green Giver
 
         }
+
+        #region Init Minigames
+
+        private StirringMinigameController InitStirringMinigame()
+        {
+            Texture2D texture = textureDictionary["ring"];
+
+            Transform2D transform2D = new Transform2D(screenCentre, 0,
+                Vector2.One,
+                new Vector2(texture.Width / 2, texture.Height / 2),
+                new Integer2(texture.Width, texture.Height));
+
+            UITextureObject background = new UITextureObject("ring", ActorType.UITextureObject,
+                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            texture = textureDictionary["ball"];
+
+            transform2D = new Transform2D(screenCentre, 0,
+                Vector2.One,
+                new Vector2(texture.Width / 2, texture.Height / 2),
+                new Integer2(texture.Width, texture.Height));
+
+            UITextureObject ball = new UITextureObject("ball", ActorType.UITextureObject,
+                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            float radius = background.Texture.Width / 2 - ball.Texture.Width / 4;
+
+            uiManager.Add(background);
+            uiManager.Add(ball);
+
+            return new StirringMinigameController("StirringMinigame",
+                ActorType.Decorator, StatusType.Off, mouseManager, background, radius, ball);
+        }
+
+        private GrindingMinigameController InitGrindingMinigame()
+        {
+            Texture2D texture = textureDictionary["Aidan'sPotion"];
+
+            Transform2D transform2D = new Transform2D(screenCentre, 0,
+                Vector2.One,
+                new Vector2(texture.Width / 2, texture.Height / 2),
+                new Integer2(texture.Width, texture.Height));
+
+            UITextureObject ui = new UITextureObject("Aidan'sPotion", ActorType.UITextureObject,
+                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            uiManager.Add(ui);
+
+            return new GrindingMinigameController("GrindingMinigame",
+                ActorType.Decorator, StatusType.Off, keyboardManager, gamePadManager, ui);
+        }
+
+        #endregion
 
         private void InitDrawnContent() //formerly InitPrimitives
         {

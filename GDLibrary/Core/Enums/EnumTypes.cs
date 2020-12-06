@@ -182,7 +182,12 @@
         //sent to actors that can be upgraded
         MoveSpeedUp,
         SpeedUp,
-        ValueUp
+        ValueUp,
+
+        OnMinigameStir,
+        OnMinigameGrind,
+        OnFinishMinigame,
+        OnScoreChange
 
         //add more here...
     }

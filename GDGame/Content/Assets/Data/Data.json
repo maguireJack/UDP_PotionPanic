@@ -3,7 +3,7 @@
     {
       "ModelName": "potion1",
       "HoldPosition": [ 4, 18, -1.5 ],
-      "Scale": [ 1, 1, 1 ]
+      "Scale": [ 3, 3, 3 ]
     },
     {
       "ModelName": "Red_Solid",

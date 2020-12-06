@@ -19,11 +19,14 @@ namespace GDGame.MyGame.Objects
         private ObjectManager objectManager;
         private KeyboardManager keyBoardManager;
         private GamePadManager gamePadManager;
+
         private PrimitiveObject helper;
         private HandHeldPickup handItem;
+        private Checklist checklist;
+        private int score;
+
         private List<DrawnActor3D> interactableList;
         private int lastListSize;
-        //inventory
 
         #endregion
 
@@ -36,10 +39,12 @@ namespace GDGame.MyGame.Objects
 
         public Vector3 HandPos
         {
-            get
-            {
-                return Transform3D.Translation + GameConstants.playerHoldPos;
-            }
+            get { return Transform3D.Translation + GameConstants.playerHoldPos; }
+        }
+
+        public int Score
+        {
+            get { return score; }
         }
 
         #endregion
@@ -58,10 +63,69 @@ namespace GDGame.MyGame.Objects
             this.helper = helper;
             this.handItem = null;
             this.lastListSize = 0;
+            this.score = 0;
             ControllerList.Add(controller);
+            EventDispatcher.Subscribe(EventCategoryType.Player, HandleEvent);
+
+            //TODO This is TEMPORARY
+            foreach (Recipe recipe in GameConstants.potions.Keys)
+            {
+                if (checklist == null)
+                {
+                    AssignRecipe(recipe, GameConstants.potions[recipe][0] as string);
+                    break;
+                }
+            }
         }
 
         #endregion
+
+        private void HandleEvent(EventData eventData)
+        {
+            if (eventData.EventActionType == EventActionType.OnMinigameStir)
+            {
+                if (!checklist.IsDone &&
+                    ((string)eventData.Parameters[1]).Equals(checklist.PotionName))
+                {
+                    double time = (double)eventData.Parameters[0];
+                    int potionScore = 1000 - (checklist.Size * 100);
+                    potionScore = (int)(potionScore * CalculatePercentageScore(time));
+
+                    score += potionScore;
+                    SendScoreEvent();
+                    checklist.IsDone = true;
+                }
+            }
+            else if (eventData.EventActionType == EventActionType.OnMinigameGrind)
+            {
+                double time = (double)eventData.Parameters[0];
+                int minigameScore = 100;
+                minigameScore = (int)(minigameScore * CalculatePercentageScore(time));
+
+                if (checklist.CheckOffList((Ingredient)eventData.Parameters[1], minigameScore))
+                {
+                    score += minigameScore;
+                    SendScoreEvent();
+                }
+            }
+        }
+
+        private double CalculatePercentageScore(double time)
+        {
+            if (time > 12000)       //20% of score
+                return 20f / 100f;
+            else if (time > 8000)   //50% of score
+                return 50f / 100f;
+            else if (time > 6000)   //70% of score
+                return 70f / 100f;
+            return 1;
+        }
+
+        private void SendScoreEvent()
+        {
+            EventDispatcher.Publish(new EventData(EventCategoryType.UI,
+                        EventActionType.OnScoreChange, new object[] { score }));
+        }
 
         public override void Update(GameTime gameTime)
         {
@@ -69,6 +133,11 @@ namespace GDGame.MyGame.Objects
             UpdateHandItemPos();
 
             base.Update(gameTime);
+        }
+
+        private void AssignRecipe(Recipe recipe, string potionName)
+        {
+            checklist = new Checklist(recipe, potionName);
         }
 
         private void UpdateInteractableList()
@@ -210,6 +279,12 @@ namespace GDGame.MyGame.Objects
                     //If deposit was successful, remove item
                     if (container.Deposit(handItem))
                     {
+                        if (checklist.CheckOffList(handItem.Ingredient, 100))
+                        {
+                            score += 100;
+                            SendScoreEvent();
+                        }
+
                         interactableList.Remove(handItem);
                         EventDispatcher.Publish(new EventData(EventCategoryType.Object,
                             EventActionType.OnRemoveActor, new object[] { handItem }));

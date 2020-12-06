@@ -1,4 +1,5 @@
 ﻿using GDGame.MyGame.Actors;
+using Microsoft.Xna.Framework;
 
 namespace GDGame.MyGame.Interfaces
 {
