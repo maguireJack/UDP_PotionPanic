@@ -6,6 +6,7 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using GDGame.MyGame.Actors;
+using System.Collections.Generic;
 
 namespace GDGame.MyGame.Controllers
 {
@@ -13,24 +14,25 @@ namespace GDGame.MyGame.Controllers
     {
         private KeyboardManager keyboardManager;
         private GamePadManager gamePadManager;
-        private UITextureObject ui;
+        private Dictionary<string, UITextureObject> uiPanels;
         private int count;
         private bool keyA;
 
         public GrindingMinigameController(string id, ActorType actorType, StatusType statusType,
-            KeyboardManager keyboardManager, GamePadManager gamePadManager, UITextureObject ui)
+            KeyboardManager keyboardManager, GamePadManager gamePadManager,
+            Dictionary<string, UITextureObject> uiPanels)
             : base(id, actorType, statusType)
         {
             this.keyboardManager = keyboardManager;
             this.gamePadManager = gamePadManager;
             this.count = 0;
             this.keyA = true;
-            this.ui = ui;
+            this.uiPanels = uiPanels;
         }
 
         public override void Start()
         {
-            ui.StatusType = StatusType.Drawn;
+            uiPanels["grinding_A"].StatusType = StatusType.Drawn;
             StatusType = StatusType.Update;
         }
 
@@ -40,8 +42,9 @@ namespace GDGame.MyGame.Controllers
             {
                 count = 0;
                 keyA = true;
-                ui.StatusType = StatusType.Off;
                 StatusType = StatusType.Off;
+                foreach(UITextureObject uiPanel in uiPanels.Values)
+                    uiPanel.StatusType = StatusType.Off;
                 return true;
             }
             return false;
@@ -78,11 +81,15 @@ namespace GDGame.MyGame.Controllers
             {
                 count++;
                 keyA = false;
+                uiPanels["grinding_A"].StatusType = StatusType.Off;
+                uiPanels["grinding_D"].StatusType = StatusType.Drawn;
             }
             else if (!keyA && keyboardManager.IsFirstKeyPress(Keys.D))
             {
                 count++;
                 keyA = true;
+                uiPanels["grinding_A"].StatusType = StatusType.Drawn;
+                uiPanels["grinding_D"].StatusType = StatusType.Off;
             }
         }
     }

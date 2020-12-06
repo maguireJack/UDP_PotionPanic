@@ -187,11 +187,10 @@ namespace GDGame
 
             //ui
             textureDictionary.Load("Assets/Textures/UI/helper_space");
+            textureDictionary.Load("Assets/Textures/UI/grinding_A");
+            textureDictionary.Load("Assets/Textures/UI/grinding_D");
             textureDictionary.Load("Assets/Textures/UI/ring");
             textureDictionary.Load("Assets/Textures/UI/ball");
-
-            //menu
-            textureDictionary.Load("Assets/Textures/UI/Aidan'sPotion");
 
             //walls
             textureDictionary.Load("Assets/Textures/Level/wall_left");
@@ -1288,21 +1287,38 @@ namespace GDGame
 
         private GrindingMinigameController InitGrindingMinigame()
         {
-            Texture2D texture = textureDictionary["Aidan'sPotion"];
+            string[] keys = new string[]
+            {
+                "grinding_A",
+                "grinding_D"
+            };
 
-            Transform2D transform2D = new Transform2D(screenCentre, 0,
+            Texture2D texture;
+            Transform2D transform2D;
+            UITextureObject ui;
+            Dictionary<string, UITextureObject> uiPanels = new Dictionary<string, UITextureObject>();
+
+            for (int i = 0; i < keys.Length; i++)
+            {
+                texture = textureDictionary[keys[i]];
+
+                transform2D = new Transform2D(screenCentre, 0,
                 Vector2.One,
                 new Vector2(texture.Width / 2, texture.Height / 2),
                 new Integer2(texture.Width, texture.Height));
 
-            UITextureObject ui = new UITextureObject("Aidan'sPotion", ActorType.UITextureObject,
-                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                ui = new UITextureObject("grindingUI_" + i, ActorType.UITextureObject,
+                StatusType.Off, transform2D.Clone() as Transform2D,
+                Color.White, 30, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
-            uiManager.Add(ui);
+                uiPanels.Add(keys[i], ui);
+                uiManager.Add(ui);
+            }
+
 
             return new GrindingMinigameController("GrindingMinigame",
-                ActorType.Decorator, StatusType.Off, keyboardManager, gamePadManager, ui);
+                ActorType.Decorator, StatusType.Off, keyboardManager, gamePadManager, uiPanels);
         }
 
         #endregion
