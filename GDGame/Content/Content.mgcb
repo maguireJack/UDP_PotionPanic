@@ -42,7 +42,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Fonts/ui.spritefont
 
-#begin Assets/Models/Ingredients/Blue_Dust.3ds
+#begin Assets/Models/Ingredients/Blue_Dust.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -59,9 +59,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Ingredients/Blue_Dust.3ds
+/build:Assets/Models/Ingredients/Blue_Dust.fbx
 
-#begin Assets/Models/Ingredients/Blue_Liquid.3ds
+#begin Assets/Models/Ingredients/Blue_Liquid.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -78,7 +78,7 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Ingredients/Blue_Liquid.3ds
+/build:Assets/Models/Ingredients/Blue_Liquid.fbx
 
 #begin Assets/Models/Ingredients/Blue_Solid.3ds
 /importer:FbxImporter
@@ -99,7 +99,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Models/Ingredients/Blue_Solid.3ds
 
-#begin Assets/Models/Ingredients/Green_Dust.3ds
+#begin Assets/Models/Ingredients/Green_Dust.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -116,9 +116,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Ingredients/Green_Dust.3ds
+/build:Assets/Models/Ingredients/Green_Dust.fbx
 
-#begin Assets/Models/Ingredients/Green_Liquid.3ds
+#begin Assets/Models/Ingredients/Green_Liquid.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -135,7 +135,7 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Ingredients/Green_Liquid.3ds
+/build:Assets/Models/Ingredients/Green_Liquid.fbx
 
 #begin Assets/Models/Ingredients/Green_Solid.3ds
 /importer:FbxImporter
@@ -156,7 +156,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Models/Ingredients/Green_Solid.3ds
 
-#begin Assets/Models/Ingredients/Red_Dust.3ds
+#begin Assets/Models/Ingredients/Red_Dust.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -173,9 +173,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Ingredients/Red_Dust.3ds
+/build:Assets/Models/Ingredients/Red_Dust.fbx
 
-#begin Assets/Models/Ingredients/Red_Liquid.3ds
+#begin Assets/Models/Ingredients/Red_Liquid.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -192,7 +192,7 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Ingredients/Red_Liquid.3ds
+/build:Assets/Models/Ingredients/Red_Liquid.fbx
 
 #begin Assets/Models/Ingredients/Red_Solid.3ds
 /importer:FbxImporter
