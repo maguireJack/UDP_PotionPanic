@@ -431,7 +431,7 @@ namespace GDGame
 
             transform2D = new Transform2D(Vector2.One);
 
-            uiObject = new UITextureObject("gameMenuBG", ActorType.UITextureObject, StatusType.Off, 
+            uiObject = new UITextureObject("gameMenuBG", ActorType.UITextureObject, StatusType.Drawn, 
                     transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
             menuManager.Add("main", uiObject);
 
@@ -440,8 +440,14 @@ namespace GDGame
             Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
             Integer2 imageDimensions = new Integer2(texture.Width, texture.Height);
             transform2D = new Transform2D(screenCentre, 0, Vector2.One, origin, imageDimensions);
-            uiObject = new UITextureObject("main_play_btn", ActorType.UITextureObject, StatusType.Off,
-                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+            uiObject = new UIButtonObject("main_play_btn", ActorType.UITextureObject, StatusType.Drawn,
+                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                "Play",
+                fontDictionary["ui"],
+                Vector2.One,
+                Color.Black,
+                Vector2.Zero);
+
             menuManager.Add("main", uiObject);
 
             //dont forget to say which menu scene you want to be updated and drawn i.e. shown!
