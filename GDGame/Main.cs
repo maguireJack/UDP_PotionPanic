@@ -192,6 +192,10 @@ namespace GDGame
             textureDictionary.Load("Assets/Textures/UI/ring");
             textureDictionary.Load("Assets/Textures/UI/ball");
 
+            //Menu
+            textureDictionary.Load("Assets/Textures/Menu/gameMenuBG");
+            textureDictionary.Load("Assets/Textures/Menu/baseButton");
+
             //walls
             textureDictionary.Load("Assets/Textures/Level/wall_left");
             textureDictionary.Load("Assets/Textures/Level/wall_right");
@@ -413,20 +417,33 @@ namespace GDGame
 
         private void InitMenu()
         {
-            //uncomment and try to instanciate the two UIObjects and add to menu
-            /*
-            UITextureObject mainBackgroundTextureObject = null;
-            UIButtonObject mainPlayButtonObject = null;
 
-            //homework - 27/11/20 - try instanciate a UITextureObject (e.g. mainBackgroundTextureObject to show main menu background) and a UIButtonObject (e.g. mainPlayButtonObject to show play button) and add to the manager
+            Texture2D texture = null;
+            Transform2D transform2D = null;
+            DrawnActor2D uiObject = null;
+            Vector2 fullScreenScaleFactor = Vector2.One;
 
-            //add to main menu scene
-            menuManager.Add("main", mainBackgroundTextureObject);
-            menuManager.Add("main", mainPlayButtonObject);
+            //Background Main
+            texture = textureDictionary["gameMenuBG"];
+            //fullScreenScaleFactor = new Vector2((float)_graphics.PreferredBackBufferWidth / texture.Width, (float)_graphics.PreferredBackBufferHeight / texture.Height);
+
+            transform2D = new Transform2D(fullScreenScaleFactor);
+            uiObject = new UITextureObject("gameMenuBG", ActorType.UITextureObject, StatusType.Drawn, 
+                    transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+            menuManager.Add("main", uiObject);
+
+            //Main menu buttons
+            texture = textureDictionary["baseButton"];
+            Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
+            Integer2 imageDimensions = new Integer2(texture.Width, texture.Height);
+            transform2D = new Transform2D(screenCentre, 0, Vector2.One, origin, imageDimensions);
+            uiObject = new UITextureObject("main_play_btn", ActorType.UITextureObject, StatusType.Drawn,
+                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+            menuManager.Add("main", uiObject);
 
             //dont forget to say which menu scene you want to be updated and drawn i.e. shown!
             menuManager.SetScene("main");
-            */
+            
         }
 
         private void InitEventDispatcher()
@@ -542,11 +559,11 @@ namespace GDGame
         private void InitManagers()
         {
             //physics and CD-CR (moved to top because MouseManager is dependent)
-            physicsManager = new PhysicsManager(this, StatusType.Update, -9.81f * Vector3.UnitY);
+            physicsManager = new PhysicsManager(this, StatusType.Off, -9.81f * Vector3.UnitY);
             Components.Add(physicsManager);
 
             //camera
-            cameraManager = new CameraManager<Camera3D>(this, StatusType.Update);
+            cameraManager = new CameraManager<Camera3D>(this, StatusType.Off);
             Components.Add(cameraManager);
 
             //keyboard
@@ -562,17 +579,17 @@ namespace GDGame
             Components.Add(gamePadManager);
 
             //object
-            objectManager = new ObjectManager(this, StatusType.Update, 6, 10);
+            objectManager = new ObjectManager(this, StatusType.Off, 6, 10);
             Components.Add(objectManager);
 
             //render
-            renderManager = new RenderManager(this, StatusType.Drawn, ScreenLayoutType.Single,
+            renderManager = new RenderManager(this, StatusType.Off, ScreenLayoutType.Single,
                 objectManager, cameraManager);
             Components.Add(renderManager);
 
             //add in-game ui
             //Breaks helper? (will only draw 1 side, the wrong one) spritebatch begin/end?
-            uiManager = new UIManager(this, StatusType.Drawn | StatusType.Update, _spriteBatch, 10);
+            uiManager = new UIManager(this, StatusType.Off, _spriteBatch, 10);
             uiManager.DrawOrder = 4;
             Components.Add(uiManager);
 
