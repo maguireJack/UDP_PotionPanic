@@ -73,6 +73,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\Managers\Physics\PhysicsManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Managers\Physics\PickingManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Managers\Render\RenderManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Managers\Sound\SoundManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Managers\UI\UIManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Parameters\Curve\Curve1D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Parameters\Curve\Curve2D.cs" />

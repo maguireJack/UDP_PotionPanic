@@ -10,6 +10,14 @@
         Multi
     }
 
+    public enum SoundCategoryType : sbyte
+    {
+        WinLose,
+        Explosion,
+        BackgroundMusic,
+        Alarm
+    }
+
     /// <summary>
     /// Actor types within the game (both drawn and undrawn)
     /// </summary>
@@ -171,6 +179,8 @@
 
         OnRemoveActor,
         OnSpawn,
+        OnPlay2D,
+        OnPlay3D,
 
         OnCreate,
         OnProcess,
