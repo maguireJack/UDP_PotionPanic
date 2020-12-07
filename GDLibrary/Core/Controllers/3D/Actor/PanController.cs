@@ -40,7 +40,7 @@ namespace GDLibrary.Controllers
 
                 // y = A * Sin(wT + phaseAngle)
                 float rotAngle = trigonometricParameters.MaxAmplitude * (float)Math.Sin(
-                    MathHelper.ToRadians(trigonometricParameters.AngularSpeed * time + trigonometricParameters.PhaseAngle));
+                    MathHelper.ToRadians(trigonometricParameters.AngularSpeed * time + trigonometricParameters.PhaseAngleInDegrees));
 
                 //apply rotation to the parent
                 parent.Transform3D.RotateBy(rotationAxis * rotAngle);

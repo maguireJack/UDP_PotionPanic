@@ -56,7 +56,7 @@ namespace GDLibrary.Actors
 
             InitializeBoneTransforms();
         }
-        public ModelObject(ModelObject modelObject) 
+        public ModelObject(ModelObject modelObject)
             : this(modelObject.ID, modelObject.ActorType, modelObject.StatusType,
                   modelObject.Transform3D, modelObject.EffectParameters, modelObject.model)
         { }

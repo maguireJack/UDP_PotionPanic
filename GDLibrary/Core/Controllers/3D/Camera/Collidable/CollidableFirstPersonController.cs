@@ -84,6 +84,11 @@ namespace GDLibrary.Controllers
                 //    EventActionType.OnRemoveActor, parameters));
 
                 collidableObject.EffectParameters.DiffuseColor = Color.Red;
+                collidableObject.EffectParameters.Alpha = 0.4f;
+
+                object[] parameters = { collidableObject };
+                EventDispatcher.Publish(new EventData(EventCategoryType.Opacity,
+                   EventActionType.OnOpaqueToTransparent, parameters));
             }
 
             return true;

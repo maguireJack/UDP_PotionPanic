@@ -10,28 +10,28 @@ namespace GDLibrary.Parameters
     {
         #region Fields
 
-        private float maxAmplitude, angularSpeed, phaseAngle;
+        private float maxAmplitude, angularSpeed, phaseAngleInDegrees;
 
         #endregion Fields
 
         #region Properties
         public float MaxAmplitude { get => maxAmplitude; set => maxAmplitude = value; }
         public float AngularSpeed { get => angularSpeed; set => angularSpeed = value; }
-        public float PhaseAngle { get => phaseAngle; set => phaseAngle = value; }
+        public float PhaseAngleInDegrees { get => phaseAngleInDegrees; set => phaseAngleInDegrees = value; }
         #endregion Properties
 
         #region Constructors & Core
 
-        public TrigonometricParameters(float maxAmplitude, float angularSpeed, float phaseAngle)
+        public TrigonometricParameters(float maxAmplitude, float angularSpeed, float phaseAngleInDegrees)
         {
             MaxAmplitude = maxAmplitude;
             AngularSpeed = angularSpeed;
-            PhaseAngle = phaseAngle;
+            PhaseAngleInDegrees = phaseAngleInDegrees;
         }
 
         public object Clone()
         {
-            return new TrigonometricParameters(MaxAmplitude, AngularSpeed, PhaseAngle);
+            return new TrigonometricParameters(MaxAmplitude, AngularSpeed, PhaseAngleInDegrees);
         }
 
         #endregion Constructors & Core

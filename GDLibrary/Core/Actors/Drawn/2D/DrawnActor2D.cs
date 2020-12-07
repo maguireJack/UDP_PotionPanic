@@ -87,7 +87,17 @@ namespace GDLibrary.Actors
             return HashCode.Combine(base.GetHashCode(), color, layerDepth, spriteEffects, Color);
         }
 
-        //to do...Clone
+        public new object Clone()
+        {
+            Actor2D clonedActor = new DrawnActor2D("clone - " + ID, ActorType, StatusType,
+                 Transform2D.Clone() as Transform2D, //shallow if we write this.Transform2D but deep with Clone()
+                 color,
+                 layerDepth,
+                 spriteEffects); //deep
+
+            clonedActor.ControllerList.AddRange(GetControllerListClone());
+            return clonedActor;
+        }
 
         #endregion Constructors & Core
     }

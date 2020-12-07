@@ -3,6 +3,7 @@ using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace GDLibrary.Actors
 {
@@ -71,7 +72,7 @@ namespace GDLibrary.Actors
             }
             set
             {
-                description = value;
+                description = value.Trim();
             }
         }
 
@@ -116,12 +117,6 @@ namespace GDLibrary.Actors
         {
             //calls update on any attached controllers
             controllerList.Update(gameTime, this);
-
-            //line above replaces for() below
-            //foreach (IController controller in controllerList)
-            //{
-            //    controller.Update(gameTime, this);
-            //}
         }
 
         public override bool Equals(object obj)
@@ -140,8 +135,26 @@ namespace GDLibrary.Actors
 
         public object Clone()
         {
-            //deep-copy
-            return new Actor(id, actorType, statusType);
+            //to do...are we also cloning controllers and event handlers???
+
+            //deep-copy or shallow-copy
+            //value types - byte, sbyte, double, boolean, string, struct (e.g. Vector3), enums (e.g. PrimitiveType)
+            //reference types - user-defined classes, MonoGame classes, array
+
+            Actor clonedActor = new Actor(id, actorType, statusType);  //deep
+            clonedActor.ControllerList.AddRange(GetControllerListClone());
+            return clonedActor;
+        }
+
+        protected List<IController> GetControllerListClone()
+        {
+            List<IController> list = new List<IController>();
+            foreach (IController controller in this.controllerList)
+            {
+                list.Add(controller.Clone() as IController);
+            }
+
+            return list;
         }
     }
 }

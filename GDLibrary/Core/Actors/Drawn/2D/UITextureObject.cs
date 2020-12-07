@@ -1,11 +1,9 @@
-﻿using GDLibrary.Containers;
-using GDLibrary.Enums;
+﻿using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace GDLibrary.Actors
 {
@@ -28,50 +26,54 @@ namespace GDLibrary.Actors
         {
             get
             {
-                return this.sourceRectangle.Width;
+                return sourceRectangle.Width;
             }
             set
             {
-                this.sourceRectangle.Width = value;
+                sourceRectangle.Width = value;
             }
         }
+
         public int SourceRectangleHeight
         {
             get
             {
-                return this.sourceRectangle.Height;
+                return sourceRectangle.Height;
             }
             set
             {
-                this.sourceRectangle.Height = value;
+                sourceRectangle.Height = value;
             }
         }
+
         public Rectangle OriginalSourceRectangle
         {
             get
             {
-                return this.originalSourceRectangle;
+                return originalSourceRectangle;
             }
         }
+
         #endregion Properties
 
         #region Constructors & Core
+
         public UITextureObject(string id, ActorType actorType, StatusType statusType,
            Transform2D transform2D, Color color, float layerDepth, SpriteEffects spriteEffects,
            Texture2D texture, Rectangle sourceRectangle)
            : base(id, actorType, statusType, transform2D, color, layerDepth, spriteEffects)
         {
-            this.Texture = texture;
-            this.SourceRectangle = sourceRectangle;
+            Texture = texture;
+            SourceRectangle = sourceRectangle;
             //store the original source rectangle in case we change the source rectangle (i.e. UIProgressController)
-            this.originalSourceRectangle = SourceRectangle;
+            originalSourceRectangle = SourceRectangle;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(this.texture, this.Transform2D.Translation, this.sourceRectangle,
-                this.Color, this.Transform2D.RotationInRadians, this.Transform2D.Origin, this.Transform2D.Scale,
-                this.SpriteEffects, this.LayerDepth);
+            spriteBatch.Draw(texture, Transform2D.Translation, sourceRectangle,
+                Color, Transform2D.RotationInRadians, Transform2D.Origin, Transform2D.Scale,
+                SpriteEffects, LayerDepth);
 
             //base.Draw(gameTime);
         }
@@ -93,7 +95,14 @@ namespace GDLibrary.Actors
             return hash.ToHashCode();
         }
 
-        //to do..Clone
+        public new object Clone()
+        {
+            return new UITextureObject("clone - " + ID, ActorType,
+                StatusType, Transform2D.Clone() as Transform2D,
+                Color, LayerDepth, SpriteEffects,
+                texture, //shallow - reference
+                sourceRectangle);
+        }
 
         #endregion Constructors & Core
     }

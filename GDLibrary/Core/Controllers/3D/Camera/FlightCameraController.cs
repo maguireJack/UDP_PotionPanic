@@ -1,6 +1,7 @@
 ﻿using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
+using GDLibrary.Managers;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -12,20 +13,19 @@ namespace GDLibrary.Controllers
     /// </summary>
     /// <see cref="GDLibrary.Actors.Camera3D"/>
     /// <seealso cref="GDLibrary.Parameters.MoveParameters"/>
-    public class FlightCameraController : Controller
+    public class FlightCameraController : UserInputController
     {
-        #region Fields
-
-        private MoveParameters moveParameters;
-
-        #endregion Fields
-
         #region Constructors & Core
 
         public FlightCameraController(string id, ControllerType controllerType,
-            MoveParameters moveParameters) : base(id, controllerType)
+            KeyboardManager keyboardManager,
+            MouseManager mouseManager,
+            GamePadManager gamePadManager,
+            Keys[] moveKeys, float moveSpeed, float strafeSpeed, float rotationSpeed)
+            : base(id, controllerType,
+            keyboardManager, mouseManager, gamePadManager,
+            moveKeys, moveSpeed, strafeSpeed, rotationSpeed)
         {
-            this.moveParameters = moveParameters;
         }
 
         public override void Update(GameTime gameTime, IActor actor)
@@ -41,31 +41,31 @@ namespace GDLibrary.Controllers
 
         #region Movement
 
-        private void HandleKeyboardInput(GameTime gameTime, Actor3D parent)
+        public override void HandleKeyboardInput(GameTime gameTime, Actor3D parent)
         {
-            if (moveParameters.KeyboardManager.IsKeyDown(Keys.W))
+            if (this.KeyboardManager.IsKeyDown(Keys.W))
             {
-                parent.Transform3D.TranslateBy(parent.Transform3D.Look * moveParameters.MoveSpeed);
+                parent.Transform3D.TranslateBy(parent.Transform3D.Look * this.MoveSpeed);
             }
-            else if (moveParameters.KeyboardManager.IsKeyDown(Keys.S))
+            else if (this.KeyboardManager.IsKeyDown(Keys.S))
             {
-                parent.Transform3D.TranslateBy(parent.Transform3D.Look * -moveParameters.MoveSpeed);
+                parent.Transform3D.TranslateBy(parent.Transform3D.Look * -this.MoveSpeed);
             }
 
-            if (moveParameters.KeyboardManager.IsKeyDown(Keys.A))
+            if (this.KeyboardManager.IsKeyDown(Keys.A))
             {
-                parent.Transform3D.TranslateBy(parent.Transform3D.Right * -moveParameters.StrafeSpeed);
+                parent.Transform3D.TranslateBy(parent.Transform3D.Right * -this.StrafeSpeed);
             }
-            else if (moveParameters.KeyboardManager.IsKeyDown(Keys.D))
+            else if (this.KeyboardManager.IsKeyDown(Keys.D))
             {
-                parent.Transform3D.TranslateBy(parent.Transform3D.Right * moveParameters.StrafeSpeed);
+                parent.Transform3D.TranslateBy(parent.Transform3D.Right * this.StrafeSpeed);
             }
         }
 
-        private void HandleMouseInput(GameTime gameTime, Actor3D parent)
+        public override void HandleMouseInput(GameTime gameTime, Actor3D parent)
         {
-            Vector2 mouseDelta = moveParameters.MouseManager.GetDeltaFromCentre(new Vector2(512, 384)); //REFACTOR - NMCG
-            mouseDelta *= moveParameters.RotateSpeed * gameTime.ElapsedGameTime.Milliseconds;
+            Vector2 mouseDelta = this.MouseManager.GetDeltaFromCentre(new Vector2(512, 384)); //REFACTOR - NMCG
+            mouseDelta *= this.RotationSpeed * gameTime.ElapsedGameTime.Milliseconds;
 
             if (mouseDelta.Length() != 0)
             {
@@ -77,7 +77,10 @@ namespace GDLibrary.Controllers
 
         public new object Clone()
         {
-            return new FlightCameraController(ID, ControllerType, moveParameters.Clone() as MoveParameters);
+            return new FlightCameraController(ID, ControllerType,
+                this.KeyboardManager, this.MouseManager, this.GamePadManager,
+                this.MoveKeys,
+                this.MoveSpeed, this.StrafeSpeed, this.RotationSpeed);
         }
 
         #endregion Constructors & Core

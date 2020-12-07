@@ -19,7 +19,12 @@ namespace GDLibrary.Managers
         private SoundEffect soundEffect;
         private SoundCategoryType soundCategoryType;
         private Vector3 volumePitchPan;
-        public bool isLooped;
+        private bool isLooped;
+
+        private int maxPlayCount; //-1, 10, 1
+        private int timeToLiveInMs;  //Kashmir - 45000
+        private int minTimeSinceLastPlayedInMs; //1000, 60000
+
         #endregion Fields
 
         #region Properties

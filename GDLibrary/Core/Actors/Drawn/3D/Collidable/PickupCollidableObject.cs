@@ -1,9 +1,10 @@
 ﻿using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
+using JigLibX.Collision;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GDLibrary.Actors
+namespace GDGame.Actors
 {
     public class PickupCollidableObject : CollidableObject
     {
@@ -16,6 +17,23 @@ namespace GDLibrary.Actors
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
             Value = value;
+
+            //step 1 - add code to listen for CDCR event
+            this.Body.CollisionSkin.callbackFn += HandleCollision;
+        }
+
+        //step 2 - add a handler
+        private bool HandleCollision(CollisionSkin collider, CollisionSkin collidee)
+        {
+            //step 3 - cast the collidee (the object you hit) to access its fields
+            CollidableObject collidableObject = collidee.Owner.ExternalData as CollidableObject;
+
+            //step 4 - make a decision on what you're going to do based on, say, the ActorType
+            if (collidableObject.ActorType == ActorType.CollidablePickup)
+            {
+            }
+
+            return true;
         }
 
         public new object Clone()

@@ -1,5 +1,13 @@
 ﻿namespace GDLibrary.Enums
 {
+    public enum SoundCategoryType : sbyte
+    {
+        WinLose,
+        Explosion,
+        BackgroundMusic,
+        Alarm
+    }
+
     /// <summary>
     /// Used to indicate if single or multiple cameras are drawn to the screen at the same time
     /// </summary>
@@ -8,14 +16,6 @@
     {
         Single,
         Multi
-    }
-
-    public enum SoundCategoryType : sbyte
-    {
-        WinLose,
-        Explosion,
-        BackgroundMusic,
-        Alarm
     }
 
     /// <summary>
@@ -88,7 +88,8 @@
         RotationOverTime,
         ColorLerpOverTime,
         MouseOver,
-        Progress
+        Progress,
+        ScaleLerpOverTime
     }
 
     /// <summary>
@@ -117,6 +118,7 @@
         Menu,
         UI,
         Object,
+        Opacity,
         Interactable,
         Upgrade
         //add more here...

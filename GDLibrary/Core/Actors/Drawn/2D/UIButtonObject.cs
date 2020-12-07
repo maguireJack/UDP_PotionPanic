@@ -2,6 +2,8 @@
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 
 namespace GDLibrary.Actors
 {
@@ -18,85 +20,129 @@ namespace GDLibrary.Actors
         private SpriteFont spriteFont;
         private Color textColor;
         private Vector2 textOrigin, textOffset;
+        private Vector2 textScale;
         #endregion Fields
 
         #region Properties
+
         public string Text
         {
             get
             {
-                return this.text;
+                return text;
             }
             set
             {
-                this.text = (value.Length >= 0) ? value : "Default";
-                this.textOrigin = this.spriteFont.MeasureString(text) / 2.0f;
+                text = (value.Length >= 0) ? value : "Default";
+                textOrigin = spriteFont.MeasureString(text) / 2.0f;
             }
         }
+
         public SpriteFont SpriteFont
         {
             get
             {
-                return this.spriteFont;
+                return spriteFont;
             }
             set
             {
-                this.spriteFont = value;
+                spriteFont = value;
             }
         }
+
         public Color TextColor
         {
             get
             {
-                return this.textColor;
+                return textColor;
             }
             set
             {
-                this.textColor = value;
+                textColor = value;
             }
         }
+
         public Vector2 TextOffset
         {
             get
             {
-                return this.textOffset;
+                return textOffset;
             }
             set
             {
-                this.textOffset = value;
+                textOffset = value;
             }
         }
+
         #endregion Properties
 
         #region Constructors & Core
+
         public UIButtonObject(string id, ActorType actorType, StatusType statusType,
         Transform2D transform2D, Color color, float layerDepth, SpriteEffects spriteEffects,
         Texture2D texture, Rectangle sourceRectangle,
-         string text, SpriteFont spriteFont, Color textColor, Vector2 textOffset)
+         string text, SpriteFont spriteFont, Vector2 textScale, Color textColor, Vector2 textOffset)
          : base(id, actorType, statusType, transform2D, color, layerDepth, spriteEffects, texture, sourceRectangle)
         {
-            Text = text;
+            //bug - fixed - dylan!
             SpriteFont = spriteFont;
+            Text = text;
             TextColor = textColor;
             TextOffset = textOffset;
+            this.textScale = textScale;
+            textOrigin = spriteFont.MeasureString(text) / 2;
         }
-
-        //to do...Draw, Equals, GetHashCode, Clone
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             //draw the texture
             base.Draw(gameTime, spriteBatch);
 
-            spriteBatch.DrawString(this.spriteFont, this.text,
-                this.Transform2D.Translation + this.textOffset,
-                this.Color,
-                this.Transform2D.RotationInRadians,
-                this.Transform2D.Origin, //giving the text its own origin?
-                this.Transform2D.Scale,
-                this.SpriteEffects,
+            //draw text
+            spriteBatch.DrawString(spriteFont, text,
+                Transform2D.Translation + textOffset,
+                textColor,
+                Transform2D.RotationInRadians,
+                textOrigin, //giving the text its own origin?
+                textScale,
+                SpriteEffects,
+                LayerDepth * TEXT_LAYER_DEPTH_MULTIPLIER); //now this depth will always be less (i.e. close to 0 and forward) than the background texture
+        }
 
-                this.LayerDepth * TEXT_LAYER_DEPTH_MULTIPLIER); //now this depth will always be less (i.e. close to 0 and forward) than the background texture
+        public override bool Equals(object obj)
+        {
+            return obj is UIButtonObject @object &&
+                   base.Equals(obj) &&
+                   text == @object.text &&
+                   EqualityComparer<SpriteFont>.Default.Equals(spriteFont, @object.spriteFont) &&
+                   textScale.Equals(@object.textScale) &&
+                   textColor.Equals(@object.textColor) &&
+                   textOffset.Equals(@object.textOffset);
+        }
+
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(base.GetHashCode());
+            hash.Add(text);
+            hash.Add(spriteFont);
+            hash.Add(textScale);
+            hash.Add(textColor);
+            hash.Add(textOffset);
+            return hash.ToHashCode();
+        }
+
+        public new object Clone()
+        {
+            return new UIButtonObject("clone - " + ID, ActorType, StatusType,
+                Transform2D.Clone() as Transform2D,
+                Color, LayerDepth, SpriteEffects,
+                Texture, //shallow - reference
+                SourceRectangle,
+                text,
+                spriteFont,   //shallow - reference
+                textScale,
+                textColor, textOffset); //hybrid
         }
 
         #endregion Constructors & Core

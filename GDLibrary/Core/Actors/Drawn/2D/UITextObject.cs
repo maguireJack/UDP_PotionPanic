@@ -1,7 +1,10 @@
-﻿using GDLibrary.Enums;
+﻿using GDLibrary.Containers;
+using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 
 namespace GDLibrary.Actors
 {
@@ -20,22 +23,22 @@ namespace GDLibrary.Actors
         {
             get
             {
-                return this.text;
+                return text;
             }
             set
             {
-                this.text = (value.Length >= 0) ? value : "Default";
+                text = (value.Length >= 0) ? value : "Default";
             }
         }
         public SpriteFont SpriteFont
         {
             get
             {
-                return this.spriteFont;
+                return spriteFont;
             }
             set
             {
-                this.spriteFont = value;
+                spriteFont = value;
             }
         }
         #endregion Properties
@@ -50,15 +53,37 @@ namespace GDLibrary.Actors
             Text = text;
         }
 
-        //to do...Draw, Equals, GetHashCode, Clone
-
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(this.spriteFont, this.text, this.Transform2D.Translation, this.Color,
-                this.Transform2D.RotationInRadians, this.Transform2D.Origin, this.Transform2D.Scale,
-                this.SpriteEffects, this.LayerDepth);
+            spriteBatch.DrawString(spriteFont, text, Transform2D.Translation, Color,
+                Transform2D.RotationInRadians, Transform2D.Origin, Transform2D.Scale,
+                SpriteEffects, LayerDepth);
 
             //base.Draw(gameTime, spriteBatch);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is UITextObject @uiObj &&
+                   base.Equals(obj) &&
+                   text == @uiObj.text &&
+                   EqualityComparer<SpriteFont>.Default.Equals(spriteFont, @uiObj.spriteFont);
+        }
+
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(base.GetHashCode());
+            hash.Add(text);
+            hash.Add(spriteFont);
+            return hash.ToHashCode();
+        }
+
+        public new object Clone()
+        {
+            return new UITextObject(this.ID, this.ActorType, this.StatusType,
+                this.Transform2D.Clone() as Transform2D,
+                this.Color, this.LayerDepth, this.SpriteEffects, this.text, this.SpriteFont);
         }
 
         #endregion Constructors & Core

@@ -130,15 +130,15 @@ namespace GDLibrary
             base.Update(gameTime, actor);
         }
 
-        public virtual void HandleGamePadInput(GameTime gameTime, Actor3D parentActor)
+        public virtual void HandleGamePadInput(GameTime gameTime, Actor3D parent)
         {
         }
 
-        public virtual void HandleMouseInput(GameTime gameTime, Actor3D parentActor)
+        public virtual void HandleMouseInput(GameTime gameTime, Actor3D parent)
         {
         }
 
-        public virtual void HandleKeyboardInput(GameTime gameTime, Actor3D parentActor)
+        public virtual void HandleKeyboardInput(GameTime gameTime, Actor3D parent)
         {
         }
 

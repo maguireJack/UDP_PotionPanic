@@ -49,7 +49,7 @@ namespace GDLibrary.Managers
 
         protected override void ApplyDraw(GameTime gameTime)
         {
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null);
             foreach (DrawnActor2D actor in uiObjectList)
             {
                 if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)

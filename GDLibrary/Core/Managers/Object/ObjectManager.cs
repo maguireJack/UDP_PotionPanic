@@ -19,6 +19,7 @@ namespace GDLibrary.Managers
         #region Fields
 
         private List<DrawnActor3D> opaqueList, transparentList;
+        private List<DrawnActor3D> removeList;
         int idCount;
 
         #endregion Fields
@@ -50,6 +51,7 @@ namespace GDLibrary.Managers
         {
             opaqueList = new List<DrawnActor3D>(initialOpaqueDrawSize);
             transparentList = new List<DrawnActor3D>(initialTransparentDrawSize);
+            removeList = new List<DrawnActor3D>();
             idCount = 0;
         }
 
@@ -57,6 +59,9 @@ namespace GDLibrary.Managers
 
         protected override void SubscribeToEvents()
         {
+            //opacity
+            EventDispatcher.Subscribe(EventCategoryType.Opacity, HandleEvent);
+
             //remove
             EventDispatcher.Subscribe(EventCategoryType.Object, HandleEvent);
 
@@ -78,6 +83,18 @@ namespace GDLibrary.Managers
             {
                 HandlePlayerCategoryEvent(eventData);
             }
+            else if (eventData.EventActionType == EventActionType.OnOpaqueToTransparent)
+            {
+                DrawnActor3D actor = eventData.Parameters[0] as DrawnActor3D;
+                opaqueList.Remove(actor);
+                transparentList.Add(actor);
+            }
+            else if (eventData.EventActionType == EventActionType.OnTransparentToOpaque)
+            {
+                DrawnActor3D actor = eventData.Parameters[0] as DrawnActor3D;
+                transparentList.Remove(actor);
+                opaqueList.Add(actor);
+            }
 
             //pass event to base (in case it is a menu event)
             base.HandleEvent(eventData);
@@ -95,10 +112,7 @@ namespace GDLibrary.Managers
         {
             if (eventData.EventActionType == EventActionType.OnRemoveActor)
             {
-                //  DrawnActor3D removeObject = eventData.Parameters[0] as DrawnActor3D;
-                opaqueList.Remove(eventData.Parameters[0] as DrawnActor3D);
-
-                //REFACTOR - NMCG - remove collision surface from physicsManager
+                Remove(eventData.Parameters[0] as DrawnActor3D);
             }
             else if (eventData.EventActionType == EventActionType.OnAddActor)
             {
@@ -111,6 +125,19 @@ namespace GDLibrary.Managers
         }
 
         #endregion Handle Events
+
+        public void Remove(DrawnActor3D actor)
+        {
+            removeList.Add(actor);
+        }
+
+        //public void Remove(DrawnActor3D actor)
+        //{
+        //    if (actor.EffectParameters.Alpha < 1)
+        //        transparentList.Remove(actor);
+        //    else
+        //        opaqueList.Remove(actor);
+        //}
 
         /// <summary>
         /// Add the actor to the appropriate list based on actor transparency
@@ -179,6 +206,8 @@ namespace GDLibrary.Managers
         /// <param name="gameTime">GameTime object</param>
         protected override void ApplyUpdate(GameTime gameTime)
         {
+            ApplyBatchRemove();
+
             foreach (DrawnActor3D actor in opaqueList)
             {
                 if ((actor.StatusType & StatusType.Update) == StatusType.Update)
@@ -196,29 +225,22 @@ namespace GDLibrary.Managers
             }
         }
 
-        ///// <summary>
-        ///// Called to draw the lists of actors
-        ///// </summary>
-        ///// <see cref="PausableDrawableGameComponent.Draw(GameTime)"/>
-        ///// <param name="gameTime">GameTime object</param>
-        //protected override void ApplyDraw(GameTime gameTime)
-        //{
-        //    foreach (DrawnActor3D actor in opaqueList)
-        //    {
-        //        if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
-        //        {
-        //            actor.Draw(gameTime, cameraManager.ActiveCamera, GraphicsDevice);
-        //        }
-        //    }
+        private void ApplyBatchRemove()
+        {
+            foreach (DrawnActor3D actor in removeList)
+            {
+                if (actor.EffectParameters.Alpha < 1)
+                {
+                    transparentList.Remove(actor);
+                }
+                else
+                {
+                    opaqueList.Remove(actor);
+                }
+            }
 
-        //    foreach (DrawnActor3D actor in transparentList)
-        //    {
-        //        if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
-        //        {
-        //            actor.Draw(gameTime, cameraManager.ActiveCamera, GraphicsDevice);
-        //        }
-        //    }
-        //}
+            removeList.Clear();
+        }
 
         #endregion Constructors & Core
 

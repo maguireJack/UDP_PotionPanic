@@ -21,9 +21,6 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections;
 using System.Collections.Generic;
 
-//remove this be4fore pus=h
-using System.Diagnostics;
-
 namespace GDGame
 {
     public class Main : Game
@@ -48,6 +45,7 @@ namespace GDGame
         private PersistantData persistantData;
         private UIManager uiManager;
         private MenuManager menuManager;
+        private SoundManager soundManager;
 
         //Debug
         DebugDrawer debugInfoDrawer;
@@ -277,8 +275,7 @@ namespace GDGame
 
         private void LoadVertices()
         {
-            vertices
-                = new VertexPositionColorTexture[4];
+            vertices = new VertexPositionColorTexture[4];
 
             float halfLength = 0.5f;
             //TL
@@ -286,20 +283,25 @@ namespace GDGame
                 new Vector3(-halfLength, halfLength, 0),
                 new Color(255, 255, 255, 255), new Vector2(0, 0));
 
-            //BL
-            vertices[1] = new VertexPositionColorTexture(
-                new Vector3(-halfLength, -halfLength, 0),
-                Color.White, new Vector2(0, 1));
-
             //TR
-            vertices[2] = new VertexPositionColorTexture(
+            vertices[1] = new VertexPositionColorTexture(
                 new Vector3(halfLength, halfLength, 0),
                 Color.White, new Vector2(1, 0));
+
+            //BL
+            vertices[2] = new VertexPositionColorTexture(
+                new Vector3(-halfLength, -halfLength, 0),
+                Color.White, new Vector2(0, 1));
 
             //BR
             vertices[3] = new VertexPositionColorTexture(
                 new Vector3(halfLength, -halfLength, 0),
                 Color.White, new Vector2(1, 1));
+        }
+
+        private void LoadSounds()
+        {
+
         }
 
         #endregion
@@ -333,6 +335,7 @@ namespace GDGame
             LoadVertices();
             LoadModels();
             LoadFonts();
+            LoadSounds();
 
             //ui
             InitUI(); 
@@ -421,14 +424,14 @@ namespace GDGame
             Texture2D texture = null;
             Transform2D transform2D = null;
             DrawnActor2D uiObject = null;
-            Vector2 fullScreenScaleFactor = Vector2.One;
 
             //Background Main
             texture = textureDictionary["gameMenuBG"];
             //fullScreenScaleFactor = new Vector2((float)_graphics.PreferredBackBufferWidth / texture.Width, (float)_graphics.PreferredBackBufferHeight / texture.Height);
 
-            transform2D = new Transform2D(fullScreenScaleFactor);
-            uiObject = new UITextureObject("gameMenuBG", ActorType.UITextureObject, StatusType.Drawn, 
+            transform2D = new Transform2D(Vector2.One);
+
+            uiObject = new UITextureObject("gameMenuBG", ActorType.UITextureObject, StatusType.Off, 
                     transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
             menuManager.Add("main", uiObject);
 
@@ -437,13 +440,12 @@ namespace GDGame
             Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
             Integer2 imageDimensions = new Integer2(texture.Width, texture.Height);
             transform2D = new Transform2D(screenCentre, 0, Vector2.One, origin, imageDimensions);
-            uiObject = new UITextureObject("main_play_btn", ActorType.UITextureObject, StatusType.Drawn,
+            uiObject = new UITextureObject("main_play_btn", ActorType.UITextureObject, StatusType.Off,
                 transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
             menuManager.Add("main", uiObject);
 
             //dont forget to say which menu scene you want to be updated and drawn i.e. shown!
             menuManager.SetScene("main");
-            
         }
 
         private void InitEventDispatcher()
@@ -571,7 +573,7 @@ namespace GDGame
             Components.Add(keyboardManager);
 
             //mouse
-            mouseManager = new MouseManager(this, true, physicsManager);
+            mouseManager = new MouseManager(this, true, physicsManager, screenCentre);
             Components.Add(mouseManager);
 
             //gamepad
@@ -588,7 +590,6 @@ namespace GDGame
             Components.Add(renderManager);
 
             //add in-game ui
-            //Breaks helper? (will only draw 1 side, the wrong one) spritebatch begin/end?
             uiManager = new UIManager(this, StatusType.Off, _spriteBatch, 10);
             uiManager.DrawOrder = 4;
             Components.Add(uiManager);
@@ -597,6 +598,10 @@ namespace GDGame
             menuManager = new MenuManager(this, StatusType.Update | StatusType.Drawn, _spriteBatch);
             menuManager.DrawOrder = 5; //highest number of all drawable managers since we want it drawn on top!
             Components.Add(menuManager);
+
+            //sound
+            soundManager = new SoundManager(this, StatusType.Update);
+            Components.Add(soundManager);
         }
 
         private void InitCameras3D()
@@ -1522,6 +1527,7 @@ private void InitSkybox()
             modelDictionary.Dispose();
             fontDictionary.Dispose();
             modelDictionary.Dispose();
+            soundManager.Dispose();
 
             base.UnloadContent();
         }
@@ -1585,11 +1591,11 @@ private void InitSkybox()
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            DepthStencilState dss = new DepthStencilState();
-            dss.DepthBufferEnable = true;
-            _graphics.GraphicsDevice.DepthStencilState = dss;
+            //DepthStencilState dss = new DepthStencilState();
+            //dss.DepthBufferEnable = true;
+            //_graphics.GraphicsDevice.DepthStencilState = dss;
 
-            _spriteBatch.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+            //_spriteBatch.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
 
             base.Draw(gameTime);
         }

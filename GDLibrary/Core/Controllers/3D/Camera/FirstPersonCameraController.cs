@@ -1,6 +1,4 @@
-﻿using GDLibrary.Actors;
-using GDLibrary.Controllers;
-using GDLibrary.Enums;
+﻿using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;

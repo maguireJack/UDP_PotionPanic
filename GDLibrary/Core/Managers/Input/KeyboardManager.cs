@@ -93,7 +93,7 @@ namespace GDLibrary.Managers
         //Checks if any of the keys passed in have been pressed
         public bool IsAnyKeyPressedFirstTime(Keys[] keys)
         {
-            foreach(Keys key in keys)
+            foreach (Keys key in keys)
             {
                 if (IsFirstKeyPress(key))
                     return true;

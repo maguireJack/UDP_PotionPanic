@@ -61,11 +61,12 @@ namespace GDLibrary.Managers
 
         #region Constructors & Core
 
-        public MouseManager(Game game, bool bMouseVisible, PhysicsManager physicsManager)
+        public MouseManager(Game game, bool bMouseVisible, PhysicsManager physicsManager, Vector2 screenCentre)
             : base(game)
         {
             MouseVisible = bMouseVisible;
             this.physicsManager = physicsManager;
+            this.SetPosition(screenCentre);
         }
 
         /// <summary>

@@ -35,7 +35,7 @@ namespace GDLibrary.Containers
             {
                 if (!Dictionary.ContainsKey(key))
                 {
-                    throw new Exception(key + " resource was not found in dictionary. Have you loaded it?");
+                    throw new Exception(key + " resource was not found in dictionary. Have you loaded it in a Main::LoadTextures() type method?");
                 }
 
                 return dictionary[key];
@@ -97,6 +97,11 @@ namespace GDLibrary.Containers
             return dictionary.Count;
         }
 
+        /// <summary>
+        /// Disposes of the contents of the dictionary.
+        /// </summary>
+        /// <see cref="GDLibrary.Managers.SoundManager.Dispose()"/>
+        /// <seealso cref="https://robertgreiner.com/iterating-through-a-dictionary-in-csharp/"/>
         public virtual void Dispose()
         {
             //copy values from dictionary to list
