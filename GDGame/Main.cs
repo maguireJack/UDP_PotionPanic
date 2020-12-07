@@ -2,6 +2,7 @@
 using GDGame.MyGame.Constants;
 using GDGame.MyGame.Controllers;
 using GDGame.MyGame.Enums;
+using GDGame.MyGame.Managers;
 using GDGame.MyGame.Objects;
 using GDLibrary.Actors;
 using GDLibrary.Containers;
@@ -44,7 +45,7 @@ namespace GDGame
         private RenderManager renderManager;
         private PersistantData persistantData;
         private UIManager uiManager;
-        private MenuManager menuManager;
+        private MyMenuManager menuManager;
         private SoundManager soundManager;
 
         //Debug
@@ -440,7 +441,7 @@ namespace GDGame
             Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
             Integer2 imageDimensions = new Integer2(texture.Width, texture.Height);
             transform2D = new Transform2D(screenCentre, 0, Vector2.One, origin, imageDimensions);
-            uiObject = new UIButtonObject("main_play_btn", ActorType.UITextureObject, StatusType.Drawn,
+            uiObject = new UIButtonObject("play_btn", ActorType.UITextureObject, StatusType.Drawn,
                 transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
                 "Play",
                 fontDictionary["ui"],
@@ -601,7 +602,8 @@ namespace GDGame
             Components.Add(uiManager);
 
             //add menu
-            menuManager = new MenuManager(this, StatusType.Update | StatusType.Drawn, _spriteBatch);
+            menuManager = new MyMenuManager(this, StatusType.Update | StatusType.Drawn, _spriteBatch,
+            mouseManager, keyboardManager);
             menuManager.DrawOrder = 5; //highest number of all drawable managers since we want it drawn on top!
             Components.Add(menuManager);
 
