@@ -1312,7 +1312,9 @@ namespace GDGame
             uiManager.Add(ball);
 
             return new StirringMinigameController("StirringMinigame",
-                ActorType.Decorator, StatusType.Off, mouseManager, background, radius, ball);
+                ActorType.Decorator, StatusType.Off,
+                mouseManager, gamePadManager,
+                background, radius, ball);
         }
 
         private GrindingMinigameController InitGrindingMinigame()

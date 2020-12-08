@@ -52,16 +52,14 @@ namespace GDGame.MyGame.Controllers
 
         public override void Update(GameTime gameTime)
         {
-            GamePadCapabilities capabilities = GamePad.GetCapabilities(PlayerIndex.One);
-
-            if (capabilities.IsConnected)
-                HandleControlerMashing();
-            else HandleMashing();
+            if (GamePad.GetCapabilities(PlayerIndex.One).IsConnected)
+                HandleController();
+            else HandleKeyboard();
 
             base.Update(gameTime);
         }
 
-        private void HandleControlerMashing()
+        private void HandleController()
         {
             if (keyA && gamePadManager.IsFirstButtonPress(0, Buttons.A)) 
             {
@@ -75,7 +73,7 @@ namespace GDGame.MyGame.Controllers
             }
         } 
 
-        private void HandleMashing()
+        private void HandleKeyboard()
         {
             if (keyA && keyboardManager.IsFirstKeyPress(Keys.A))
             {
