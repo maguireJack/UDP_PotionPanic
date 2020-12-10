@@ -133,6 +133,7 @@ namespace GDGame.MyGame.Objects
             UpdateHandItemPos();
 
             base.Update(gameTime);
+            
         }
 
         private void AssignRecipe(Recipe recipe, string potionName)

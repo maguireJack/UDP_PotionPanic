@@ -543,6 +543,10 @@ namespace GDGame
                     HandHeldPickup potion = new HandHeldPickup(potionObject, PickupType.Potion, (string)potion_data[0],
                         GameConstants.defualtInteractionDist, (Vector3) modelData[1]);
 
+                    potion.ControllerList.Add(new SinusoidalController("sin", ControllerType.SinTranslation));
+
+                    
+
                     objectManager.Add(potion);
                 }
                 else if(eventData.EventActionType == EventActionType.OnProcess)

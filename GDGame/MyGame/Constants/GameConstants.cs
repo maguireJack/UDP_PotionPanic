@@ -128,7 +128,7 @@ namespace GDGame.MyGame.Constants
         //[0] = Hold pos, [1] = scale
         public static readonly Dictionary<string, ArrayList> pickupModelData = new Dictionary<string, ArrayList>();
         public static readonly Dictionary<Recipe, ArrayList> potions = new Dictionary<Recipe, ArrayList>();
-        public static readonly float potionSpawnHeight = 100;
+        public static readonly float potionSpawnHeight = 125;
 
         private class ModelData
         {

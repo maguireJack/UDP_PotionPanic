@@ -49,6 +49,8 @@ namespace GDGame.MyGame.Objects
 
         public override void Update(GameTime gameTime)
         {
+            
+
             if((minigame.StatusType & StatusType.Update) == StatusType.Update)
             {
                 if (!timer.IsRunning)
