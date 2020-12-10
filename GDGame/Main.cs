@@ -186,8 +186,11 @@ namespace GDGame
 
             //ui
             textureDictionary.Load("Assets/Textures/UI/helper_space");
+            textureDictionary.Load("Assets/Textures/UI/helper_A");
             textureDictionary.Load("Assets/Textures/UI/grinding_A");
             textureDictionary.Load("Assets/Textures/UI/grinding_D");
+            textureDictionary.Load("Assets/Textures/UI/grinding_xbox_A");
+            textureDictionary.Load("Assets/Textures/UI/grinding_xbox_B");
             textureDictionary.Load("Assets/Textures/UI/ring");
             textureDictionary.Load("Assets/Textures/UI/ball");
 
@@ -1378,7 +1381,9 @@ namespace GDGame
             string[] keys = new string[]
             {
                 "grinding_A",
-                "grinding_D"
+                "grinding_D",
+                "grinding_xbox_A",
+                "grinding_xbox_B"
             };
 
             Texture2D texture;
@@ -1403,7 +1408,6 @@ namespace GDGame
                 uiPanels.Add(keys[i], ui);
                 uiManager.Add(ui);
             }
-
 
             return new GrindingMinigameController("GrindingMinigame",
                 ActorType.Decorator, StatusType.Off, keyboardManager, gamePadManager, uiPanels);
@@ -1458,6 +1462,11 @@ namespace GDGame
                 GameConstants.MoveKeys);
 
             //interact helper
+
+            Dictionary<string, Texture2D> helperTextures = new Dictionary<string, Texture2D>();
+            helperTextures.Add("helper_space", textureDictionary["helper_space"]);
+            helperTextures.Add("helper_A", textureDictionary["helper_A"]);
+
             PrimitiveObject interactHelper = archetypalTexturedQuad.Clone() as PrimitiveObject;
             interactHelper.ID = "spacebar helper";
             interactHelper.EffectParameters.Texture = textureDictionary["helper_space"];
@@ -1469,7 +1478,7 @@ namespace GDGame
             objectManager.Add(interactHelper);
 
             Player player = new Player(playerObject, 20, 1, 2, 2,
-                objectManager, keyboardManager, gamePadManager, controller, interactHelper);
+                objectManager, keyboardManager, gamePadManager, controller, interactHelper, helperTextures);
 
             player.Enable(false, 1);
 
