@@ -13,11 +13,11 @@
     {
       "ModelName": "Red_Dust",
       "HoldPosition": [ 4, 18, -1.5 ],
-      "Scale": [ 0.2, 0.2, 0.2 ]
+      "Scale": [ 0.1, 0.1, 0.1 ]
     },
     {
       "ModelName": "Red_Liquid",
-      "HoldPosition": [ 4, 18, -1.5 ],
+      "HoldPosition": [ 4, 15, -1.5 ],
       "Scale": [ 0.1, 0.1, 0.1 ]
     },
     {
@@ -28,26 +28,26 @@
     {
       "ModelName": "Blue_Dust",
       "HoldPosition": [ 4, 18, -1.5 ],
-      "Scale": [ 0.2, 0.2, 0.2 ]
+      "Scale": [ 0.1, 0.1, 0.1 ]
     },
     {
       "ModelName": "Blue_Liquid",
-      "HoldPosition": [ 4, 18, -1.5 ],
+      "HoldPosition": [ 4, 15, -1.5 ],
       "Scale": [ 0.1, 0.1, 0.1 ]
     },
     {
       "ModelName": "Green_Solid",
       "HoldPosition": [ 4, 18, -1.5 ],
-      "Scale": [ 1, 1, 1 ]
+      "Scale": [ 0.8, 0.8, 0.8 ]
     },
     {
       "ModelName": "Green_Dust",
       "HoldPosition": [ 4, 18, -1.5 ],
-      "Scale": [ 0.2, 0.2, 0.2 ]
+      "Scale": [ 0.1, 0.1, 0.1 ]
     },
     {
       "ModelName": "Green_Liquid",
-      "HoldPosition": [ 4, 18, -1.5 ],
+      "HoldPosition": [ 4, 15, -1.5 ],
       "Scale": [ 0.1, 0.1, 0.1 ]
     }
   ],

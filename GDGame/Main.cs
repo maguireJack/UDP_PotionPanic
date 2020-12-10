@@ -1302,9 +1302,9 @@ namespace GDGame
 
             ////////////////Giver creation
             //transform 
-            transform3D = new Transform3D(new Vector3(100, 30, -350),
-                                new Vector3(0, 90, 0),       //rotation
-                                new Vector3(0.5f, 0.5f, 0.5f),        //scale
+            transform3D = new Transform3D(new Vector3(100, 75, -350),
+                                new Vector3(0, 0, 0),       //rotation
+                                new Vector3(0.8f, 0.8f, 0.8f),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
@@ -1319,7 +1319,7 @@ namespace GDGame
             ingredientGiver = new IngredientGiver(collidableObject, "Green Herb Giver",
                 GameConstants.defualtInteractionDist, pickup);
 
-            ingredientGiver.AddPrimitive(new Box(new Vector3(0, 40, 0), Matrix.Identity, new Vector3(150, 83, 80)),
+            ingredientGiver.AddPrimitive(new Box(new Vector3(0, 0, 0), Matrix.Identity, new Vector3(150, 83, 80)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             ingredientGiver.Enable(true, 1);
