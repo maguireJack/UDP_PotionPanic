@@ -194,6 +194,7 @@ namespace GDGame
             //Menu
             textureDictionary.Load("Assets/Textures/Menu/gameMenuBG");
             textureDictionary.Load("Assets/Textures/Menu/baseButton");
+            textureDictionary.Load("Assets/Textures/Menu/controlsMenu");
 
             //walls
             textureDictionary.Load("Assets/Textures/Level/wall_left");
@@ -426,12 +427,15 @@ namespace GDGame
             Transform2D transform2D = null;
             DrawnActor2D uiObject = null;
 
-            //Background Main
+            //Backgrounds
             texture = textureDictionary["gameMenuBG"];
+            texture = textureDictionary["gameMenuBG"];
+
             //fullScreenScaleFactor = new Vector2((float)_graphics.PreferredBackBufferWidth / texture.Width, (float)_graphics.PreferredBackBufferHeight / texture.Height);
 
             transform2D = new Transform2D(Vector2.One);
 
+            //main BG
             uiObject = new UITextureObject("gameMenuBG", ActorType.UITextureObject, StatusType.Drawn, 
                     transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
             menuManager.Add("main", uiObject);
@@ -440,16 +444,62 @@ namespace GDGame
             texture = textureDictionary["baseButton"];
             Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
             Integer2 imageDimensions = new Integer2(texture.Width, texture.Height);
-            transform2D = new Transform2D(screenCentre, 0, Vector2.One, origin, imageDimensions);
+            transform2D = new Transform2D(screenCentre + new Vector2(0, -150), 0, Vector2.One, origin, imageDimensions);
             uiObject = new UIButtonObject("play_btn", ActorType.UITextureObject, StatusType.Drawn,
                 transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
                 "Play",
                 fontDictionary["ui"],
                 Vector2.One,
                 Color.Black,
-                Vector2.Zero);
+                new Vector2(0, 0));
 
             menuManager.Add("main", uiObject);
+
+            transform2D = new Transform2D(screenCentre + new Vector2(0, 0), 0, Vector2.One, origin, imageDimensions);
+            uiObject = new UIButtonObject("controls_btn", ActorType.UITextureObject, StatusType.Drawn,
+                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                "Controls",
+                fontDictionary["ui"],
+                Vector2.One,
+                Color.Black,
+                new Vector2(0, 0));
+
+            menuManager.Add("main", uiObject);
+
+            transform2D = new Transform2D(screenCentre + new Vector2(0, 150), 0, Vector2.One, origin, imageDimensions);
+            uiObject = new UIButtonObject("exit_btn", ActorType.UITextureObject, StatusType.Drawn,
+                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                "Exit",
+                fontDictionary["ui"],
+                Vector2.One,
+                Color.Black,
+                new Vector2(0, 0));
+
+            menuManager.Add("main", uiObject);
+
+            //Pause menu
+            uiObject = new UITextureObject("gameMenuBG", ActorType.UITextureObject, StatusType.Drawn,
+                    transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+            menuManager.Add("pause", uiObject);
+
+            //Controls menu
+            uiObject = new UITextureObject("controlsMenu", ActorType.UITextureObject, StatusType.Drawn,
+                    transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+            menuManager.Add("controls", uiObject);
+
+            //control menu buttons
+            transform2D = new Transform2D(screenCentre + new Vector2(0, 150), 0, Vector2.One, origin, imageDimensions);
+            uiObject = new UIButtonObject("back_btn", ActorType.UITextureObject, StatusType.Drawn,
+                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                "Back",
+                fontDictionary["ui"],
+                Vector2.One,
+                Color.Black,
+                new Vector2(0, 0));
+
+            menuManager.Add("controls", uiObject);
+
+
 
             //dont forget to say which menu scene you want to be updated and drawn i.e. shown!
             menuManager.SetScene("main");

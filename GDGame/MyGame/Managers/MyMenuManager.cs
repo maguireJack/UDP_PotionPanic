@@ -66,12 +66,20 @@ namespace GDGame.MyGame.Managers
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, new object[] { gameTime }));
                     break;
 
-                case "controls":
+                case "controls_btn":
                     SetScene("controls");
                     break;
 
-                case "exit":
+                case "pause":
+                    SetScene("pause");
+                    break;
+
+                case "exit_btn":
                     Game.Exit();
+                    break;
+
+                case "back_btn":
+                    SetScene("main");
                     break;
 
                 default:
