@@ -8,6 +8,8 @@ using GDLibrary.Events;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 
 namespace GDGame.MyGame.Objects
@@ -21,6 +23,7 @@ namespace GDGame.MyGame.Objects
         private GamePadManager gamePadManager;
 
         private PrimitiveObject helper;
+        private Dictionary<string, Texture2D> helperTextures;
         private HandHeldPickup handItem;
         private Checklist checklist;
         private int score;
@@ -54,13 +57,14 @@ namespace GDGame.MyGame.Objects
         public Player(ModelObject modelObject,
             float radius, float height, float accelerationRate, float decelerationRate,
             ObjectManager objectManager, KeyboardManager keyboardManager, GamePadManager gamePadManager,
-            IController controller, PrimitiveObject helper)
+            IController controller, PrimitiveObject helper, Dictionary<string, Texture2D> helperTextures)
             : base(modelObject, radius, height, accelerationRate, decelerationRate)
         {
             this.objectManager = objectManager;
             this.keyBoardManager = keyboardManager;
             this.gamePadManager = gamePadManager;
             this.helper = helper;
+            this.helperTextures = helperTextures;
             this.handItem = null;
             this.lastListSize = 0;
             this.score = 0;
@@ -129,6 +133,11 @@ namespace GDGame.MyGame.Objects
 
         public override void Update(GameTime gameTime)
         {
+            if(GamePad.GetCapabilities(PlayerIndex.One).IsConnected)
+            {
+                helper.EffectParameters.Texture = helperTextures["helper_A"];
+            }
+            else helper.EffectParameters.Texture = helperTextures["helper_space"];
             FindInteractables();
             UpdateHandItemPos();
 
@@ -237,7 +246,6 @@ namespace GDGame.MyGame.Objects
 
         private void InteractWith(InteractableActor iActor)
         {
-
             //check if the interact key is pressed
             if (keyBoardManager.IsAnyKeyPressedFirstTime(GameConstants.playerInteractKeys) ||
                 gamePadManager.IsAnyButtonPressed(PlayerIndex.One, GameConstants.playerInteractButtons))

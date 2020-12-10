@@ -73,7 +73,7 @@ namespace GDGame.MyGame.Constants
         public static readonly Vector3 potionRedPos = new Vector3(4, 18, -1.5f);
 
         public static readonly Keys[] playerInteractKeys = { Keys.Space, Keys.RightControl };
-        public static readonly Buttons[] playerInteractButtons = { Buttons.LeftTrigger };
+        public static readonly Buttons[] playerInteractButtons = { Buttons.A };
         public static readonly float defualtInteractionDist = 80f;
 
         #endregion

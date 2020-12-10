@@ -61,20 +61,46 @@ namespace GDGame.MyGame.Controllers
 
         private void HandleController()
         {
+            if (uiPanels["grinding_A"].StatusType == StatusType.Drawn)
+            {
+                uiPanels["grinding_xbox_A"].StatusType = StatusType.Drawn;
+                uiPanels["grinding_A"].StatusType = StatusType.Off;
+            }
+            else if (uiPanels["grinding_D"].StatusType == StatusType.Drawn)
+            {
+                uiPanels["grinding_xbox_B"].StatusType = StatusType.Drawn;
+                uiPanels["grinding_D"].StatusType = StatusType.Off;
+            }
+
             if (keyA && gamePadManager.IsFirstButtonPress(0, Buttons.A)) 
             {
                 count++;
                 keyA = false;
+                uiPanels["grinding_xbox_A"].StatusType = StatusType.Off;
+                uiPanels["grinding_xbox_B"].StatusType = StatusType.Drawn;
             }
             else if(gamePadManager.IsFirstButtonPress(0, Buttons.B))
             {
                 count++;
                 keyA = true;
+                uiPanels["grinding_xbox_A"].StatusType = StatusType.Drawn;
+                uiPanels["grinding_xbox_B"].StatusType = StatusType.Off;
             }
         } 
 
         private void HandleKeyboard()
         {
+            if(uiPanels["grinding_xbox_A"].StatusType == StatusType.Drawn)
+            {
+                uiPanels["grinding_xbox_A"].StatusType = StatusType.Off;
+                uiPanels["grinding_A"].StatusType = StatusType.Drawn;
+            }
+            else if(uiPanels["grinding_xbox_B"].StatusType == StatusType.Drawn)
+            {
+                uiPanels["grinding_xbox_B"].StatusType = StatusType.Off;
+                uiPanels["grinding_D"].StatusType = StatusType.Drawn;
+            }
+
             if (keyA && keyboardManager.IsFirstKeyPress(Keys.A))
             {
                 count++;
