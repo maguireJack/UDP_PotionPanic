@@ -204,6 +204,7 @@ namespace GDGame
             textureDictionary.Load("Assets/Textures/Props/ingredientTables/lectern");
             textureDictionary.Load("Assets/Textures/props/Cauldron/cauldron");
             textureDictionary.Load("Assets/Textures/props/Chest/chest");
+            textureDictionary.Load("Assets/Textures/props/Bin/bin");
 
             textureDictionary.Load("Assets/Textures/Props/ingredientTables/table_red");
             textureDictionary.Load("Assets/Textures/Props/ingredientTables/table_blue");
@@ -245,6 +246,7 @@ namespace GDGame
             modelDictionary.Load("Assets/Models/Interactables/cauldron");
             modelDictionary.Load("Assets/Models/Interactables/Tables/lectern");
             modelDictionary.Load("Assets/Models/Interactables/chest");
+            modelDictionary.Load("Assets/Models/Interactables/bin");
 
             modelDictionary.Load("Assets/Models/Interactables/Tables/table_red");
             modelDictionary.Load("Assets/Models/Interactables/Tables/table_blue");
@@ -1020,18 +1022,18 @@ namespace GDGame
             //transform
             transform3D = new Transform3D(GameConstants.binPos,
                                 new Vector3(0, 0, 0),       //rotation
-                                new Vector3(10, 30, 10),        //scale
+                                new Vector3(1, 0.6f, 1),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                textureDictionary["crate"],
+                textureDictionary["bin"],
                 Color.White, 1);
 
             collidableObject = new CollidableObject("Bin", ActorType.Interactable,
                 StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, modelDictionary["box2"]);
+                effectParameters, modelDictionary["bin"]);
 
             Bin bin = new Bin(collidableObject, "Bin", GameConstants.defualtInteractionDist);
             bin.AddPrimitive(new Box(new Vector3(0, 0, 0), Matrix.Identity, transform3D.Scale * 2.14f),
@@ -1131,9 +1133,9 @@ namespace GDGame
             #region Chest
             ////////////////Chest
             /////transform 
-            transform3D = new Transform3D(new Vector3(-370, 80, 110),
-                                new Vector3(0, 0, 0),       //rotation
-                                new Vector3(1, 1, 1),        //scale
+            transform3D = new Transform3D(new Vector3(-350, 80, 110),
+                                new Vector3(0, 90, 0),       //rotation
+                                new Vector3(0.15f, 0.15f, 0.15f),        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
