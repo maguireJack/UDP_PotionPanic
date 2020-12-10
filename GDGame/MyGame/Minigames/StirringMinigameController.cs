@@ -2,14 +2,12 @@
 using GDGame.MyGame.Constants;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
-using GDLibrary.Events;
-using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 
-namespace GDGame.MyGame.Controllers
+namespace GDGame.MyGame.Minigames
 {
     public class StirringMinigameController : Minigame
     {
@@ -40,6 +38,7 @@ namespace GDGame.MyGame.Controllers
 
         public override void Start()
         {
+            SendLockEvent();
             background.StatusType = StatusType.Drawn;
             ball.StatusType = StatusType.Drawn;
             StatusType = StatusType.Update;
@@ -52,6 +51,9 @@ namespace GDGame.MyGame.Controllers
                 ball.StatusType = StatusType.Off;
                 background.StatusType = StatusType.Off;
                 StatusType = StatusType.Off;
+                angle = 0;
+
+                SendUnlockEvent();
                 return true;
             }
             return false;

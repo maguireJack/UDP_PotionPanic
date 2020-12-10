@@ -1,8 +1,8 @@
 ﻿using GDGame.MyGame.Actors;
 using GDGame.MyGame.Constants;
-using GDGame.MyGame.Controllers;
 using GDGame.MyGame.Enums;
 using GDGame.MyGame.Interfaces;
+using GDGame.MyGame.Minigames;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Events;

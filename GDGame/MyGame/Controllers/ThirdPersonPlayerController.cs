@@ -22,6 +22,7 @@ namespace GDGame.MyGame.Controllers
         private float moveSpeed, rotationSpeed, originalMoveSpeed;
         private Keys[][] moveKeys;
         private bool cameraMoveConstraint;
+        private bool locked;
 
         #endregion
 
@@ -41,18 +42,34 @@ namespace GDGame.MyGame.Controllers
             this.moveSpeed = this.originalMoveSpeed = moveSpeed;
             this.rotationSpeed = rotationSpeed;
             this.moveKeys = moveKeys;
-            cameraMoveConstraint = false;
+            this.cameraMoveConstraint = false;
+            this.locked = false;
 
             EventDispatcher.Subscribe(EventCategoryType.Upgrade, HandleEvent);
+            EventDispatcher.Subscribe(EventCategoryType.Player, HandleEvent);
         }
 
         #endregion
 
         private void HandleEvent(EventData eventData)
         {
-            if (eventData.EventActionType == EventActionType.MoveSpeedUp)
+            if(eventData.EventCategoryType == EventCategoryType.Player)
             {
-                moveSpeed = originalMoveSpeed + (((float)eventData.Parameters[0]) / 100f * originalMoveSpeed);
+                if(eventData.EventActionType == EventActionType.OnLock)
+                {
+                    locked = true;
+                }
+                if (eventData.EventActionType == EventActionType.OnUnlock)
+                {
+                    locked = false;
+                }
+            }
+            else if (eventData.EventCategoryType == EventCategoryType.Upgrade)
+            {
+                if (eventData.EventActionType == EventActionType.MoveSpeedUp)
+                {
+                    moveSpeed = originalMoveSpeed + (((float)eventData.Parameters[0]) / 100f * originalMoveSpeed);
+                }
             }
         }
 
@@ -63,7 +80,7 @@ namespace GDGame.MyGame.Controllers
 
             Actor3D parent = actor as Actor3D;
 
-            if (parent != null)
+            if (parent != null && !locked)
             {
                 if (capabilities.IsConnected)
                 {

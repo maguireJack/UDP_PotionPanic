@@ -3,6 +3,7 @@ using GDGame.MyGame.Constants;
 using GDGame.MyGame.Controllers;
 using GDGame.MyGame.Enums;
 using GDGame.MyGame.Managers;
+using GDGame.MyGame.Minigames;
 using GDGame.MyGame.Objects;
 using GDLibrary.Actors;
 using GDLibrary.Containers;
@@ -193,6 +194,11 @@ namespace GDGame
             textureDictionary.Load("Assets/Textures/UI/grinding_xbox_B");
             textureDictionary.Load("Assets/Textures/UI/ring");
             textureDictionary.Load("Assets/Textures/UI/ball");
+            textureDictionary.Load("Assets/Textures/UI/sliding_background");
+            textureDictionary.Load("Assets/Textures/UI/sliding_progress");
+            textureDictionary.Load("Assets/Textures/UI/sliding_safeZone");
+            textureDictionary.Load("Assets/Textures/UI/sliding_target");
+            textureDictionary.Load("Assets/Textures/UI/green_block");
 
             //Menu
             textureDictionary.Load("Assets/Textures/Menu/gameMenuBG");
@@ -1095,7 +1101,7 @@ namespace GDGame
                 effectParameters, modelDictionary["table_liquid"]);
 
             proccessor = new IngredientProccessor(collidableObject, "Liquid Table",
-                GameConstants.defualtInteractionDist, IngredientState.Dust, InitGrindingMinigame());
+                GameConstants.defualtInteractionDist, IngredientState.Dust, InitSlidingMinigame());
 
             proccessor.AddPrimitive(new Box(new Vector3(15, 60, 0), Matrix.Identity, new Vector3(90, 125, 96)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -1374,6 +1380,64 @@ namespace GDGame
                 ActorType.Decorator, StatusType.Off,
                 mouseManager, gamePadManager,
                 background, radius, ball);
+        }
+
+        private SlidingMinigameController InitSlidingMinigame()
+        {
+            Texture2D texture = textureDictionary["sliding_background"];
+
+            Transform2D transform2D = new Transform2D(screenCentre, 0,
+                Vector2.One,
+                new Vector2(texture.Width / 2, texture.Height / 2),
+                new Integer2(texture.Width, texture.Height));
+
+            UITextureObject background = new UITextureObject("sliding_background", ActorType.UITextureObject,
+                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            texture = textureDictionary["sliding_target"];
+
+            transform2D = new Transform2D(
+                new Vector2(screenCentre.X, screenCentre.Y), 0,
+                Vector2.One,
+                new Vector2(texture.Width / 2, texture.Height / 2),
+                new Integer2(texture.Width, texture.Height));
+
+            UITextureObject target = new UITextureObject("sliding_target", ActorType.UITextureObject,
+                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            texture = textureDictionary["green_block"];
+
+            transform2D = new Transform2D(
+                new Vector2(screenCentre.X, screenCentre.Y + 150), 0,
+                new Vector2(100, 100),
+                new Vector2(0.5f, 0.5f),
+                new Integer2(1, 1));
+
+            UITextureObject safeZone = new UITextureObject("sliding_safeZone", ActorType.UITextureObject,
+                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            transform2D = new Transform2D(
+                new Vector2(screenCentre.X, screenCentre.Y - 213), 0,
+                new Vector2(800, 16),
+                new Vector2(0.5f, 0.5f),
+                new Integer2(1, 1));
+
+            UITextureObject progressBar = new UITextureObject("sliding_progress", ActorType.UITextureObject,
+                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            uiManager.Add(background);
+            uiManager.Add(progressBar);
+            uiManager.Add(safeZone);
+            uiManager.Add(target);
+
+            return new SlidingMinigameController("SlidingMinigame",
+                ActorType.Decorator, StatusType.Off,
+                keyboardManager, gamePadManager,
+                background, target, safeZone, progressBar);
         }
 
         private GrindingMinigameController InitGrindingMinigame()

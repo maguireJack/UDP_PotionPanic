@@ -1,14 +1,12 @@
 ﻿using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Managers;
-using GDLibrary.Interfaces;
-using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using GDGame.MyGame.Actors;
 using System.Collections.Generic;
 
-namespace GDGame.MyGame.Controllers
+namespace GDGame.MyGame.Minigames
 {
     public class GrindingMinigameController : Minigame
     {
@@ -32,6 +30,7 @@ namespace GDGame.MyGame.Controllers
 
         public override void Start()
         {
+            SendLockEvent();
             uiPanels["grinding_A"].StatusType = StatusType.Drawn;
             StatusType = StatusType.Update;
         }
@@ -45,6 +44,8 @@ namespace GDGame.MyGame.Controllers
                 StatusType = StatusType.Off;
                 foreach(UITextureObject uiPanel in uiPanels.Values)
                     uiPanel.StatusType = StatusType.Off;
+
+                SendUnlockEvent();
                 return true;
             }
             return false;
