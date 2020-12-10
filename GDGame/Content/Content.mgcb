@@ -688,6 +688,18 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Models/wizard.3ds
 
+#begin Assets/Music/main_menu.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Music/main_menu.wav
+
+#begin Assets/Music/main_menu.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Music/main_menu.wav
+
 #begin Assets/Textures/Architecture/Walls/backwall.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
