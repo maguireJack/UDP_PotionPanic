@@ -21,6 +21,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Audio;
 
 namespace GDGame
 {
@@ -33,6 +34,7 @@ namespace GDGame
 
         //effects used by primitive objects (wireframe, lit, unlit) and model objects
         private BasicEffect unlitTexturedEffect, unlitWireframeEffect, modelEffect;
+        
 
         //managers in the game
         private CameraManager<Camera3D> cameraManager;
@@ -59,6 +61,7 @@ namespace GDGame
         private ContentDictionary<Texture2D> textureDictionary;
         private ContentDictionary<SpriteFont> fontDictionary;
         private ContentDictionary<Model> modelDictionary;
+        private ContentDictionary<SoundEffect> soundDictionary;
 
         //hashmap (Dictonary in C#) to store useful rails and curves
         private Dictionary<string, Transform3DCurve> transform3DCurveDictionary;
@@ -303,7 +306,13 @@ namespace GDGame
 
         private void LoadSounds()
         {
+            soundDictionary.Load("Assets/Music/main_menu");
 
+            SoundEffect effect = soundDictionary["main_menu"];
+            SoundEffectInstance soundEffect = effect.CreateInstance();
+            soundEffect.Volume = .1f;
+            soundEffect.IsLooped = true;
+            soundEffect.Play();     
         }
 
         #endregion
@@ -611,6 +620,7 @@ namespace GDGame
             modelDictionary = new ContentDictionary<Model>("models", Content);
             textureDictionary = new ContentDictionary<Texture2D>("textures", Content);
             fontDictionary = new ContentDictionary<SpriteFont>("fonts", Content);
+            soundDictionary = new ContentDictionary<SoundEffect>("music", Content);
 
             //curves - notice we use a basic Dictionary and not a ContentDictionary since curves and rails are NOT media content
             transform3DCurveDictionary = new Dictionary<string, Transform3DCurve>();
