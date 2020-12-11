@@ -479,7 +479,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Models/Level/outerWallsRight.fbx
 
-#begin Assets/Models/Level/railing.fbx
+#begin Assets/Models/Level/rail1.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -496,7 +496,26 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Level/railing.fbx
+/build:Assets/Models/Level/rail1.fbx
+
+#begin Assets/Models/Level/rail2.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Assets/Models/Level/rail2.fbx
 
 #begin Assets/Models/Level/wall_left.fbx
 /importer:FbxImporter
@@ -694,12 +713,6 @@
 /processorParam:Quality=Best
 /build:Assets/Music/main_menu.wav
 
-#begin Assets/Music/main_menu.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Assets/Music/main_menu.wav
-
 #begin Assets/Textures/Architecture/Walls/backwall.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -855,6 +868,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/level/nebula_red.png
+
+#begin Assets/Textures/level/rail.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/level/rail.png
 
 #begin Assets/Textures/level/wall_left.png
 /importer:TextureImporter

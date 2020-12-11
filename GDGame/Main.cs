@@ -211,6 +211,7 @@ namespace GDGame
             //walls
             textureDictionary.Load("Assets/Textures/Level/wall_left");
             textureDictionary.Load("Assets/Textures/Level/wall_right");
+            textureDictionary.Load("Assets/Textures/Level/rail");
 
             //interactables
             textureDictionary.Load("Assets/Textures/Props/ingredientTables/lectern");
@@ -247,7 +248,8 @@ namespace GDGame
             modelDictionary.Load("Assets/Models/Level/wall_left");
             modelDictionary.Load("Assets/Models/Level/wall_right");
             modelDictionary.Load("Assets/Models/Level/floor");
-            modelDictionary.Load("Assets/Models/Level/railing");
+            modelDictionary.Load("Assets/Models/Level/rail1");
+            modelDictionary.Load("Assets/Models/Level/rail2");
 
             //outer level
             modelDictionary.Load("Assets/Models/Level/outerWalls");
@@ -903,7 +905,7 @@ namespace GDGame
             objectManager.Add(collidableObject);
 
 
-            ///////railing
+            ///////rail1
             //transform 
             transform3D = new Transform3D(new Vector3(0, 0, 0),
                                     new Vector3(0, 0, 0),       //rotation
@@ -913,13 +915,38 @@ namespace GDGame
 
             //effectparameters
             effectParameters = new EffectParameters(modelEffect,
-                null,
+                textureDictionary["rail"],
                 Color.White, 1);
 
             //model object
             collidableObject = new CollidableObject("wallRight", ActorType.CollidableDecorator,
                StatusType.Drawn | StatusType.Update, transform3D,
-               effectParameters, modelDictionary["railing"]);
+               effectParameters, modelDictionary["rail1"]);
+
+            collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
+
+            collidableObject.Enable(true, 1);
+
+            objectManager.Add(collidableObject);
+
+            ///////rail1
+            //transform 
+            transform3D = new Transform3D(new Vector3(0, 0, 0),
+                                    new Vector3(0, 0, 0),       //rotation
+                                    new Vector3(1, 1, 1),        //scale
+                                        -Vector3.UnitZ,         //look
+                                        Vector3.UnitY);         //up
+
+            //effectparameters
+            effectParameters = new EffectParameters(modelEffect,
+                textureDictionary["rail"],
+                Color.White, 1);
+
+            //model object
+            collidableObject = new CollidableObject("wallRight", ActorType.CollidableDecorator,
+               StatusType.Drawn | StatusType.Update, transform3D,
+               effectParameters, modelDictionary["rail2"]);
 
             collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
