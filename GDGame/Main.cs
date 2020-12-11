@@ -60,6 +60,7 @@ namespace GDGame
 
         //use ContentDictionary to store assets (i.e. file content) that need the Content.Load() method to be called
         private ContentDictionary<Texture2D> textureDictionary;
+        private ContentDictionary<Texture2D> uiTextureDictionary;
         private ContentDictionary<SpriteFont> fontDictionary;
         private ContentDictionary<Model> modelDictionary;
         private ContentDictionary<SoundEffect> soundDictionary;
@@ -173,6 +174,45 @@ namespace GDGame
             modelEffect.EnableDefaultLighting();
         }
 
+        private void LoadUITextures()
+        {
+            //Interaction
+            uiTextureDictionary.Load("Assets/Textures/UI/Interaction/helper_space");
+            uiTextureDictionary.Load("Assets/Textures/UI/Interaction/helper_A");
+
+            //Grinding
+            uiTextureDictionary.Load("Assets/Textures/UI/Grinding/grinding_A");
+            uiTextureDictionary.Load("Assets/Textures/UI/Grinding/grinding_D");
+            uiTextureDictionary.Load("Assets/Textures/UI/Grinding/grinding_xbox_A");
+            uiTextureDictionary.Load("Assets/Textures/UI/Grinding/grinding_xbox_B");
+
+            //Stirring
+            uiTextureDictionary.Load("Assets/Textures/UI/Stirring/ring");
+            uiTextureDictionary.Load("Assets/Textures/UI/Stirring/ball");
+
+            //sliding
+            uiTextureDictionary.Load("Assets/Textures/UI/Sliding/sliding_background");
+            uiTextureDictionary.Load("Assets/Textures/UI/Sliding/sliding_target");
+            uiTextureDictionary.Load("Assets/Textures/UI/Sliding/green_block");
+
+            //Lectern
+            uiTextureDictionary.Load("Assets/Textures/UI/Lectern/page");
+            uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Red_Solid");
+            uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Blue_Solid");
+            uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Green_Solid");
+            uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Red_Dust");
+            uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Blue_Dust");
+            uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Green_Dust");
+            uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Red_Liquid");
+            uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Blue_Liquid");
+            uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Green_Liquid");
+
+            //Menu
+            uiTextureDictionary.Load("Assets/Textures/Menu/gameMenuBG");
+            uiTextureDictionary.Load("Assets/Textures/Menu/baseButton");
+            uiTextureDictionary.Load("Assets/Textures/Menu/controlsMenu");
+        }
+
         private void LoadTextures()
         {
             //sky
@@ -188,30 +228,11 @@ namespace GDGame
             textureDictionary.Load("Assets/Textures/Level/floor");
             textureDictionary.Load("Assets/Textures/Level/lava");
 
-            //ui
-            textureDictionary.Load("Assets/Textures/UI/helper_space");
-            textureDictionary.Load("Assets/Textures/UI/helper_A");
-            textureDictionary.Load("Assets/Textures/UI/grinding_A");
-            textureDictionary.Load("Assets/Textures/UI/grinding_D");
-            textureDictionary.Load("Assets/Textures/UI/grinding_xbox_A");
-            textureDictionary.Load("Assets/Textures/UI/grinding_xbox_B");
-            textureDictionary.Load("Assets/Textures/UI/ring");
-            textureDictionary.Load("Assets/Textures/UI/ball");
-            textureDictionary.Load("Assets/Textures/UI/sliding_background");
-            textureDictionary.Load("Assets/Textures/UI/sliding_progress");
-            textureDictionary.Load("Assets/Textures/UI/sliding_safeZone");
-            textureDictionary.Load("Assets/Textures/UI/sliding_target");
-            textureDictionary.Load("Assets/Textures/UI/green_block");
-
-            //Menu
-            textureDictionary.Load("Assets/Textures/Menu/gameMenuBG");
-            textureDictionary.Load("Assets/Textures/Menu/baseButton");
-            textureDictionary.Load("Assets/Textures/Menu/controlsMenu");
-
             //walls
             textureDictionary.Load("Assets/Textures/Level/wall_left");
             textureDictionary.Load("Assets/Textures/Level/wall_right");
             textureDictionary.Load("Assets/Textures/Level/rail");
+            textureDictionary.Load("Assets/Textures/Level/wall_outer");
 
             //interactables
             textureDictionary.Load("Assets/Textures/Props/ingredientTables/lectern");
@@ -356,6 +377,7 @@ namespace GDGame
             GameConstants.LoadData();
             LoadEffects();
             LoadTextures();
+            LoadUITextures();
             LoadVertices();
             LoadModels();
             LoadFonts();
@@ -450,8 +472,7 @@ namespace GDGame
             DrawnActor2D uiObject = null;
 
             //Backgrounds
-            texture = textureDictionary["gameMenuBG"];
-            texture = textureDictionary["gameMenuBG"];
+            texture = uiTextureDictionary["gameMenuBG"];
 
             //fullScreenScaleFactor = new Vector2((float)_graphics.PreferredBackBufferWidth / texture.Width, (float)_graphics.PreferredBackBufferHeight / texture.Height);
 
@@ -463,7 +484,7 @@ namespace GDGame
             menuManager.Add("main", uiObject);
 
             //Main menu buttons
-            texture = textureDictionary["baseButton"];
+            texture = uiTextureDictionary["baseButton"];
             Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
             Integer2 imageDimensions = new Integer2(texture.Width, texture.Height);
             transform2D = new Transform2D(screenCentre + new Vector2(0, -150), 0, Vector2.One, origin, imageDimensions);
@@ -631,6 +652,7 @@ namespace GDGame
 
             //stores textures, fonts & models
             modelDictionary = new ContentDictionary<Model>("models", Content);
+            uiTextureDictionary = new ContentDictionary<Texture2D>("uiTextures", Content);
             textureDictionary = new ContentDictionary<Texture2D>("textures", Content);
             fontDictionary = new ContentDictionary<SpriteFont>("fonts", Content);
             soundDictionary = new ContentDictionary<SoundEffect>("music", Content);
@@ -799,34 +821,6 @@ namespace GDGame
             InitStaticCollidableObjects();
         }
 
-        //private void InitStaticCollidableGround()
-        //{
-        //    CollidableObject collidableObject = null;
-        //    Transform3D transform3D = null;
-        //    EffectParameters effectParameters = null;
-        //    Model model = null;
-
-        //    model = box;
-
-        //    effectParameters = new EffectParameters(modelEffect,
-        //          nebula,
-        //          Color.White, 1);
-
-        //    transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, new Vector3(worldScale, 1, worldScale), -Vector3.UnitZ, Vector3.UnitY);
-
-        //    collidableObject = new CollidableObject("ground", ActorType.CollidableGround,
-        //        StatusType.Update | StatusType.Drawn,
-        //        transform3D, effectParameters, model);
-
-        //    //focus on CDCR specific methods and parameters - plane, sphere, box, capsule
-        //    collidableObject.AddPrimitive(new JigLibX.Geometry.Plane(transform3D.Up, transform3D.Translation),
-        //        new MaterialProperties(0.8f, 0.8f, 0.7f));
-
-        //    collidableObject.Enable(true, 1); //change to false, see what happens.
-
-        //    objectManager.Add(collidableObject);
-        //}
-
         private void InitStaticCollidableLevel()
         {
             ///////Floor
@@ -844,7 +838,7 @@ namespace GDGame
 
             //model object
             CollidableObject collidableObject = new CollidableObject("floor", ActorType.CollidableDecorator,
-                StatusType.Drawn | StatusType.Update, transform3D,
+                StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["floor"]);
 
             collidableObject.AddPrimitive(new Box(new Vector3(-100, 0, -100), Matrix.Identity, new Vector3(800, 53, 800)),
@@ -869,7 +863,7 @@ namespace GDGame
 
             //model object
             collidableObject = new CollidableObject("wallLeft", ActorType.CollidableDecorator,
-               StatusType.Drawn | StatusType.Update, transform3D,
+               StatusType.Drawn, transform3D,
                effectParameters, modelDictionary["wall_left"]);
 
             collidableObject.AddPrimitive(new Box(new Vector3(-460, 230, -100), Matrix.Identity, new Vector3(110, 430, 800)),
@@ -894,61 +888,10 @@ namespace GDGame
 
             //model object
             collidableObject = new CollidableObject("wallRight", ActorType.CollidableDecorator,
-               StatusType.Drawn | StatusType.Update, transform3D,
+               StatusType.Drawn, transform3D,
                effectParameters, modelDictionary["wall_right"]);
 
             collidableObject.AddPrimitive(new Box(new Vector3(-100, 230, -460), Matrix.Identity, new Vector3(800, 430, 123)),
-                new MaterialProperties(0.2f, 0.8f, 0.7f));
-
-            collidableObject.Enable(true, 1);
-
-            objectManager.Add(collidableObject);
-
-
-            ///////rail1
-            //transform 
-            transform3D = new Transform3D(new Vector3(0, 0, 0),
-                                    new Vector3(0, 0, 0),       //rotation
-                                    new Vector3(1, 1, 1),        //scale
-                                        -Vector3.UnitZ,         //look
-                                        Vector3.UnitY);         //up
-
-            //effectparameters
-            effectParameters = new EffectParameters(modelEffect,
-                textureDictionary["rail"],
-                Color.White, 1);
-
-            //model object
-            collidableObject = new CollidableObject("wallRight", ActorType.CollidableDecorator,
-               StatusType.Drawn | StatusType.Update, transform3D,
-               effectParameters, modelDictionary["rail1"]);
-
-            collidableObject.AddPrimitive(new Box( new Vector3(300,0,-50), Matrix.Identity, new Vector3(10,200,700)),
-                new MaterialProperties(0.2f, 0.8f, 0.7f));
-
-            collidableObject.Enable(true, 1);
-
-            objectManager.Add(collidableObject);
-
-            ///////rail1
-            //transform 
-            transform3D = new Transform3D(new Vector3(0, 0, 0),
-                                    new Vector3(0, 0, 0),       //rotation
-                                    new Vector3(1, 1, 1),        //scale
-                                        -Vector3.UnitZ,         //look
-                                        Vector3.UnitY);         //up
-
-            //effectparameters
-            effectParameters = new EffectParameters(modelEffect,
-                textureDictionary["rail"],
-                Color.White, 1);
-
-            //model object
-            collidableObject = new CollidableObject("wallRight", ActorType.CollidableDecorator,
-               StatusType.Drawn | StatusType.Update, transform3D,
-               effectParameters, modelDictionary["rail2"]);
-
-            collidableObject.AddPrimitive(new Box(new Vector3(-50,0,275), Matrix.Identity, new Vector3(700,200,10)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             collidableObject.Enable(true, 1);
@@ -969,16 +912,11 @@ namespace GDGame
                 Color.White, 1);
 
             //model object
-            collidableObject = new CollidableObject("outerWalls", ActorType.CollidableDecorator,
-               StatusType.Drawn | StatusType.Update, transform3D,
+            ModelObject modelObject = new ModelObject("outerWalls", ActorType.CollidableDecorator,
+               StatusType.Drawn, transform3D,
                effectParameters, modelDictionary["outerWalls"]);
 
-            collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
-                new MaterialProperties(0.2f, 0.8f, 0.7f));
-
-            collidableObject.Enable(true, 1);
-
-            objectManager.Add(collidableObject);
+            objectManager.Add(modelObject);
 
             ///////outerWallsRight
             //transform 
@@ -994,16 +932,11 @@ namespace GDGame
                 Color.White, 1);
 
             //model object
-            collidableObject = new CollidableObject("outer walls right", ActorType.CollidableDecorator,
-               StatusType.Drawn | StatusType.Update, transform3D,
+            modelObject = new ModelObject("outer walls right", ActorType.CollidableDecorator,
+               StatusType.Drawn, transform3D,
                effectParameters, modelDictionary["outerWallsRight"]);
 
-            collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
-                new MaterialProperties(0.2f, 0.8f, 0.7f));
-
-            collidableObject.Enable(true, 1);
-
-            objectManager.Add(collidableObject);
+            objectManager.Add(modelObject);
 
             ///////lava
             //transform 
@@ -1019,11 +952,56 @@ namespace GDGame
                 Color.White, 1);
 
             //model object
-            collidableObject = new CollidableObject("outerWalls", ActorType.CollidableDecorator,
-               StatusType.Drawn | StatusType.Update, transform3D,
+            modelObject = new ModelObject("outerWalls", ActorType.CollidableDecorator,
+               StatusType.Drawn, transform3D,
                effectParameters, modelDictionary["lava"]);
 
-            collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
+            objectManager.Add(modelObject);
+
+            ///////rail1
+            //transform 
+            transform3D = new Transform3D(new Vector3(0, 0, 0),
+                                    new Vector3(0, 0, 0),       //rotation
+                                    new Vector3(1, 1, 1),        //scale
+                                        -Vector3.UnitZ,         //look
+                                        Vector3.UnitY);         //up
+
+            //effectparameters
+            effectParameters = new EffectParameters(modelEffect,
+                textureDictionary["rail"],
+                Color.White, 1);
+
+            //model object
+            collidableObject = new CollidableObject("rail1", ActorType.CollidableDecorator,
+               StatusType.Drawn, transform3D,
+               effectParameters, modelDictionary["rail1"]);
+
+            collidableObject.AddPrimitive(new Box(new Vector3(300, 0, -50), Matrix.Identity, new Vector3(10, 200, 700)),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
+
+            collidableObject.Enable(true, 1);
+
+            objectManager.Add(collidableObject);
+
+            ///////rail2
+            //transform 
+            transform3D = new Transform3D(new Vector3(0, 0, 0),
+                                    new Vector3(0, 0, 0),       //rotation
+                                    new Vector3(1, 1, 1),        //scale
+                                        -Vector3.UnitZ,         //look
+                                        Vector3.UnitY);         //up
+
+            //effectparameters
+            effectParameters = new EffectParameters(modelEffect,
+                textureDictionary["rail"],
+                Color.White, 1);
+
+            //model object
+            collidableObject = new CollidableObject("rail2", ActorType.CollidableDecorator,
+               StatusType.Drawn, transform3D,
+               effectParameters, modelDictionary["rail2"]);
+
+            collidableObject.AddPrimitive(new Box(new Vector3(-50, 0, 275), Matrix.Identity, new Vector3(700, 200, 10)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             collidableObject.Enable(true, 1);
@@ -1049,7 +1027,7 @@ namespace GDGame
                 Color.White, 1);
 
             CollidableObject collidableObject = new CollidableObject("Cauldron", ActorType.Interactable,
-                StatusType.Drawn | StatusType.Update, transform3D,
+                StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["cauldron"]);
 
             Cauldron cauldron = new Cauldron(collidableObject, "Cauldron",
@@ -1078,7 +1056,7 @@ namespace GDGame
                 Color.White, 1);
 
             collidableObject = new CollidableObject("Bin", ActorType.Interactable,
-                StatusType.Drawn | StatusType.Update, transform3D,
+                StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["bin"]);
 
             Bin bin = new Bin(collidableObject, "Bin", GameConstants.defualtInteractionDist);
@@ -1104,10 +1082,10 @@ namespace GDGame
                 Color.White, 1);
 
             collidableObject = new CollidableObject("GrindTable", ActorType.Interactable,
-                StatusType.Drawn | StatusType.Update, transform3D,
+                StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["table_grinder"]);
 
-            IngredientProccessor proccessor = new IngredientProccessor(collidableObject, "Grind Table", 
+            IngredientProccessor proccessor = new IngredientProccessor(collidableObject, "Grind Table",
                 GameConstants.defualtInteractionDist, IngredientState.Solid, InitGrindingMinigame());
 
             proccessor.AddPrimitive(new Box(new Vector3(-5, 0, 0), Matrix.Identity, new Vector3(90, 105, 96)),
@@ -1134,7 +1112,7 @@ namespace GDGame
                 Color.White, 1);
 
             collidableObject = new CollidableObject("LiquidTable", ActorType.Interactable,
-                StatusType.Drawn | StatusType.Update, transform3D,
+                StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["table_liquid"]);
 
             proccessor = new IngredientProccessor(collidableObject, "Liquid Table",
@@ -1152,8 +1130,39 @@ namespace GDGame
             #region Lectern
 
             ////////////////Lectern
+
+            /////UI
+            Transform2D transform2D;
+            UITextureObject uiTexture;
+            Dictionary<string, Texture2D> ingredientUITextures = new Dictionary<string, Texture2D>()
+            {
+                { "Red_Solid", uiTextureDictionary["Red_Solid"] },
+                { "Red_Dust", uiTextureDictionary["Red_Dust"] },
+                { "Red_Liquid", uiTextureDictionary["Red_Liquid"] },
+                { "Blue_Solid", uiTextureDictionary["Blue_Solid"] },
+                { "Blue_Dust", uiTextureDictionary["Blue_Dust"] },
+                { "Blue_Liquid", uiTextureDictionary["Blue_Liquid"] },
+                { "Green_Solid", uiTextureDictionary["Green_Solid"] },
+                { "Green_Dust", uiTextureDictionary["Green_Dust"] },
+                { "Green_Liquid", uiTextureDictionary["Green_Liquid"] }
+            };
+
+            Texture2D texture = uiTextureDictionary["page"];
+
+            transform2D = new Transform2D(screenCentre, 0,
+                    Vector2.One,
+                    new Vector2(texture.Width / 2, texture.Height / 2),
+                    new Integer2(texture.Width, texture.Height));
+
+
+            uiTexture = new UITextureObject("page", ActorType.UITextureObject,
+                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            uiManager.Add(uiTexture);
+
             /////transform 
-            transform3D = new Transform3D(new Vector3(175, 35, 200),
+            transform3D = new Transform3D(new Vector3(210, 35, 185),
                                 new Vector3(0, 0, 0),       //rotation
                                 new Vector3(1, 1, 1),        //scale
                                     -Vector3.UnitZ,         //look
@@ -1163,16 +1172,20 @@ namespace GDGame
                 textureDictionary["lectern"],
                 Color.White, 1);
 
-            collidableObject = new CollidableObject("Lectern", ActorType.CollidableDecorator,
-                StatusType.Drawn | StatusType.Update, transform3D,
+            collidableObject = new CollidableObject("Lectern", ActorType.Interactable,
+                StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["lectern"]);
 
-            collidableObject.AddPrimitive(new Box(new Vector3(0, 50, 0), Matrix.Identity, new Vector3(72, 111, 71)),
+            Lectern lectern = new Lectern(collidableObject, "Lectern",
+                GameConstants.defualtInteractionDist, uiManager, keyboardManager, gamePadManager,
+                uiTexture, ingredientUITextures);
+
+            lectern.AddPrimitive(new Box(new Vector3(0, 50, 0), Matrix.Identity, new Vector3(72, 111, 71)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
 
-            collidableObject.Enable(true, 1);
+            lectern.Enable(true, 1);
 
-            objectManager.Add(collidableObject);
+            objectManager.Add(lectern);
 
             #endregion
 
@@ -1190,7 +1203,7 @@ namespace GDGame
                 Color.White, 1);
 
             collidableObject = new CollidableObject("Chest", ActorType.CollidableDecorator,
-                StatusType.Drawn | StatusType.Update, transform3D,
+                StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["chest"]);
 
             collidableObject.AddPrimitive(new Box(new Vector3(0, 0, 0), Matrix.Identity, new Vector3(75, 94, 112)),
@@ -1219,7 +1232,7 @@ namespace GDGame
 
             //model object
             collidableObject = new CollidableObject("RedRock", ActorType.Interactable,
-                StatusType.Drawn | StatusType.Update, transform3D,
+                StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["Red_Solid"]);
 
             //Red rock pickup
@@ -1246,7 +1259,7 @@ namespace GDGame
                 Color.White, 1);
 
             collidableObject = new CollidableObject("RedRockGiver", ActorType.Interactable,
-                StatusType.Drawn | StatusType.Update, transform3D,
+                StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["table_red"]);
 
 
@@ -1280,7 +1293,7 @@ namespace GDGame
 
             //model object
             collidableObject = new CollidableObject("BlueFlower", ActorType.Interactable,
-                StatusType.Drawn | StatusType.Update, transform3D,
+                StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["Blue_Solid"]);
 
             //Blue flower pickup
@@ -1307,7 +1320,7 @@ namespace GDGame
                 Color.White, 1);
 
             collidableObject = new CollidableObject("BlueFlowerGiver", ActorType.Interactable,
-                StatusType.Drawn | StatusType.Update, transform3D,
+                StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["table_blue"]);
 
             ingredientGiver = new IngredientGiver(collidableObject, "Blue Flower Giver",
@@ -1339,7 +1352,7 @@ namespace GDGame
 
             //model object
             collidableObject = new CollidableObject("GreenMushroom", ActorType.Interactable,
-                StatusType.Drawn | StatusType.Update, transform3D,
+                StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["Green_Solid"]);
 
             pickup = new HandHeldPickup(collidableObject, PickupType.Ingredient, "Green Mushroom",
@@ -1365,7 +1378,7 @@ namespace GDGame
                 Color.White, 1);
 
             collidableObject = new CollidableObject("GreenHerbGiver", ActorType.Interactable,
-                StatusType.Drawn | StatusType.Update, transform3D,
+                StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["table_green"]);
 
             ingredientGiver = new IngredientGiver(collidableObject, "Green Herb Giver",
@@ -1386,7 +1399,7 @@ namespace GDGame
 
         private StirringMinigameController InitStirringMinigame()
         {
-            Texture2D texture = textureDictionary["ring"];
+            Texture2D texture = uiTextureDictionary["ring"];
 
             Transform2D transform2D = new Transform2D(screenCentre, 0,
                 Vector2.One,
@@ -1397,7 +1410,7 @@ namespace GDGame
                 StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
-            texture = textureDictionary["ball"];
+            texture = uiTextureDictionary["ball"];
 
             transform2D = new Transform2D(screenCentre, 0,
                 Vector2.One,
@@ -1421,7 +1434,7 @@ namespace GDGame
 
         private SlidingMinigameController InitSlidingMinigame()
         {
-            Texture2D texture = textureDictionary["sliding_background"];
+            Texture2D texture = uiTextureDictionary["sliding_background"];
 
             Transform2D transform2D = new Transform2D(screenCentre, 0,
                 Vector2.One,
@@ -1432,7 +1445,7 @@ namespace GDGame
                 StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
-            texture = textureDictionary["sliding_target"];
+            texture = uiTextureDictionary["sliding_target"];
 
             transform2D = new Transform2D(
                 new Vector2(screenCentre.X, screenCentre.Y), 0,
@@ -1444,7 +1457,7 @@ namespace GDGame
                 StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
-            texture = textureDictionary["green_block"];
+            texture = uiTextureDictionary["green_block"];
 
             transform2D = new Transform2D(
                 new Vector2(screenCentre.X, screenCentre.Y + 150), 0,
@@ -1494,7 +1507,7 @@ namespace GDGame
 
             for (int i = 0; i < keys.Length; i++)
             {
-                texture = textureDictionary[keys[i]];
+                texture = uiTextureDictionary[keys[i]];
 
                 transform2D = new Transform2D(screenCentre, 0,
                 Vector2.One,
@@ -1565,12 +1578,12 @@ namespace GDGame
             //interact helper
 
             Dictionary<string, Texture2D> helperTextures = new Dictionary<string, Texture2D>();
-            helperTextures.Add("helper_space", textureDictionary["helper_space"]);
-            helperTextures.Add("helper_A", textureDictionary["helper_A"]);
+            helperTextures.Add("helper_space", uiTextureDictionary["helper_space"]);
+            helperTextures.Add("helper_A", uiTextureDictionary["helper_A"]);
 
             PrimitiveObject interactHelper = archetypalTexturedQuad.Clone() as PrimitiveObject;
             interactHelper.ID = "spacebar helper";
-            interactHelper.EffectParameters.Texture = textureDictionary["helper_space"];
+            interactHelper.EffectParameters.Texture = uiTextureDictionary["helper_space"];
             interactHelper.StatusType = StatusType.Drawn;
             interactHelper.ActorType = ActorType.Decorator;
             interactHelper.Transform3D.Scale = new Vector3(80, 56, 0);
@@ -1767,11 +1780,6 @@ private void InitSkybox()
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            //DepthStencilState dss = new DepthStencilState();
-            //dss.DepthBufferEnable = true;
-            //_graphics.GraphicsDevice.DepthStencilState = dss;
-
-            //_spriteBatch.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
 
             base.Draw(gameTime);
         }

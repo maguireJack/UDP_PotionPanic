@@ -20,5 +20,6 @@
     public class LibraryConstants
     {
         //add core game engine constants here...
+        public const float MaxVelocity = 200f;
     }
 }

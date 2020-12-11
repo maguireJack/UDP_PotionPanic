@@ -53,8 +53,9 @@
   ],
   "PotionRecipes": [
     {
-      "Name:": "Potion of Healing",
+      "Name:": "Potion of Minor Healing",
       "ModelName": "potion1",
+      "Level": 1,
       "Ingredients": [
         {
           "Type": "Red",
@@ -69,8 +70,9 @@
       ]
     },
     {
-      "Name:": "Potion of Something",
+      "Name:": "Potion of Minor Magic",
       "ModelName": "potion1",
+      "Level": 1,
       "Ingredients": [
         {
           "Type": "Red",
@@ -81,6 +83,89 @@
           "Type": "Blue",
           "State": "Solid",
           "Count": 2
+        }
+      ]
+    }, //////////////Level 2\\\\\\\\\\\\\\\\\\\\\
+    {
+      "Name:": "Potion of Dizziness",
+      "ModelName": "potion1",
+      "Level": 2,
+      "Ingredients": [
+        {
+          "Type": "Red",
+          "State": "Solid",
+          "Count": 1
+        },
+        {
+          "Type": "Green",
+          "State": "Solid",
+          "Count": 1
+        },
+        {
+          "Type": "Green",
+          "State": "Dust",
+          "Count": 1
+        }
+      ]
+    },
+    {
+      "Name:": "Potion of Cure Poison",
+      "ModelName": "potion1",
+      "Level": 2,
+      "Ingredients": [
+        {
+          "Type": "Blue",
+          "State": "Solid",
+          "Count": 2
+        },
+        {
+          "Type": "Green",
+          "State": "Dust",
+          "Count": 1
+        }
+      ]
+    }, //////////////Level 3\\\\\\\\\\\\\\\\\\\\\
+    {
+      "Name:": "Potion of Crystal Light",
+      "ModelName": "potion1",
+      "Level": 3,
+      "Ingredients": [
+        {
+          "Type": "Red",
+          "State": "Solid",
+          "Count": 1
+        },
+        {
+          "Type": "Blue",
+          "State": "Liquid",
+          "Count": 1
+        },
+        {
+          "Type": "Blue",
+          "State": "Dust",
+          "Count": 1
+        }
+      ]
+    },
+    {
+      "Name:": "Potion of Red Rage",
+      "ModelName": "potion1",
+      "Level": 3,
+      "Ingredients": [
+        {
+          "Type": "Red",
+          "State": "Solid",
+          "Count": 1
+        },
+        {
+          "Type": "Red",
+          "State": "Liquid",
+          "Count": 1
+        },
+        {
+          "Type": "Red",
+          "State": "Dust",
+          "Count": 1
         }
       ]
     }

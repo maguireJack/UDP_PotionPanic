@@ -7,9 +7,11 @@ using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
+using JigLibX.Physics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace GDGame.MyGame.Objects
@@ -27,6 +29,7 @@ namespace GDGame.MyGame.Objects
         private HandHeldPickup handItem;
         private Checklist checklist;
         private int score;
+        private int level;
 
         private List<DrawnActor3D> interactableList;
         private int lastListSize;
@@ -68,18 +71,11 @@ namespace GDGame.MyGame.Objects
             this.handItem = null;
             this.lastListSize = 0;
             this.score = 0;
+            this.level = 1;
+            this.checklist = null;
+
             ControllerList.Add(controller);
             EventDispatcher.Subscribe(EventCategoryType.Player, HandleEvent);
-
-            //TODO This is TEMPORARY
-            foreach (Recipe recipe in GameConstants.potions.Keys)
-            {
-                if (checklist == null)
-                {
-                    AssignRecipe(recipe, GameConstants.potions[recipe][0] as string);
-                    break;
-                }
-            }
         }
 
         #endregion
@@ -133,7 +129,13 @@ namespace GDGame.MyGame.Objects
 
         public override void Update(GameTime gameTime)
         {
-            if(GamePad.GetCapabilities(PlayerIndex.One).IsConnected)
+            if(checklist == null)
+            {
+                NewRecipe();
+                EventDispatcher.Publish(new EventData(EventCategoryType.Player,
+                    EventActionType.OnStart, new object[] { checklist }));
+            }
+            if (GamePad.GetCapabilities(PlayerIndex.One).IsConnected)
             {
                 helper.EffectParameters.Texture = helperTextures["helper_A"];
             }
@@ -143,6 +145,22 @@ namespace GDGame.MyGame.Objects
 
             base.Update(gameTime);
             
+        }
+
+        private void NewRecipe()
+        {
+            List<Recipe> levelList = new List<Recipe>();
+            foreach (Recipe key in GameConstants.potions.Keys)
+            {
+                if ((int)GameConstants.potions[key][2] == level)
+                {
+                    levelList.Add(key);
+                }
+            }
+
+            Random random = new Random();
+            int num = random.Next(levelList.Count);
+            AssignRecipe(levelList[num], GameConstants.potions[levelList[num]][0] as string);
         }
 
         private void AssignRecipe(Recipe recipe, string potionName)
@@ -213,14 +231,15 @@ namespace GDGame.MyGame.Objects
         {
             if (handItem == null)
             {
-                if (iActor is HandHeldPickup || iActor is IngredientGiver)
+                if (iActor is HandHeldPickup || iActor is IngredientGiver
+                    || iActor is Lectern)
                 {
                     return true;
                 }
             }
             else
             {
-                if (iActor.Name.Equals("Bin"))
+                if (iActor is Bin || iActor is Lectern)
                 {
                     return true;
                 }
@@ -237,6 +256,13 @@ namespace GDGame.MyGame.Objects
                         {
                             return true;
                         }
+                    }
+                }
+                else if(handItem.PickupType == PickupType.Potion)
+                {
+                    if(iActor is Chest)
+                    {
+                        return true;
                     }
                 }
             }
@@ -300,6 +326,12 @@ namespace GDGame.MyGame.Objects
                         handItem = null;
                         return;
                     }
+                }
+                //Regardless of hand item
+                if(iActor is Lectern)
+                {
+                    Lectern lectern = iActor as Lectern;
+                    lectern.Display(checklist);
                 }
 
             }

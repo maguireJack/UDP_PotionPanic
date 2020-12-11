@@ -19,6 +19,11 @@ namespace GDGame.MyGame.Objects
             get { return potionName; }
         }
 
+        public List<Tuple<Ingredient, bool, int>> List
+        {
+            get { return list; }
+        }
+
         public bool IsDone
         {
             get { return isDone; }

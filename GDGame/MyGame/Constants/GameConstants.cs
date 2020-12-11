@@ -1,7 +1,6 @@
 ﻿using GDGame.MyGame.Enums;
 using GDGame.MyGame.Objects;
 using GDLibrary.Enums;
-using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
@@ -69,12 +68,12 @@ namespace GDGame.MyGame.Constants
         public static readonly float playerCamOffsetZ = 500;
 
         public static readonly Vector3 playerHoldPos = new Vector3(32, 40, 3);
-        public static readonly Vector3 helperOffsetPos = new Vector3(0, 140, 0);
+        public static readonly Vector3 helperOffsetPos = new Vector3(0, 180, 0);
         public static readonly Vector3 potionRedPos = new Vector3(4, 18, -1.5f);
 
         public static readonly Keys[] playerInteractKeys = { Keys.Space, Keys.RightControl };
         public static readonly Buttons[] playerInteractButtons = { Buttons.A };
-        public static readonly float defualtInteractionDist = 80f;
+        public static readonly float defualtInteractionDist = 100f;
 
         #endregion
 
@@ -149,6 +148,7 @@ namespace GDGame.MyGame.Constants
             [JsonProperty("Name:")]
             public string Name { get; set; }
             public string ModelName { get; set; }
+            public int Level { get; set; }
             public List<Ingredient> Ingredients { get; set; }
         }
 
@@ -184,7 +184,7 @@ namespace GDGame.MyGame.Constants
                     {
                         recipe.Add(ingredients[ingredient.Type + "_" + ingredient.State], ingredient.Count);
                     }
-                    potions.Add(recipe, new ArrayList { pr.Name, pr.ModelName });
+                    potions.Add(recipe, new ArrayList { pr.Name, pr.ModelName, pr.Level });
                 }
 
             }

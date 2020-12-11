@@ -30,6 +30,14 @@ namespace GDGame.MyGame.Objects
             }
         }
 
+        public string Name
+        {
+            get
+            {
+                return IngredientType + "_" + IngredientState;
+            }
+        }
+
         #endregion
 
         #region Constructors

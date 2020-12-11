@@ -49,8 +49,6 @@ namespace GDGame.MyGame.Objects
 
         public override void Update(GameTime gameTime)
         {
-            
-
             if((minigame.StatusType & StatusType.Update) == StatusType.Update)
             {
                 if (!timer.IsRunning)
@@ -61,6 +59,7 @@ namespace GDGame.MyGame.Objects
                 if (minigame.IsComplete())
                 {
                     timer.StopTimer(gameTime);
+                    StatusType = StatusType.Drawn;
 
                     //Send score event
                     EventDispatcher.Publish(new EventData(EventCategoryType.Player,
@@ -106,6 +105,8 @@ namespace GDGame.MyGame.Objects
             {
                 if (inventory.Equals(key))
                 {
+                    StatusType = StatusType.Drawn | StatusType.Update;
+
                     //start minigame
                     minigame.Start();
 

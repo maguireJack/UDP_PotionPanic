@@ -1,14 +1,13 @@
 ﻿using GDGame.MyGame.Actors;
 using GDGame.MyGame.Enums;
 using GDGame.MyGame.Interfaces;
-using GDGame.MyGame.Objects;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 
-namespace GDGame
+namespace GDGame.MyGame.Objects
 {
 
     public class IngredientProccessor : InteractableActor, IContainerInteractable
@@ -66,6 +65,7 @@ namespace GDGame
                 if (minigame.IsComplete())
                 {
                     timer.StopTimer(gameTime);
+                    StatusType = StatusType.Drawn;
 
                     storedIngredient.Process();
                     string name = storedIngredient.IngredientType + "_" + storedIngredient.IngredientState;
@@ -89,6 +89,7 @@ namespace GDGame
         {
             if(inputState == item.Ingredient.IngredientState)
             {
+                StatusType = StatusType.Drawn | StatusType.Update;
                 minigame.Start();
                 storedIngredient = item.Ingredient;
                 Lock();
