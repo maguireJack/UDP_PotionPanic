@@ -232,7 +232,6 @@ namespace GDGame
             textureDictionary.Load("Assets/Textures/Level/wall_left");
             textureDictionary.Load("Assets/Textures/Level/wall_right");
             textureDictionary.Load("Assets/Textures/Level/rail");
-            textureDictionary.Load("Assets/Textures/Level/wall_outer");
 
             //interactables
             textureDictionary.Load("Assets/Textures/Props/ingredientTables/lectern");
