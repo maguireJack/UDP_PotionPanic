@@ -923,7 +923,7 @@ namespace GDGame
                StatusType.Drawn | StatusType.Update, transform3D,
                effectParameters, modelDictionary["rail1"]);
 
-            collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
+            collidableObject.AddPrimitive(new Box( new Vector3(300,0,-50), Matrix.Identity, new Vector3(10,200,700)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             collidableObject.Enable(true, 1);
@@ -948,7 +948,7 @@ namespace GDGame
                StatusType.Drawn | StatusType.Update, transform3D,
                effectParameters, modelDictionary["rail2"]);
 
-            collidableObject.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale * 2),
+            collidableObject.AddPrimitive(new Box(new Vector3(-50,0,275), Matrix.Identity, new Vector3(700,200,10)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
 
             collidableObject.Enable(true, 1);
