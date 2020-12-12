@@ -25,6 +25,8 @@ namespace GDGame.MyGame.Constants
             new Keys[]{ Keys.Up, Keys.Down, Keys.Left, Keys.Right }
         };
 
+        public static readonly int minigameScore = 100;
+
         #endregion Common
 
         #region First Person Camera

@@ -21,6 +21,7 @@ namespace GDGame.MyGame.Objects
         private Dictionary<string, Texture2D> textureDictionary;
         private List<UITextureObject> loadedTextures;
         private Timer timer;
+        private Checklist checklist;
 
         public Lectern(CollidableObject modelObject, string name, float interactDistance,
             UIManager uiManager, KeyboardManager keyboardManager, GamePadManager gamePadManager,
@@ -41,14 +42,15 @@ namespace GDGame.MyGame.Objects
         {
             if(eventData.EventCategoryType == EventCategoryType.Player)
             {
-                if(eventData.EventActionType == EventActionType.OnStart)
+                if (eventData.EventActionType == EventActionType.OnNewRecipe)
                 {
-                    Display(eventData.Parameters[0] as Checklist);
+                    checklist = eventData.Parameters[0] as Checklist;
+                    Display();
                 }
             }
         }
 
-        public void Display(Checklist checklist)
+        public void Display()
         {
             EventDispatcher.Publish(new EventData(EventCategoryType.Player,
                 EventActionType.OnLock, null));
@@ -61,7 +63,7 @@ namespace GDGame.MyGame.Objects
             Transform2D transform2D;
             UITextureObject uiTexture;
 
-            List<Tuple<Ingredient, bool, int>> list = checklist.List;
+            List<Tuple<Ingredient, bool>> list = checklist.List;
             for (int i = 0; i < list.Count; i++)
             {
                 string key = list[i].Item1.Name;

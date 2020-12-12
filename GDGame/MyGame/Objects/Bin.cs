@@ -1,4 +1,5 @@
 ﻿using GDGame.MyGame.Actors;
+using GDGame.MyGame.Enums;
 using GDGame.MyGame.Interfaces;
 using GDLibrary.Actors;
 using Microsoft.Xna.Framework;
@@ -27,6 +28,8 @@ namespace GDGame.MyGame.Objects
 
         public bool Deposit(HandHeldPickup item)
         {
+            if (item.PickupType == PickupType.Potion)
+                return false;
             return true;
         }
     }

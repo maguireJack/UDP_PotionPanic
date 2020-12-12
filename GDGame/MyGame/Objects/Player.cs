@@ -26,9 +26,6 @@ namespace GDGame.MyGame.Objects
         private PrimitiveObject helper;
         private Dictionary<string, Texture2D> helperTextures;
         private HandHeldPickup handItem;
-        private Checklist checklist;
-        private int score;
-        private int level;
 
         private List<DrawnActor3D> interactableList;
         private int lastListSize;
@@ -45,11 +42,6 @@ namespace GDGame.MyGame.Objects
         public Vector3 HandPos
         {
             get { return Transform3D.Translation + GameConstants.playerHoldPos; }
-        }
-
-        public int Score
-        {
-            get { return score; }
         }
 
         #endregion
@@ -69,71 +61,14 @@ namespace GDGame.MyGame.Objects
             this.helperTextures = helperTextures;
             this.handItem = null;
             this.lastListSize = 0;
-            this.score = 0;
-            this.level = 1;
-            this.checklist = null;
 
             ControllerList.Add(controller);
-            EventDispatcher.Subscribe(EventCategoryType.Player, HandleEvent);
         }
 
         #endregion
 
-        private void HandleEvent(EventData eventData)
-        {
-            if (eventData.EventActionType == EventActionType.OnMinigameStir)
-            {
-                if (!checklist.IsDone &&
-                    ((string)eventData.Parameters[1]).Equals(checklist.PotionName))
-                {
-                    double time = (double)eventData.Parameters[0];
-                    int potionScore = 1000 - (checklist.Size * 100);
-                    potionScore = (int)(potionScore * CalculatePercentageScore(time));
-
-                    score += potionScore;
-                    SendScoreEvent();
-                    checklist.IsDone = true;
-                }
-            }
-            else if (eventData.EventActionType == EventActionType.OnMinigameGrind)
-            {
-                double time = (double)eventData.Parameters[0];
-                int minigameScore = 100;
-                minigameScore = (int)(minigameScore * CalculatePercentageScore(time));
-
-                if (checklist.CheckOffList((Ingredient)eventData.Parameters[1], minigameScore))
-                {
-                    score += minigameScore;
-                    SendScoreEvent();
-                }
-            }
-        }
-
-        private double CalculatePercentageScore(double time)
-        {
-            if (time > 12000)       //20% of score
-                return 20f / 100f;
-            else if (time > 8000)   //50% of score
-                return 50f / 100f;
-            else if (time > 6000)   //70% of score
-                return 70f / 100f;
-            return 1;
-        }
-
-        private void SendScoreEvent()
-        {
-            EventDispatcher.Publish(new EventData(EventCategoryType.UI,
-                        EventActionType.OnScoreChange, new object[] { score }));
-        }
-
         public override void Update(GameTime gameTime)
         {
-            if(checklist == null)
-            {
-                NewRecipe();
-                EventDispatcher.Publish(new EventData(EventCategoryType.Player,
-                    EventActionType.OnStart, new object[] { checklist }));
-            }
             if (GamePad.GetCapabilities(PlayerIndex.One).IsConnected)
             {
                 helper.EffectParameters.Texture = helperTextures["helper_A"];
@@ -143,28 +78,6 @@ namespace GDGame.MyGame.Objects
             UpdateHandItemPos();
 
             base.Update(gameTime);
-            
-        }
-
-        private void NewRecipe()
-        {
-            List<Recipe> levelList = new List<Recipe>();
-            foreach (Recipe key in GameConstants.potions.Keys)
-            {
-                if ((int)GameConstants.potions[key][2] == level)
-                {
-                    levelList.Add(key);
-                }
-            }
-
-            Random random = new Random();
-            int num = random.Next(levelList.Count);
-            AssignRecipe(levelList[num], GameConstants.potions[levelList[num]][0] as string);
-        }
-
-        private void AssignRecipe(Recipe recipe, string potionName)
-        {
-            checklist = new Checklist(recipe, potionName);
         }
 
         private void UpdateInteractableList()
@@ -238,7 +151,7 @@ namespace GDGame.MyGame.Objects
             }
             else
             {
-                if (iActor is Bin || iActor is Lectern)
+                if (iActor is Lectern)
                 {
                     return true;
                 }
@@ -255,6 +168,10 @@ namespace GDGame.MyGame.Objects
                         {
                             return true;
                         }
+                    }
+                    else if(iActor is Bin)
+                    {
+                        return true;
                     }
                 }
                 else if(handItem.PickupType == PickupType.Potion)
@@ -313,12 +230,6 @@ namespace GDGame.MyGame.Objects
                     //If deposit was successful, remove item
                     if (container.Deposit(handItem))
                     {
-                        if (checklist.CheckOffList(handItem.Ingredient, 100))
-                        {
-                            score += 100;
-                            SendScoreEvent();
-                        }
-
                         interactableList.Remove(handItem);
                         EventDispatcher.Publish(new EventData(EventCategoryType.Object,
                             EventActionType.OnRemoveActor, new object[] { handItem }));
@@ -330,7 +241,7 @@ namespace GDGame.MyGame.Objects
                 if(iActor is Lectern)
                 {
                     Lectern lectern = iActor as Lectern;
-                    lectern.Display(checklist);
+                    lectern.Display();
                 }
 
             }

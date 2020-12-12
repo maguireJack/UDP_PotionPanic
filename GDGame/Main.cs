@@ -1164,7 +1164,8 @@ namespace GDGame
                 effectParameters, modelDictionary["table_grinder"]);
 
             IngredientProccessor proccessor = new IngredientProccessor(collidableObject, "Grind Table",
-                GameConstants.defualtInteractionDist, IngredientState.Solid, InitGrindingMinigame());
+                GameConstants.defualtInteractionDist, IngredientState.Solid, IngredientState.Dust, 
+                InitGrindingMinigame());
 
             proccessor.AddPrimitive(new Box(new Vector3(-5, 0, 0), Matrix.Identity, new Vector3(90, 105, 96)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -1194,7 +1195,8 @@ namespace GDGame
                 effectParameters, modelDictionary["table_liquid"]);
 
             proccessor = new IngredientProccessor(collidableObject, "Liquid Table",
-                GameConstants.defualtInteractionDist, IngredientState.Dust, InitSlidingMinigame());
+                GameConstants.defualtInteractionDist, IngredientState.Solid, IngredientState.Liquid,
+                InitSlidingMinigame());
 
             proccessor.AddPrimitive(new Box(new Vector3(15, 60, 0), Matrix.Identity, new Vector3(90, 125, 96)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -1278,16 +1280,19 @@ namespace GDGame
                 textureDictionary["chest"],
                 Color.White, 1);
 
-            collidableObject = new CollidableObject("Chest", ActorType.CollidableDecorator,
+            collidableObject = new CollidableObject("Chest", ActorType.Interactable,
                 StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["chest"]);
 
-            collidableObject.AddPrimitive(new Box(new Vector3(0, 0, 0), Matrix.Identity, new Vector3(75, 94, 112)),
+            Chest chest = new Chest(collidableObject, "Chest",
+                GameConstants.defualtInteractionDist);
+
+            chest.AddPrimitive(new Box(new Vector3(0, 0, 0), Matrix.Identity, new Vector3(75, 94, 112)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
 
-            collidableObject.Enable(true, 1);
+            chest.Enable(true, 1);
 
-            objectManager.Add(collidableObject);
+            objectManager.Add(chest);
 
             #endregion
 

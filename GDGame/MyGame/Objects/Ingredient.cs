@@ -1,4 +1,5 @@
-﻿using GDGame.MyGame.Enums;
+﻿using GDGame.MyGame.Constants;
+using GDGame.MyGame.Enums;
 using System;
 
 namespace GDGame.MyGame.Objects
@@ -9,6 +10,7 @@ namespace GDGame.MyGame.Objects
 
         private IngredientType ingredientType;
         private IngredientState ingredientState;
+        private int score;
 
         #endregion
 
@@ -16,26 +18,24 @@ namespace GDGame.MyGame.Objects
 
         public IngredientType IngredientType
         {
-            get
-            {
-                return ingredientType;
-            }
+            get { return ingredientType; }
         }
 
         public IngredientState IngredientState
         {
-            get
-            {
-                return ingredientState;
-            }
+            get { return ingredientState; }
+            set { ingredientState = value; }
+        }
+
+        public int Score
+        {
+            get { return score; }
+            set { score = value; }
         }
 
         public string Name
         {
-            get
-            {
-                return IngredientType + "_" + IngredientState;
-            }
+            get { return IngredientType + "_" + IngredientState; }
         }
 
         #endregion
@@ -46,14 +46,10 @@ namespace GDGame.MyGame.Objects
         {
             this.ingredientType = ingredientType;
             this.ingredientState = ingredientState;
+            this.score = GameConstants.minigameScore;
         }
 
         #endregion
-
-        public void Process()
-        {
-            ingredientState++;
-        }
 
         public override bool Equals(object obj)
         {

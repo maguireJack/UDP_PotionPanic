@@ -1,4 +1,5 @@
 ﻿using GDGame.MyGame.Actors;
+using GDGame.MyGame.Constants;
 using GDGame.MyGame.Enums;
 using GDGame.MyGame.Interfaces;
 using GDLibrary.Actors;
@@ -15,6 +16,7 @@ namespace GDGame.MyGame.Objects
         #region Fields
 
         private IngredientState inputState;
+        private IngredientState outputState;
         private Ingredient storedIngredient;
         private Minigame minigame;
         private Timer timer;
@@ -31,10 +33,11 @@ namespace GDGame.MyGame.Objects
         #endregion
 
         public IngredientProccessor(CollidableObject modelObject, string name, float interactDistance,
-            IngredientState inputState, Minigame minigame)
+            IngredientState inputState, IngredientState outputState, Minigame minigame)
             : base(modelObject, name, interactDistance)
         {
             this.inputState = inputState;
+            this.outputState = outputState;
             this.minigame = minigame;
             this.timer = new Timer();
 
@@ -67,12 +70,10 @@ namespace GDGame.MyGame.Objects
                     timer.StopTimer(gameTime);
                     StatusType = StatusType.Drawn;
 
-                    storedIngredient.Process();
+                    storedIngredient.IngredientState = outputState;
                     string name = storedIngredient.IngredientType + "_" + storedIngredient.IngredientState;
 
-                    //Send score event
-                    EventDispatcher.Publish(new EventData(EventCategoryType.Player,
-                        EventActionType.OnMinigameGrind, new object[] { timer.ElapsedTime, storedIngredient }));
+                    storedIngredient.Score = (int)(GameConstants.minigameScore * CalculatePercentageScore(timer.ElapsedTime));
 
                     //Send event to add to object manager
                     EventDispatcher.Publish(new EventData(EventCategoryType.Pickup,
@@ -83,6 +84,17 @@ namespace GDGame.MyGame.Objects
                 else minigame.Update(gameTime);
             }
             base.Update(gameTime);
+        }
+
+        private double CalculatePercentageScore(double time)
+        {
+            if (time > 12000)       //20% of score
+                return 20f / 100f;
+            else if (time > 8000)   //50% of score
+                return 50f / 100f;
+            else if (time > 6000)   //70% of score
+                return 70f / 100f;
+            return 1;               //100% of score
         }
 
         public bool Deposit(HandHeldPickup item)

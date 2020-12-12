@@ -2,6 +2,8 @@
 using GDGame.MyGame.Enums;
 using GDGame.MyGame.Interfaces;
 using GDLibrary.Actors;
+using GDLibrary.Enums;
+using GDLibrary.Events;
 
 namespace GDGame.MyGame.Objects
 {
@@ -17,6 +19,9 @@ namespace GDGame.MyGame.Objects
         {
             if(item.PickupType == PickupType.Potion)
             {
+                //publish event to cauldron to give new recipe
+                EventDispatcher.Publish(new EventData(EventCategoryType.Player,
+                    EventActionType.OnPotionDeposit, null));
                 return true;
             }
             return false;

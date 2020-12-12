@@ -2,11 +2,9 @@
 using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.GameComponents;
-using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using System;
-using System.Diagnostics;
 
 namespace GDGame.MyGame.Controllers
 {
@@ -40,7 +38,7 @@ namespace GDGame.MyGame.Controllers
         {
             if (eventData.EventActionType == EventActionType.OnScoreChange)
             {
-                score = (int)eventData.Parameters[0];
+                score += (int)eventData.Parameters[0];
                 scoreTextObject.Text = "Score: " + score;
             }
 

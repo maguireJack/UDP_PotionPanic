@@ -199,7 +199,9 @@
         OnMinigameStir,
         OnMinigameGrind,
         OnFinishMinigame,
-        OnScoreChange
+        OnScoreChange,
+        OnNewRecipe,
+        OnPotionDeposit
 
         //add more here...
     }
