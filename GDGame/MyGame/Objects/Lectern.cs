@@ -59,7 +59,7 @@ namespace GDGame.MyGame.Objects
             Texture2D texture;
             Vector2 translation;
             Transform2D transform2D;
-            UITextureObject uITexture;
+            UITextureObject uiTexture;
 
             List<Tuple<Ingredient, bool, int>> list = checklist.List;
             for (int i = 0; i < list.Count; i++)
@@ -76,12 +76,12 @@ namespace GDGame.MyGame.Objects
                     new Vector2(texture.Width / 2, texture.Height / 2),
                     new Integer2(texture.Width, texture.Height));
 
-                uITexture = new UITextureObject("Lectern_UI_" + key, ActorType.UITextureObject,
-                StatusType.Drawn, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                uiTexture = new UITextureObject("Lectern_UI_" + key, ActorType.UITextureObject,
+                StatusType.Drawn, transform2D, Color.White, 4, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
-                loadedTextures.Add(uITexture);
-                uiManager.Add(uITexture);
+                loadedTextures.Add(uiTexture);
+                uiManager.Add(uiTexture);
             }
         }
 

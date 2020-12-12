@@ -193,7 +193,6 @@ namespace GDGame
             //sliding
             uiTextureDictionary.Load("Assets/Textures/UI/Sliding/sliding_background");
             uiTextureDictionary.Load("Assets/Textures/UI/Sliding/sliding_target");
-            uiTextureDictionary.Load("Assets/Textures/UI/Sliding/green_block");
 
             //Lectern
             uiTextureDictionary.Load("Assets/Textures/UI/Lectern/page");
@@ -206,6 +205,10 @@ namespace GDGame
             uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Red_Liquid");
             uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Blue_Liquid");
             uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Green_Liquid");
+
+            //General
+            uiTextureDictionary.Load("Assets/Textures/UI/green_block");
+            uiTextureDictionary.Load("Assets/Textures/UI/time_bar");
 
             //Menu
             uiTextureDictionary.Load("Assets/Textures/Menu/gameMenuBG");
@@ -358,7 +361,7 @@ namespace GDGame
             Window.Title = "Potion Panic";
 
             screenCentre = GameConstants.screenCentre;
-            isPaused = false;
+            isPaused = true;
 
             //note that we moved this from LoadContent to allow InitDebug to be called in Initialize
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -443,24 +446,67 @@ namespace GDGame
         {
             SpriteFont spriteFont = fontDictionary["ui"];
 
-            string text = "Score: 0";
-            Vector2 originalDimensions = spriteFont.MeasureString(text);
+            Texture2D texture = uiTextureDictionary["time_bar"];
 
             Transform2D transform2D = new Transform2D(
-                new Vector2(originalDimensions.X/2, originalDimensions.Y/2), 0,
+                new Vector2(1350, 28 + texture.Height / 2), 0,
+                Vector2.One,
+                new Vector2(texture.Width / 2, texture.Height / 2),
+                new Integer2(texture.Width, texture.Height));
+
+            UITextureObject background = new UITextureObject("time_bar", ActorType.UITextureObject,
+                StatusType.Drawn, transform2D, Color.White, 1, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            texture = uiTextureDictionary["green_block"];
+
+            transform2D = new Transform2D(
+                new Vector2(1350, 28 + texture.Height / 2), 0,
+                new Vector2(70, 70),
+                new Vector2(0.5f, 0.5f),
+                new Integer2(1, 1));
+
+            UITextureObject progressBar = new UITextureObject("sliding_progress", ActorType.UITextureObject,
+                StatusType.Drawn, transform2D, Color.White, 2, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            string text = "2:00";
+            Vector2 originalDimensions = spriteFont.MeasureString(text);
+
+            transform2D = new Transform2D(
+                new Vector2(1300 + originalDimensions.X / 2, 280 + originalDimensions.Y / 2), 0,
+                Vector2.One,
+                new Vector2(originalDimensions.X / 2, originalDimensions.Y / 2),
+                new Integer2(originalDimensions));
+
+            UITextObject time = new UITextObject("time", ActorType.UIText,
+                StatusType.Drawn, transform2D,
+                Color.White, 0, SpriteEffects.None,
+                text, spriteFont);
+
+            text = "Score: 0";
+            originalDimensions = spriteFont.MeasureString(text);
+
+            transform2D = new Transform2D(
+                new Vector2(originalDimensions.X / 2, originalDimensions.Y / 2), 0,
                 Vector2.One,
                 new Vector2(originalDimensions.X / 2, originalDimensions.Y / 2),
                 new Integer2(originalDimensions));
 
             UITextObject score = new UITextObject("score", ActorType.UIText,
                 StatusType.Drawn, transform2D,
-                Color.Red, 0, SpriteEffects.None,
+                Color.White, 0, SpriteEffects.None,
                 text, spriteFont);
 
-            ScoreController controller = new ScoreController("scoreController", ControllerType.Progress, score);
-            score.ControllerList.Add(controller);
+            GameStateManager gameStateManager = new GameStateManager(this,
+                StatusType.Off, background, progressBar, time, score);
 
+            uiManager.Add(background);
+            uiManager.Add(progressBar);
+            uiManager.Add(time);
             uiManager.Add(score);
+
+            Components.Add(gameStateManager);
         }
 
         private void InitMenu()
@@ -481,6 +527,7 @@ namespace GDGame
             uiObject = new UITextureObject("gameMenuBG", ActorType.UITextureObject, StatusType.Drawn, 
                     transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
             menuManager.Add("main", uiObject);
+            menuManager.Add("pause", uiObject);
 
             //Main menu buttons
             texture = uiTextureDictionary["baseButton"];
@@ -520,12 +567,41 @@ namespace GDGame
             menuManager.Add("main", uiObject);
 
             //Pause menu
-            uiObject = new UITextureObject("gameMenuBG", ActorType.UITextureObject, StatusType.Drawn,
-                    transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+            transform2D = new Transform2D(screenCentre + new Vector2(0, -150), 0, Vector2.One, origin, imageDimensions);
+            uiObject = new UIButtonObject("play_btn", ActorType.UITextureObject, StatusType.Drawn,
+                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                "Resume",
+                fontDictionary["ui"],
+                Vector2.One,
+                Color.Black,
+                new Vector2(0, 0));
+
+            menuManager.Add("pause", uiObject);
+
+            transform2D = new Transform2D(screenCentre + new Vector2(0, 0), 0, Vector2.One, origin, imageDimensions);
+            uiObject = new UIButtonObject("controls_btn", ActorType.UITextureObject, StatusType.Drawn,
+                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                "Controls",
+                fontDictionary["ui"],
+                Vector2.One,
+                Color.Black,
+                new Vector2(0, 0));
+
+            menuManager.Add("pause", uiObject);
+
+            transform2D = new Transform2D(screenCentre + new Vector2(0, 150), 0, Vector2.One, origin, imageDimensions);
+            uiObject = new UIButtonObject("menu_btn", ActorType.UITextureObject, StatusType.Drawn,
+                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                "Main Menu",
+                fontDictionary["ui"],
+                Vector2.One,
+                Color.Black,
+                new Vector2(0, 0));
+
             menuManager.Add("pause", uiObject);
 
             //Controls menu
-            uiObject = new UITextureObject("controlsMenu", ActorType.UITextureObject, StatusType.Drawn,
+            uiObject = new UITextureObject("control_btn", ActorType.UITextureObject, StatusType.Drawn,
                     transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
             menuManager.Add("controls", uiObject);
 
@@ -541,7 +617,10 @@ namespace GDGame
 
             menuManager.Add("controls", uiObject);
 
+            uiObject = new DrawnActor2D("game", ActorType.UITextureObject, StatusType.Off,
+                transform2D, Color.White, 1, SpriteEffects.None);
 
+            menuManager.Add("game", uiObject);
 
             //dont forget to say which menu scene you want to be updated and drawn i.e. shown!
             menuManager.SetScene("main");
@@ -695,7 +774,7 @@ namespace GDGame
             Components.Add(renderManager);
 
             //add in-game ui
-            uiManager = new UIManager(this, StatusType.Off, _spriteBatch, 10);
+            uiManager = new UIManager(this, StatusType.Off, _spriteBatch, 16);
             uiManager.DrawOrder = 4;
             Components.Add(uiManager);
 
@@ -1032,7 +1111,7 @@ namespace GDGame
             Cauldron cauldron = new Cauldron(collidableObject, "Cauldron",
                 GameConstants.defualtInteractionDist, InitStirringMinigame());
 
-            cauldron.AddPrimitive(new Sphere(new Vector3(0, 0, 0), 50), new MaterialProperties(0.2f, 0.8f, 0.7f));
+            cauldron.AddPrimitive(new Sphere(new Vector3(0, 30, 0), 50), new MaterialProperties(0.2f, 0.8f, 0.7f));
             cauldron.Enable(true, 1);
 
             objectManager.Add(cauldron);
@@ -1059,7 +1138,7 @@ namespace GDGame
                 effectParameters, modelDictionary["bin"]);
 
             Bin bin = new Bin(collidableObject, "Bin", GameConstants.defualtInteractionDist);
-            bin.AddPrimitive(new Box(new Vector3(0, 0, 0), Matrix.Identity, transform3D.Scale * 2.14f),
+            bin.AddPrimitive(new Box(new Vector3(0, 25, 0), Matrix.Identity, new Vector3(50, 50, 50)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
             bin.Enable(true, 1);
 
@@ -1131,8 +1210,6 @@ namespace GDGame
             ////////////////Lectern
 
             /////UI
-            Transform2D transform2D;
-            UITextureObject uiTexture;
             Dictionary<string, Texture2D> ingredientUITextures = new Dictionary<string, Texture2D>()
             {
                 { "Red_Solid", uiTextureDictionary["Red_Solid"] },
@@ -1148,14 +1225,14 @@ namespace GDGame
 
             Texture2D texture = uiTextureDictionary["page"];
 
-            transform2D = new Transform2D(screenCentre, 0,
+            Transform2D transform2D = new Transform2D(screenCentre, 0,
                     Vector2.One,
                     new Vector2(texture.Width / 2, texture.Height / 2),
                     new Integer2(texture.Width, texture.Height));
 
 
-            uiTexture = new UITextureObject("page", ActorType.UITextureObject,
-                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+            UITextureObject uiTexture = new UITextureObject("page", ActorType.UITextureObject,
+                StatusType.Off, transform2D, Color.White, 1, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
             uiManager.Add(uiTexture);
@@ -1406,7 +1483,7 @@ namespace GDGame
                 new Integer2(texture.Width, texture.Height));
 
             UITextureObject background = new UITextureObject("ring", ActorType.UITextureObject,
-                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                StatusType.Off, transform2D, Color.White, 1, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
             texture = uiTextureDictionary["ball"];
@@ -1417,7 +1494,7 @@ namespace GDGame
                 new Integer2(texture.Width, texture.Height));
 
             UITextureObject ball = new UITextureObject("ball", ActorType.UITextureObject,
-                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                StatusType.Off, transform2D, Color.White, 2, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
             float radius = background.Texture.Width / 2 - ball.Texture.Width / 4;
@@ -1441,7 +1518,7 @@ namespace GDGame
                 new Integer2(texture.Width, texture.Height));
 
             UITextureObject background = new UITextureObject("sliding_background", ActorType.UITextureObject,
-                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                StatusType.Off, transform2D, Color.White, 1, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
             texture = uiTextureDictionary["sliding_target"];
@@ -1453,7 +1530,7 @@ namespace GDGame
                 new Integer2(texture.Width, texture.Height));
 
             UITextureObject target = new UITextureObject("sliding_target", ActorType.UITextureObject,
-                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                StatusType.Off, transform2D, Color.White, 3, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
             texture = uiTextureDictionary["green_block"];
@@ -1465,7 +1542,7 @@ namespace GDGame
                 new Integer2(1, 1));
 
             UITextureObject safeZone = new UITextureObject("sliding_safeZone", ActorType.UITextureObject,
-                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                StatusType.Off, transform2D, Color.White, 2, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
             transform2D = new Transform2D(
@@ -1475,7 +1552,7 @@ namespace GDGame
                 new Integer2(1, 1));
 
             UITextureObject progressBar = new UITextureObject("sliding_progress", ActorType.UITextureObject,
-                StatusType.Off, transform2D, Color.White, 30, SpriteEffects.None, texture,
+                StatusType.Off, transform2D, Color.White, 2, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
             uiManager.Add(background);
@@ -1515,7 +1592,7 @@ namespace GDGame
 
                 ui = new UITextureObject("grindingUI_" + i, ActorType.UITextureObject,
                 StatusType.Off, transform2D.Clone() as Transform2D,
-                Color.White, 30, SpriteEffects.None, texture,
+                Color.White, 1, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
                 uiPanels.Add(keys[i], ui);
@@ -1731,27 +1808,6 @@ private void InitSkybox()
             //System.Diagnostics.Debug.WriteLine("t in ms:" + gameTime.TotalGameTime.TotalMilliseconds + " v: " + curve1D.Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 2));
 
             #endregion
-
-            if (keyboardManager.IsFirstKeyPress(Keys.Escape))
-            {
-                persistantData.SaveData();
-                Exit();
-            }
-
-            if (keyboardManager.IsFirstKeyPress(Keys.F2))
-            {
-                if (isPaused) //menu -> game
-                {
-                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPause,
-                        new object[] { gameTime }));
-                }
-                else //game -> menu
-                {
-                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay,
-                    new object[] { gameTime }));
-                }
-                isPaused = !isPaused;
-            }
 
             if (keyboardManager.IsFirstKeyPress(Keys.C))
             {

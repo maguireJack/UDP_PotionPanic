@@ -1253,6 +1253,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Skybox/sky_right.bmp
 
+#begin Assets/Textures/UI/green_block.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/green_block.png
+
 #begin Assets/Textures/UI/Grinding/grinding_A.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1445,18 +1457,6 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/Lectern/Red_Solid.png
 
-#begin Assets/Textures/UI/Sliding/green_block.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/UI/Sliding/green_block.png
-
 #begin Assets/Textures/UI/Sliding/sliding_background.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1504,6 +1504,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/Stirring/ring.png
+
+#begin Assets/Textures/UI/time_bar.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/time_bar.png
 
 #begin Assets/Textures/Wizard/wizard.png
 /importer:TextureImporter

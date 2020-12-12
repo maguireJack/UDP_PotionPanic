@@ -7,7 +7,6 @@ using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
-using JigLibX.Physics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;

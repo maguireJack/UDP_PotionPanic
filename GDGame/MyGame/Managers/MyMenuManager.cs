@@ -4,7 +4,7 @@ using GDLibrary.Events;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
+using Microsoft.Xna.Framework.Input;
 
 namespace GDGame.MyGame.Managers
 {
@@ -26,7 +26,10 @@ namespace GDGame.MyGame.Managers
             if (eventData.EventCategoryType == EventCategoryType.Menu)
             {
                 if (eventData.EventActionType == EventActionType.OnPause)
+                {
                     StatusType = StatusType.Drawn | StatusType.Update;
+                    SetScene("pause");
+                }
                 else if (eventData.EventActionType == EventActionType.OnPlay)
                     StatusType = StatusType.Off;
             }
@@ -63,6 +66,7 @@ namespace GDGame.MyGame.Managers
             switch (uIButtonObject.ID)
             {
                 case "play_btn":
+                    SetScene("game");
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, new object[] { gameTime }));
                     break;
 
@@ -70,8 +74,8 @@ namespace GDGame.MyGame.Managers
                     SetScene("controls");
                     break;
 
-                case "pause":
-                    SetScene("pause");
+                case "menu_btn":
+                    SetScene("main");
                     break;
 
                 case "exit_btn":
@@ -89,17 +93,19 @@ namespace GDGame.MyGame.Managers
 
         protected override void HandleKeyboard(GameTime gameTime)
         {
-            if (this.keyboardManager.IsFirstKeyPress(Microsoft.Xna.Framework.Input.Keys.M))
+            if (this.keyboardManager.IsFirstKeyPress(Keys.Escape))
             {
                 if (StatusType == StatusType.Off)
                 {
                     //show menu
-                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPause, null));
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu,
+                        EventActionType.OnPause, new object[] { gameTime }));
                 }
                 else
                 {
                     //show game
-                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu,
+                        EventActionType.OnPlay, new object[] { gameTime }));
                 }
             }
 
