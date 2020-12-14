@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using GDGame.MyGame.Actors;
 using System.Collections.Generic;
+using GDLibrary.Events;
 
 namespace GDGame.MyGame.Minigames
 {
@@ -37,9 +38,13 @@ namespace GDGame.MyGame.Minigames
         /// </summary>
         public override void Start()
         {
+            EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPause, new object[] { "walking" }));
+            EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPlay, new object[] { "pestol" }));
             SendLockEvent();
             uiPanels["grinding_A"].StatusType = StatusType.Drawn;
             StatusType = StatusType.Update;
+            
+
         }
 
         /// <summary>
@@ -50,6 +55,7 @@ namespace GDGame.MyGame.Minigames
         {
             if (count >= 20)
             {
+                EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPause, new object[] { "pestol" }));
                 count = 0;
                 keyA = true;
                 StatusType = StatusType.Off;
@@ -57,6 +63,8 @@ namespace GDGame.MyGame.Minigames
                     uiPanel.StatusType = StatusType.Off;
 
                 SendUnlockEvent();
+                EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPlay, new object[] { "ping" }));
+                
                 return true;
             }
             return false;

@@ -13,12 +13,15 @@ namespace GDGame.MyGame.Actors
 
         public virtual void Start()
         {
+            
             StatusType = StatusType.Update;
+            
         }
 
         public virtual bool IsComplete()
         {
             StatusType = StatusType.Off;
+
             return true;
         }
 

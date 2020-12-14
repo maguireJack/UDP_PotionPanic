@@ -125,7 +125,7 @@ namespace GDLibrary.Managers
     /// This class also demonstrates the use of the sealed keyword to prevent inheritance.
     /// </summary>
     /// <seealso cref="https://docs.monogame.net/api/Microsoft.Xna.Framework.Audio.SoundEffect.html"/>
-    public sealed class SoundManager : PausableGameComponent, IDisposable
+    public class SoundManager : PausableGameComponent, IDisposable
     {
         private Dictionary<string, Cue> dictionary;
         private List<KeyValuePair<string, SoundEffectInstance>> listInstances2D;

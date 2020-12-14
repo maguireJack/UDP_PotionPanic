@@ -92,6 +92,11 @@ namespace GDGame.MyGame.Controllers
                 }
                 HandleCameraFollow(gameTime, parent);
             }
+            else
+            {
+                EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPause, new object[] { "walking" }));
+            }
+                
 
             base.Update(gameTime, actor);
         }
@@ -139,6 +144,7 @@ namespace GDGame.MyGame.Controllers
         {
             CharacterObject character = parent as CharacterObject;
             Vector3 moveVector = Vector3.Zero;
+            
 
             //Move forward
             if (keyboardManager.IsAnyKeyPressed(moveKeys, 0))
@@ -153,8 +159,17 @@ namespace GDGame.MyGame.Controllers
             else if (keyboardManager.IsAnyKeyPressed(moveKeys, 3))
                 moveVector.X += moveSpeed;
 
+           
+
             if (moveVector == Vector3.Zero)
                 character.CharacterBody.DesiredVelocity = Vector3.Zero;
+
+            if (moveVector != Vector3.Zero)
+            {
+                EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPlay, new object[] { "walking" }));
+            }
+            else
+                EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPause, new object[] { "walking" }));
 
             parent.Transform3D.RotateAroundUpBy(MathUtility.CalculateRotationToVector(parent.Transform3D.Look, moveVector) * rotationSpeed);
             character.CharacterBody.Velocity += moveVector * gameTime.ElapsedGameTime.Milliseconds;

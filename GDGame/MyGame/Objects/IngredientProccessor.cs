@@ -20,6 +20,7 @@ namespace GDGame.MyGame.Objects
         private Ingredient storedIngredient;
         private Minigame minigame;
         private Timer timer;
+        private string sound = "ping";
 
         #endregion
 
@@ -69,6 +70,7 @@ namespace GDGame.MyGame.Objects
                 {
                     timer.StopTimer(gameTime);
                     StatusType = StatusType.Drawn;
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPlay, new object[] { sound }));
 
                     storedIngredient.IngredientState = outputState;
                     string name = storedIngredient.IngredientType + "_" + storedIngredient.IngredientState;

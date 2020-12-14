@@ -35,6 +35,7 @@ namespace GDGame.MyGame.Objects
             //Add item to object manager
             EventDispatcher.Publish(new EventData(EventCategoryType.Object,
                 EventActionType.OnAddActor, new object[] { clone }));
+            EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPlay, new object[] { "grabbing" }));
             //give it to player
             return clone;
         }

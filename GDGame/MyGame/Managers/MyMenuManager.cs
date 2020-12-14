@@ -29,6 +29,7 @@ namespace GDGame.MyGame.Managers
                 {
                     StatusType = StatusType.Drawn | StatusType.Update;
                     SetScene("pause");
+                    
                 }
                 else if (eventData.EventActionType == EventActionType.OnPlay)
                     StatusType = StatusType.Off;
@@ -68,6 +69,8 @@ namespace GDGame.MyGame.Managers
                 case "play_btn":
                     SetScene("game");
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, new object[] { gameTime }));
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPlay, new object[] { "main_menu" }));
+
                     break;
 
                 case "controls_btn":
@@ -100,12 +103,15 @@ namespace GDGame.MyGame.Managers
                     //show menu
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu,
                         EventActionType.OnPause, new object[] { gameTime }));
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPause, new object[] { "main_menu" }));
+
                 }
                 else
                 {
                     //show game
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu,
                         EventActionType.OnPlay, new object[] { gameTime }));
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPlay, new object[] { "main_menu" }));
                 }
             }
 
