@@ -524,12 +524,12 @@ namespace GDGame
             menuManager.Add("pause", uiObject);
 
             //Main menu buttons
-            texture = uiTextureDictionary["baseButton"];
-            Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
-            Integer2 imageDimensions = new Integer2(texture.Width, texture.Height);
+            Texture2D textureBtn = uiTextureDictionary["baseButton"];
+            Vector2 origin = new Vector2(textureBtn.Width / 2, textureBtn.Height / 2);
+            Integer2 imageDimensions = new Integer2(textureBtn.Width, textureBtn.Height);
             transform2D = new Transform2D(screenCentre + new Vector2(0, -150), 0, Vector2.One, origin, imageDimensions);
             uiObject = new UIButtonObject("play_btn", ActorType.UITextureObject, StatusType.Drawn,
-                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                transform2D, Color.White, 1, SpriteEffects.None, textureBtn, new Microsoft.Xna.Framework.Rectangle(0, 0, textureBtn.Width, textureBtn.Height),
                 "Play",
                 fontDictionary["ui"],
                 Vector2.One,
@@ -540,7 +540,7 @@ namespace GDGame
 
             transform2D = new Transform2D(screenCentre + new Vector2(0, 0), 0, Vector2.One, origin, imageDimensions);
             uiObject = new UIButtonObject("controls_btn", ActorType.UITextureObject, StatusType.Drawn,
-                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                transform2D, Color.White, 1, SpriteEffects.None, textureBtn, new Microsoft.Xna.Framework.Rectangle(0, 0, textureBtn.Width, textureBtn.Height),
                 "Controls",
                 fontDictionary["ui"],
                 Vector2.One,
@@ -551,7 +551,7 @@ namespace GDGame
 
             transform2D = new Transform2D(screenCentre + new Vector2(0, 150), 0, Vector2.One, origin, imageDimensions);
             uiObject = new UIButtonObject("exit_btn", ActorType.UITextureObject, StatusType.Drawn,
-                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                transform2D, Color.White, 1, SpriteEffects.None, textureBtn, new Microsoft.Xna.Framework.Rectangle(0, 0, textureBtn.Width, textureBtn.Height),
                 "Exit",
                 fontDictionary["ui"],
                 Vector2.One,
@@ -563,7 +563,7 @@ namespace GDGame
             //Pause menu
             transform2D = new Transform2D(screenCentre + new Vector2(0, -150), 0, Vector2.One, origin, imageDimensions);
             uiObject = new UIButtonObject("play_btn", ActorType.UITextureObject, StatusType.Drawn,
-                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                transform2D, Color.White, 1, SpriteEffects.None, textureBtn, new Microsoft.Xna.Framework.Rectangle(0, 0, textureBtn.Width, textureBtn.Height),
                 "Resume",
                 fontDictionary["ui"],
                 Vector2.One,
@@ -574,7 +574,7 @@ namespace GDGame
 
             transform2D = new Transform2D(screenCentre + new Vector2(0, 0), 0, Vector2.One, origin, imageDimensions);
             uiObject = new UIButtonObject("controls_btn", ActorType.UITextureObject, StatusType.Drawn,
-                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                transform2D, Color.White, 1, SpriteEffects.None, textureBtn, new Microsoft.Xna.Framework.Rectangle(0, 0, textureBtn.Width, textureBtn.Height),
                 "Controls",
                 fontDictionary["ui"],
                 Vector2.One,
@@ -585,7 +585,7 @@ namespace GDGame
 
             transform2D = new Transform2D(screenCentre + new Vector2(0, 150), 0, Vector2.One, origin, imageDimensions);
             uiObject = new UIButtonObject("menu_btn", ActorType.UITextureObject, StatusType.Drawn,
-                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                transform2D, Color.White, 1, SpriteEffects.None, textureBtn, new Microsoft.Xna.Framework.Rectangle(0, 0, textureBtn.Width, textureBtn.Height),
                 "Main Menu",
                 fontDictionary["ui"],
                 Vector2.One,
@@ -595,14 +595,18 @@ namespace GDGame
             menuManager.Add("pause", uiObject);
 
             //Controls menu
-            uiObject = new UITextureObject("control_btn", ActorType.UITextureObject, StatusType.Drawn,
+            texture = uiTextureDictionary["controlsMenu"];
+            transform2D = new Transform2D(screenCentre, 0, Vector2.One, 
+                new Vector2(texture.Width / 2, texture.Height / 2),
+                new Integer2(texture.Width / 2, texture.Height / 2));
+            uiObject = new UITextureObject("controlsMenu", ActorType.UITextureObject, StatusType.Drawn,
                     transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
             menuManager.Add("controls", uiObject);
 
             //control menu buttons
-            transform2D = new Transform2D(screenCentre + new Vector2(0, 150), 0, Vector2.One, origin, imageDimensions);
+            transform2D = new Transform2D(screenCentre + new Vector2(0, 245), 0, new Vector2(0.5f, 0.5f), origin, imageDimensions);
             uiObject = new UIButtonObject("back_btn", ActorType.UITextureObject, StatusType.Drawn,
-                transform2D, Color.White, 1, SpriteEffects.None, texture, new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                transform2D, Color.White, 1, SpriteEffects.None, textureBtn, new Microsoft.Xna.Framework.Rectangle(0, 0, textureBtn.Width, textureBtn.Height),
                 "Back",
                 fontDictionary["ui"],
                 Vector2.One,
