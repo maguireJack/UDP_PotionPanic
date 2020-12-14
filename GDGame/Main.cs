@@ -188,8 +188,9 @@ namespace GDGame
             uiTextureDictionary.Load("Assets/Textures/UI/Grinding/grinding_xbox_B");
 
             //Stirring
-            uiTextureDictionary.Load("Assets/Textures/UI/Stirring/ring");
-            uiTextureDictionary.Load("Assets/Textures/UI/Stirring/ball");
+            uiTextureDictionary.Load("Assets/Textures/UI/Stirring/stirring_background");
+            uiTextureDictionary.Load("Assets/Textures/UI/Stirring/stirring_background_controller");
+            uiTextureDictionary.Load("Assets/Textures/UI/Stirring/stirring_ball");
 
             //sliding
             uiTextureDictionary.Load("Assets/Textures/UI/Sliding/sliding_background");
@@ -206,6 +207,12 @@ namespace GDGame
             uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Red_Liquid");
             uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Blue_Liquid");
             uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Green_Liquid");
+
+            //Score
+            uiTextureDictionary.Load("Assets/Textures/UI/Score/score_empty_star");
+            uiTextureDictionary.Load("Assets/Textures/UI/Score/score_perfect_star");
+            uiTextureDictionary.Load("Assets/Textures/UI/Score/score_scroll");
+            uiTextureDictionary.Load("Assets/Textures/UI/Score/score_star");
 
             //General
             uiTextureDictionary.Load("Assets/Textures/UI/green_block");
@@ -492,13 +499,34 @@ namespace GDGame
                 Color.White, 0, SpriteEffects.None,
                 text, spriteFont);
 
+
+            texture = uiTextureDictionary["score_scroll"];
+
+            transform2D = new Transform2D(screenCentre, 0,
+                Vector2.One,
+                new Vector2(texture.Width / 2, texture.Height / 2),
+                new Integer2(texture.Width, texture.Height));
+
+            UITextureObject scoreScroll = new UITextureObject("score_scroll", ActorType.UITextureObject,
+                StatusType.Off, transform2D, Color.White, 1, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            Texture2D starEmpty = uiTextureDictionary["score_empty_star"];
+
+            Texture2D star = uiTextureDictionary["score_star"];
+
+            Texture2D starPerfect = uiTextureDictionary["score_perfect_star"];
+
             GameStateManager gameStateManager = new GameStateManager(this,
-                StatusType.Off, background, progressBar, time, score);
+                StatusType.Off, uiManager, background, progressBar, time, score, scoreScroll,
+                starEmpty, starPerfect, star);
 
             uiManager.Add(background);
             uiManager.Add(progressBar);
             uiManager.Add(time);
             uiManager.Add(score);
+
+            uiManager.Add(scoreScroll);
 
             Components.Add(gameStateManager);
         }
@@ -994,19 +1022,6 @@ namespace GDGame
             ModelObject modelObject = new ModelObject("outerWalls", ActorType.CollidableDecorator,
                StatusType.Drawn, transform3D,
                effectParameters, modelDictionary["outerWalls"]);
-            collidableObject = new CollidableObject("Railing", ActorType.CollidableDecorator,
-               StatusType.Drawn | StatusType.Update, transform3D,
-               effectParameters, modelDictionary["railing"]);
-            //bottom railing
-            collidableObject.AddPrimitive(new Box(new Vector3(-90, 0, 280), Matrix.Identity, new Vector3(700, 200, 10)),
-                new MaterialProperties(0.2f, 0.8f, 0.7f));
-            //side railing
-            collidableObject.AddPrimitive(new Box(new Vector3(700, 0, 0), Matrix.Identity, new Vector3(10, 200, 700)),
-                new MaterialProperties(0.2f, 0.8f, 0.7f));
-
-
-
-            collidableObject.Enable(true, 1);
 
             objectManager.Add(modelObject);
 
@@ -1496,37 +1511,49 @@ namespace GDGame
 
         private StirringMinigameController InitStirringMinigame()
         {
-            Texture2D texture = uiTextureDictionary["ring"];
+            Texture2D texture = uiTextureDictionary["stirring_background"];
 
             Transform2D transform2D = new Transform2D(screenCentre, 0,
                 Vector2.One,
                 new Vector2(texture.Width / 2, texture.Height / 2),
                 new Integer2(texture.Width, texture.Height));
 
-            UITextureObject background = new UITextureObject("ring", ActorType.UITextureObject,
+            UITextureObject background = new UITextureObject("background", ActorType.UITextureObject,
                 StatusType.Off, transform2D, Color.White, 1, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
-            texture = uiTextureDictionary["ball"];
+            texture = uiTextureDictionary["stirring_background_controller"];
 
             transform2D = new Transform2D(screenCentre, 0,
                 Vector2.One,
                 new Vector2(texture.Width / 2, texture.Height / 2),
                 new Integer2(texture.Width, texture.Height));
 
-            UITextureObject ball = new UITextureObject("ball", ActorType.UITextureObject,
+            UITextureObject background_controller = new UITextureObject("stirring_background_controller", ActorType.UITextureObject,
                 StatusType.Off, transform2D, Color.White, 2, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
-            float radius = background.Texture.Width / 2 - ball.Texture.Width / 4;
+            texture = uiTextureDictionary["stirring_ball"];
+
+            transform2D = new Transform2D(screenCentre, 0,
+                Vector2.One,
+                new Vector2(texture.Width / 2, texture.Height / 2),
+                new Integer2(texture.Width, texture.Height));
+
+            UITextureObject ball = new UITextureObject("stirring_ball", ActorType.UITextureObject,
+                StatusType.Off, transform2D, Color.White, 2, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            float radius = 206;
 
             uiManager.Add(background);
+            uiManager.Add(background_controller);
             uiManager.Add(ball);
 
             return new StirringMinigameController("StirringMinigame",
                 ActorType.Decorator, StatusType.Off,
                 mouseManager, gamePadManager,
-                background, radius, ball);
+                background, background_controller, radius, ball);
         }
 
         private SlidingMinigameController InitSlidingMinigame()

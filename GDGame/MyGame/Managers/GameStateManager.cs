@@ -2,14 +2,17 @@
 using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.GameComponents;
+using GDLibrary.Managers;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace GDGame.MyGame.Controllers
 {
     public class GameStateManager : PausableGameComponent
     {
+        private UIManager uiManager;
         private UITextureObject timeBackground;
         private UITextureObject timeBar;
         private UITextObject timeTextObject;
@@ -18,11 +21,20 @@ namespace GDGame.MyGame.Controllers
         private float startTime;
         private Timer timer;
 
-        public GameStateManager(Game game, StatusType statusType,
+        private UITextureObject scoreBackground;
+        private Texture2D starEmpty;
+        private Texture2D starPerfect;
+        private Texture2D star;
+
+
+        public GameStateManager(Game game, StatusType statusType, UIManager uiManager,
             UITextureObject timeBackground, UITextureObject timeBar,
-            UITextObject timeTextObject, UITextObject scoreTextObject)
+            UITextObject timeTextObject, UITextObject scoreTextObject,
+            UITextureObject scoreBackground, Texture2D starEmpty,
+            Texture2D starPerfect, Texture2D star)
             : base(game, statusType)
         {
+            this.uiManager = uiManager;
             this.timeBackground = timeBackground;
             this.timeBar = timeBar;
             this.timeTextObject = timeTextObject;
@@ -30,6 +42,11 @@ namespace GDGame.MyGame.Controllers
             this.score = 0;
             this.startTime = 120000;
             this.timer = new Timer(startTime);
+
+            this.scoreBackground = scoreBackground;
+            this.starEmpty = starEmpty;
+            this.starPerfect = starPerfect;
+            this.star = star;
 
             EventDispatcher.Subscribe(EventCategoryType.UI, HandleEvent);
         }
@@ -75,9 +92,26 @@ namespace GDGame.MyGame.Controllers
                 EventDispatcher.Publish(new EventData(EventCategoryType.Player,
                     EventActionType.OnLose, null));
                 StatusType = StatusType.Off;
+                ScoreScreen();
             }
 
             base.Update(gameTime);
+        }
+
+        private void ScoreScreen()
+        {
+            scoreBackground.StatusType = StatusType.Drawn;
+            if(score >= 3000)
+            {
+
+            }
+            for(int i = 1; i <= 3; i++)
+            {
+                if(score >= 1000 * i)
+                {
+
+                }
+            }
         }
     }
 }

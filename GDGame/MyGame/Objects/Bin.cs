@@ -1,7 +1,10 @@
 ﻿using GDGame.MyGame.Actors;
+using GDGame.MyGame.Constants;
 using GDGame.MyGame.Enums;
 using GDGame.MyGame.Interfaces;
 using GDLibrary.Actors;
+using GDLibrary.Enums;
+using GDLibrary.Events;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.MyGame.Objects
@@ -32,8 +35,13 @@ namespace GDGame.MyGame.Objects
         /// <returns>true if the object is binnable</returns>
         public bool Deposit(HandHeldPickup item)
         {
-            if (item.PickupType == PickupType.Potion)
+            if (item.PickupType != PickupType.Ingredient)
+            {
                 return false;
+            }
+            EventDispatcher.Publish(new EventData(EventCategoryType.Player,
+                EventActionType.OnScoreChange, new object[] { -GameConstants.minigameScore/2 }));
+
             return true;
         }
     }

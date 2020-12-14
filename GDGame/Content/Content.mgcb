@@ -1481,6 +1481,66 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/Lectern/Red_Solid.png
 
+#begin Assets/Textures/UI/Score/score_empty_star.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/Score/score_empty_star.png
+
+#begin Assets/Textures/UI/Score/score_perfect_star.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/Score/score_perfect_star.png
+
+#begin Assets/Textures/UI/Score/score_scroll.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/Score/score_scroll.png
+
+#begin Assets/Textures/UI/Score/score_scroll.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/Score/score_scroll.png
+
+#begin Assets/Textures/UI/Score/score_star.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/Score/score_star.png
+
 #begin Assets/Textures/UI/Sliding/sliding_background.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1505,7 +1565,7 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/Sliding/sliding_target.png
 
-#begin Assets/Textures/UI/Stirring/ball.png
+#begin Assets/Textures/UI/Stirring/stirring_background.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1515,9 +1575,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/UI/Stirring/ball.png
+/build:Assets/Textures/UI/Stirring/stirring_background.png
 
-#begin Assets/Textures/UI/Stirring/ring.png
+#begin Assets/Textures/UI/Stirring/stirring_background_controller.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1527,7 +1587,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/UI/Stirring/ring.png
+/build:Assets/Textures/UI/Stirring/stirring_background_controller.png
+
+#begin Assets/Textures/UI/Stirring/stirring_ball.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/Stirring/stirring_ball.png
 
 #begin Assets/Textures/UI/time_bar.png
 /importer:TextureImporter

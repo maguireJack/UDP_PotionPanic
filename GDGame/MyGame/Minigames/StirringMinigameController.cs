@@ -14,6 +14,7 @@ namespace GDGame.MyGame.Minigames
         private MouseManager mouseManager;
         private GamePadManager gamePadManager;
         private UITextureObject background;
+        private UITextureObject background_controller;
         private float radius;
         private float startAngle;
         private float angle;
@@ -22,13 +23,15 @@ namespace GDGame.MyGame.Minigames
         private UITextureObject ball;
 
         public StirringMinigameController(string id, ActorType actorType, StatusType statusType,
-            MouseManager mouseManager, GamePadManager gamePadManager, UITextureObject background, float radius,
+            MouseManager mouseManager, GamePadManager gamePadManager, UITextureObject background,
+            UITextureObject background_controller, float radius,
             UITextureObject ball)
             : base(id, actorType, statusType)
         {
             this.mouseManager = mouseManager;
             this.gamePadManager = gamePadManager;
             this.background = background;
+            this.background_controller = background_controller;
             this.radius = radius;
             this.ball = ball;
             this.startAngle = MathHelper.ToRadians(180);
@@ -39,7 +42,6 @@ namespace GDGame.MyGame.Minigames
         public override void Start()
         {
             SendLockEvent();
-            background.StatusType = StatusType.Drawn;
             ball.StatusType = StatusType.Drawn;
             StatusType = StatusType.Update;
         }
@@ -50,6 +52,7 @@ namespace GDGame.MyGame.Minigames
             {
                 ball.StatusType = StatusType.Off;
                 background.StatusType = StatusType.Off;
+                background_controller.StatusType = StatusType.Off;
                 StatusType = StatusType.Off;
                 angle = 0;
 
@@ -62,8 +65,17 @@ namespace GDGame.MyGame.Minigames
         public override void Update(GameTime gameTime)
         {
             if (GamePad.GetCapabilities(PlayerIndex.One).IsConnected)
+            {
+                background.StatusType = StatusType.Off;
+                background_controller.StatusType = StatusType.Drawn;
                 HandleController();
-            else HandleKeyboard();
+            }
+            else
+            {
+                background.StatusType = StatusType.Drawn;
+                background_controller.StatusType = StatusType.Off;
+                HandleKeyboard();
+            }
 
             //Translate the ball according to it's angle
             ball.Transform2D.Translation = new Vector2(
