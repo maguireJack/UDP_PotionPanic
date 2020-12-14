@@ -28,7 +28,10 @@ namespace GDGame.MyGame.Objects
         {
             base.Update(gameTime);
         }
-
+        /// <summary>
+        /// Gives player a handheld pickup
+        /// </summary>
+        /// <returns> A handheld pickup that  is placed in the player</returns>
         public HandHeldPickup TakeItem()
         {
             HandHeldPickup clone = item.Clone() as HandHeldPickup;

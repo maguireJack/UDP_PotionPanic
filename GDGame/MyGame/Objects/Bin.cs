@@ -25,7 +25,11 @@ namespace GDGame.MyGame.Objects
         {
             base.Update(gameTime);
         }
-
+        /// <summary>
+        /// Removes item from players hand
+        /// </summary>
+        /// <param name="item">Object player is holding</param>
+        /// <returns>true if the object is binnable</returns>
         public bool Deposit(HandHeldPickup item)
         {
             if (item.PickupType == PickupType.Potion)

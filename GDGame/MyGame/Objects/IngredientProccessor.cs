@@ -44,7 +44,10 @@ namespace GDGame.MyGame.Objects
 
             EventDispatcher.Subscribe(EventCategoryType.Interactable, HandleEvent);
         }
-
+        /// <summary>
+        /// handles ingredient processing events, responsible for allowing player to move after minigame
+        /// </summary>
+        /// <param name="eventData">Ingredient processor event</param>
         private void HandleEvent(EventData eventData)
         {
             if (eventData.EventCategoryType == EventCategoryType.Interactable)
@@ -56,7 +59,10 @@ namespace GDGame.MyGame.Objects
                 }
             }
         }
-
+        /// <summary>
+        /// starts minigame timer , checks if minigame is complete
+        /// </summary>
+        /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
         public override void Update(GameTime gameTime)
         {
             if ((minigame.StatusType & StatusType.Update) == StatusType.Update)
@@ -87,7 +93,11 @@ namespace GDGame.MyGame.Objects
             }
             base.Update(gameTime);
         }
-
+        /// <summary>
+        /// Calculates score for minigames
+        /// </summary>
+        /// <param name="time">Passes time related information, Is required to update Actors</param>
+        /// <returns>Score</returns>
         private double CalculatePercentageScore(double time)
         {
             if (time > 12000)       //20% of score
@@ -98,7 +108,11 @@ namespace GDGame.MyGame.Objects
                 return 70f / 100f;
             return 1;               //100% of score
         }
-
+        /// <summary>
+        /// Starts minigame item is valid ingredient
+        /// </summary>
+        /// <param name="item">Ingredient</param>
+        /// <returns></returns>
         public bool Deposit(HandHeldPickup item)
         {
             if(inputState == item.Ingredient.IngredientState)

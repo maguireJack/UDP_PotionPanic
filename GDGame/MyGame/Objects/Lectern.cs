@@ -37,7 +37,10 @@ namespace GDGame.MyGame.Objects
             this.timer = new Timer(500);
             EventDispatcher.Subscribe(EventCategoryType.Player, HandleEvents);
         }
-
+        /// <summary>
+        /// Handles events fot Lectern, displays potion page
+        /// </summary>
+        /// <param name="eventData"></param>
         private void HandleEvents(EventData eventData)
         {
             if(eventData.EventCategoryType == EventCategoryType.Player)
@@ -49,7 +52,9 @@ namespace GDGame.MyGame.Objects
                 }
             }
         }
-
+        /// <summary>
+        /// Displays potion recipe page
+        /// </summary>
         public void Display()
         {
             EventDispatcher.Publish(new EventData(EventCategoryType.Player,
@@ -86,7 +91,10 @@ namespace GDGame.MyGame.Objects
                 uiManager.Add(uiTexture);
             }
         }
-
+        /// <summary>
+        /// Removes the recipe UI when the player presses a key and removes movement lock
+        /// </summary>
+        /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
         public override void Update(GameTime gameTime)
         {
             if(keyboardManager.IsAnyKeyPressedFirstTime(GameConstants.playerInteractKeys) ||
