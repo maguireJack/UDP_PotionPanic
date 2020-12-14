@@ -987,11 +987,9 @@ namespace GDGame
                 Color.White, 1);
 
             //model object
-<<<<<<< Updated upstream
             ModelObject modelObject = new ModelObject("outerWalls", ActorType.CollidableDecorator,
                StatusType.Drawn, transform3D,
                effectParameters, modelDictionary["outerWalls"]);
-=======
             collidableObject = new CollidableObject("Railing", ActorType.CollidableDecorator,
                StatusType.Drawn | StatusType.Update, transform3D,
                effectParameters, modelDictionary["railing"]);
@@ -1005,16 +1003,12 @@ namespace GDGame
 
 
             collidableObject.Enable(true, 1);
->>>>>>> Stashed changes
 
             objectManager.Add(modelObject);
 
-<<<<<<< Updated upstream
             ///////outerWallsRight
-=======
 
             ///////outerWalls
->>>>>>> Stashed changes
             //transform 
             transform3D = new Transform3D(new Vector3(0, 0, 0),
                                     new Vector3(0, 0, 0),       //rotation
