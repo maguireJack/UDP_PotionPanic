@@ -78,7 +78,8 @@ namespace GDGame.MyGame.Minigames
         public override void Update(GameTime gameTime)
         {
             angle++;
-            HandleKeyboard();
+            if (GamePad.GetCapabilities(PlayerIndex.One).IsConnected) { HandleController(); }
+            else HandleKeyboard();
 
             if (safeZone.Transform2D.Bounds.Intersects(target.Transform2D.Bounds))
                 progress += 0.4f;
@@ -96,6 +97,20 @@ namespace GDGame.MyGame.Minigames
                 progressBar.Transform2D.Translation.Y);
 
             base.Update(gameTime);
+        }
+
+        private void HandleController()
+        {
+            if (gamePadManager.IsButtonPressed(0, Buttons.A)
+                && safeZone.Transform2D.Translation.Y > top)
+            {
+                safeZone.Transform2D.Translation += new Vector2(0, -3);
+            }
+            else if (!gamePadManager.IsButtonPressed(0, Buttons.A)
+                && safeZone.Transform2D.Translation.Y < bottom) 
+            {
+                safeZone.Transform2D.Translation += new Vector2(0, 3);
+            }
         }
 
         private void HandleKeyboard()
