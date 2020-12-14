@@ -50,7 +50,10 @@ namespace GDGame.MyGame.Controllers
         }
 
         #endregion
-
+        /// <summary>
+        /// Handles events in relation to the player, covers the movement speed and minigame movent lock
+        /// </summary>
+        /// <param name="eventData">Contains the event catagory type which is used in this class</param>
         private void HandleEvent(EventData eventData)
         {
             if(eventData.EventCategoryType == EventCategoryType.Player)
@@ -72,7 +75,11 @@ namespace GDGame.MyGame.Controllers
                 }
             }
         }
-
+        /// <summary>
+        /// Handles the control schemes for the player movement and camera movement
+        /// </summary>
+        /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
+        /// <param name="actor">The actor the update acts upon</param>
         public override void Update(GameTime gameTime, IActor actor)
         {
             //checks if controller is connected
@@ -100,7 +107,12 @@ namespace GDGame.MyGame.Controllers
 
             base.Update(gameTime, actor);
         }
-
+        /// <summary>
+        /// Handles the players movement with a controller 
+        /// </summary>
+        /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
+        /// <param name="parent">Actor the movement acts upon(Player)</param>
+        /// <param name="capabilities">Acts as the current controler, contains the thumbsticks</param>
         private void HandleControlerMovement(GameTime gameTime, Actor3D parent, GamePadCapabilities capabilities)
         {
             CharacterObject character = parent as CharacterObject;
@@ -114,7 +126,11 @@ namespace GDGame.MyGame.Controllers
             parent.Transform3D.RotateAroundUpBy(MathUtility.CalculateRotationToVector(parent.Transform3D.Look, moveVector) * rotationSpeed);
             character.CharacterBody.Velocity += moveVector * gameTime.ElapsedGameTime.Milliseconds;
         }
-
+        /// <summary>
+        /// Makes the camera follow the player
+        /// </summary>
+        /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
+        /// <param name="parent">The Actor the camera follows(player)</param>
         private void HandleCameraFollow(GameTime gameTime, Actor3D parent)
         {
             //Offest the objects position to where the camera should be
@@ -139,7 +155,11 @@ namespace GDGame.MyGame.Controllers
                 }
             }
         }
-
+        /// <summary>
+        /// Handles the player movement with the Keyboard
+        /// </summary>
+        /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
+        /// <param name="parent">Actor the movement acts upon(player)</param>
         private void HandleMovement(GameTime gameTime, Actor3D parent)
         {
             CharacterObject character = parent as CharacterObject;

@@ -13,7 +13,10 @@ namespace GDGame.Handlers
         {
 
         }
-
+        /// <summary>
+        /// Spawns the player
+        /// </summary>
+        /// <param name="eventData">Event that tells player to spawn</param>
         public override void HandleEvent(EventData eventData)
         {
             if(eventData.EventActionType == EventActionType.OnSpawn)

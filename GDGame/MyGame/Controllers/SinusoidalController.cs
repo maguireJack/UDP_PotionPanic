@@ -13,7 +13,11 @@ namespace GDGame.MyGame.Controllers
         {
 
         }
-
+        /// <summary>
+        /// Is called to rotate a handheld pickup when it hasn't been picked up yet
+        /// </summary>
+        /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
+        /// <param name="actor">Actor the movement acts upon</param>
         public override void Update(GameTime gameTime, IActor actor)
         {
             base.Update(gameTime, actor);

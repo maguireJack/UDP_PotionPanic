@@ -71,7 +71,10 @@ namespace GDGame.MyGame.Actors
         }
 
         #endregion
-
+        /// <summary>
+        /// Makes a deep of the handheld pickup
+        /// </summary>
+        /// <returns>Returns the cloned object</returns>
         public new object Clone()
         {
             HandHeldPickup actor = new HandHeldPickup(new CollidableObject("clone - " + ID,
