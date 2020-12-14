@@ -994,10 +994,25 @@ namespace GDGame
             ModelObject modelObject = new ModelObject("outerWalls", ActorType.CollidableDecorator,
                StatusType.Drawn, transform3D,
                effectParameters, modelDictionary["outerWalls"]);
+            collidableObject = new CollidableObject("Railing", ActorType.CollidableDecorator,
+               StatusType.Drawn | StatusType.Update, transform3D,
+               effectParameters, modelDictionary["railing"]);
+            //bottom railing
+            collidableObject.AddPrimitive(new Box(new Vector3(-90, 0, 280), Matrix.Identity, new Vector3(700, 200, 10)),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
+            //side railing
+            collidableObject.AddPrimitive(new Box(new Vector3(700, 0, 0), Matrix.Identity, new Vector3(10, 200, 700)),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
+
+
+
+            collidableObject.Enable(true, 1);
 
             objectManager.Add(modelObject);
 
             ///////outerWallsRight
+
+            ///////outerWalls
             //transform 
             transform3D = new Transform3D(new Vector3(0, 0, 0),
                                     new Vector3(0, 0, 0),       //rotation

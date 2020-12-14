@@ -14,7 +14,11 @@ namespace GDGame.MyGame.Objects
         {
 
         }
-
+        /// <summary>
+        /// Takes the potion from player
+        /// </summary>
+        /// <param name="item">potion</param>
+        /// <returns>true if the player is putting a potion into the chest</returns>
         public bool Deposit(HandHeldPickup item)
         {
             if(item.PickupType == PickupType.Potion)

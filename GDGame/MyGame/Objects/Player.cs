@@ -79,7 +79,9 @@ namespace GDGame.MyGame.Objects
 
             base.Update(gameTime);
         }
-
+        /// <summary>
+        /// Add's new object to interactable list when object manager modified
+        /// </summary>
         private void UpdateInteractableList()
         {
             //Check if there size of the object manager has changed, if it has, get and update the interactable list of objects here

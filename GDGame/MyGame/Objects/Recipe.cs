@@ -48,7 +48,11 @@ namespace GDGame.MyGame.Objects
         {
             ingredients.Clear();
         }
-
+        /// <summary>
+        /// Checks if the passed in recipe is equal to the current recipe
+        /// </summary>
+        /// <param name="obj">Recapie</param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if(obj is Recipe)

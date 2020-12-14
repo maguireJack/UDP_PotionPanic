@@ -62,7 +62,9 @@ namespace GDGame.MyGame.Objects
         }
 
         #endregion
-
+        /// <summary>
+        /// Generates a new recapie from game constants list, depending on the level 
+        /// </summary>
         private void NewRecipe()
         {
             List<Recipe> levelList = new List<Recipe>();
@@ -78,14 +80,22 @@ namespace GDGame.MyGame.Objects
             int num = random.Next(levelList.Count);
             AssignRecipe(levelList[num], GameConstants.potions[levelList[num]][0] as string);
         }
-
+        /// <summary>
+        /// Publishes the new recipe to the event dispatcher
+        /// </summary>
+        /// <param name="recipe">Newley generated recapie depending on level</param>
+        /// <param name="potionName">Name of potion</param>
         private void AssignRecipe(Recipe recipe, string potionName)
         {
             checklist = new Checklist(recipe, potionName);
             EventDispatcher.Publish(new EventData(EventCategoryType.Player,
                 EventActionType.OnNewRecipe, new object[] { checklist }));
         }
-
+        /// <summary>
+        /// manages the minigame timer, calculates the score on how long it takes the player and sends an event to add new score and put potion
+        /// in players hand
+        /// </summary>
+        /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
         public override void Update(GameTime gameTime)
         {
             if((minigame.StatusType & StatusType.Update) == StatusType.Update)
@@ -118,7 +128,11 @@ namespace GDGame.MyGame.Objects
             }
             base.Update(gameTime);
         }
-
+        /// <summary>
+        /// allows player to drop ingredients into the potion
+        /// </summary>
+        /// <param name="item">players ingredient</param>
+        /// <returns>Returns true if the item was put in cauldron</returns>
         public bool Deposit(HandHeldPickup item)
         {
             switch(item.PickupType)
@@ -133,7 +147,10 @@ namespace GDGame.MyGame.Objects
 
             return true;
         }
-
+        /// <summary>
+        /// Adds score if the ingredient is correct
+        /// </summary>
+        /// <param name="item">ingredient</param>
         private void Add(Ingredient item)
         {
             if (checklist.CheckOffList(item))
@@ -151,7 +168,9 @@ namespace GDGame.MyGame.Objects
                 checklist.Reset();
             }
         }
-
+        /// <summary>
+        /// stops the player from moving and starts the minigame
+        /// </summary>
         private void CheckRecipes()
         {
             if (checklist.HasAllIngredients())
@@ -161,7 +180,11 @@ namespace GDGame.MyGame.Objects
                 StatusType = StatusType.Drawn | StatusType.Update;
             }
         }
-
+        /// <summary>
+        /// Calculates the score based on the time it took to complete minigame
+        /// </summary>
+        /// <param name="time">Time taken to do minigame</param>
+        /// <returns>players minigame score</returns>
         private double CalculatePercentageScore(double time)
         {
             if (time > 12000)       //20% of score

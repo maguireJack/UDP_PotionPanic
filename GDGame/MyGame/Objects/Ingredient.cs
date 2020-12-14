@@ -50,7 +50,11 @@ namespace GDGame.MyGame.Objects
         }
 
         #endregion
-
+        /// <summary>
+        /// checks if the ingredients passed in match with the current ingredient
+        /// </summary>
+        /// <param name="obj">players inputted ingredient</param>
+        /// <returns>true if the ingredient is correct</returns>
         public override bool Equals(object obj)
         {
             return obj is Ingredient ingredient &&
