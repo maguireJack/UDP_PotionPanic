@@ -42,7 +42,9 @@ namespace GDGame.MyGame.Minigames
             this.maxProgressWidth = progressBar.Transform2D.Bounds.Width;
             this.angle = 0;
         }
-
+        /// <summary>
+        /// Starts the sliding minigame by locking the player in place and initializing the minigame logic and UI
+        /// </summary>
         public override void Start()
         {
             SendLockEvent();
@@ -57,7 +59,10 @@ namespace GDGame.MyGame.Minigames
             progressBar.StatusType = StatusType.Drawn;
             StatusType = StatusType.Update;
         }
-
+        /// <summary>
+        /// Checks if the minigame is complete by seeing if the progress is at or over 100 and removes the UI if it is
+        /// </summary>
+        /// <returns>True if the minigame has been completed</returns>
         public override bool IsComplete()
         {
             if(progress >= 100)
@@ -74,7 +79,10 @@ namespace GDGame.MyGame.Minigames
             }
             return false;
         }
-
+        /// <summary>
+        /// Handles the controls for the minigame and updates the progress values
+        /// </summary>
+        /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
         public override void Update(GameTime gameTime)
         {
             angle++;
@@ -98,7 +106,9 @@ namespace GDGame.MyGame.Minigames
 
             base.Update(gameTime);
         }
-
+        /// <summary>
+        /// Checks if A is pressed and moves the bar up if it is pressed and down if it's not
+        /// </summary>
         private void HandleController()
         {
             if (gamePadManager.IsButtonPressed(0, Buttons.A)
@@ -112,7 +122,9 @@ namespace GDGame.MyGame.Minigames
                 safeZone.Transform2D.Translation += new Vector2(0, 3);
             }
         }
-
+        /// <summary>
+        ///  Checks if Space is pressed and moves the bar up if it is pressed and down if it's not
+        /// </summary>
         private void HandleKeyboard()
         {
             if(keyboardManager.IsKeyDown(Keys.Space)
