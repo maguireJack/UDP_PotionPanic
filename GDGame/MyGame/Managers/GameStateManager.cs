@@ -33,7 +33,10 @@ namespace GDGame.MyGame.Controllers
 
             EventDispatcher.Subscribe(EventCategoryType.UI, HandleEvent);
         }
-
+        /// <summary>
+        /// Updates the players score
+        /// </summary>
+        /// <param name="eventData">contains eventActionType that enables a score change</param>
         protected override void HandleEvent(EventData eventData)
         {
             if (eventData.EventActionType == EventActionType.OnScoreChange)
@@ -44,7 +47,10 @@ namespace GDGame.MyGame.Controllers
 
             base.HandleEvent(eventData);
         }
-
+        /// <summary>
+        /// Updates the game timer and its its UI
+        /// </summary>
+        /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
         public override void Update(GameTime gameTime)
         {
             if (!timer.IsRunning && StatusType == StatusType.Update)

@@ -20,7 +20,10 @@ namespace GDGame.MyGame.Managers
             this.mouseManager = mouseManager;
             this.keyboardManager = keyboardManager;
         }
-
+        /// <summary>
+        /// Handles Menu Events
+        /// </summary>
+        /// <param name="eventData">Menu Events</param>
         protected override void HandleEvent(EventData eventData)
         {
             if (eventData.EventCategoryType == EventCategoryType.Menu)
@@ -34,7 +37,10 @@ namespace GDGame.MyGame.Managers
                     StatusType = StatusType.Off;
             }
         }
-
+        /// <summary>
+        /// Handles Mouse and Keyboard input for menus
+        /// </summary>
+        /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
         protected override void HandleInput(GameTime gameTime)
         {
             HandleMouse(gameTime);
@@ -42,7 +48,10 @@ namespace GDGame.MyGame.Managers
 
             //base.HandleInput(gameTime); //nothing happening in the base method
         }
-
+        /// <summary>
+        /// handles mouse interaction with the menu
+        /// </summary>
+        /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
         protected override void HandleMouse(GameTime gameTime)
         {
             foreach (DrawnActor2D actor in this.ActiveList)
@@ -60,7 +69,11 @@ namespace GDGame.MyGame.Managers
             }
             base.HandleMouse(gameTime);
         }
-
+        /// <summary>
+        /// Handles what happens when a button is clicked
+        /// </summary>
+        /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
+        /// <param name="uIButtonObject">Contains what the button does(start game, show control sceme etc)</param>
         private void HandleClickedButton(GameTime gameTime, UIButtonObject uIButtonObject)
         {
             switch (uIButtonObject.ID)
@@ -90,7 +103,10 @@ namespace GDGame.MyGame.Managers
                     break;
             }
         }
-
+        /// <summary>
+        /// Handles keyboard interaction with menu
+        /// </summary>
+        /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
         protected override void HandleKeyboard(GameTime gameTime)
         {
             if (this.keyboardManager.IsFirstKeyPress(Keys.Escape))
