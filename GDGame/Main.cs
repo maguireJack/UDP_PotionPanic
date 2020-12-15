@@ -48,7 +48,6 @@ namespace GDGame
         private UIManager uiManager;
         private MyMenuManager menuManager;
         private SoundManager soundManager;
-        private MySoundManager mySoundManager;
 
         //Debug
         DebugDrawer debugInfoDrawer;
@@ -162,6 +161,7 @@ namespace GDGame
             //Interaction
             uiTextureDictionary.Load("Assets/Textures/UI/Interaction/helper_space");
             uiTextureDictionary.Load("Assets/Textures/UI/Interaction/helper_A");
+            uiTextureDictionary.Load("Assets/Textures/UI/Interaction/wrong_display");
 
             //Grinding
             uiTextureDictionary.Load("Assets/Textures/UI/Grinding/grinding_A");
@@ -200,6 +200,7 @@ namespace GDGame
             //General
             uiTextureDictionary.Load("Assets/Textures/UI/green_block");
             uiTextureDictionary.Load("Assets/Textures/UI/time_bar");
+            uiTextureDictionary.Load("Assets/Textures/UI/score_back");
 
             //Menu
             uiTextureDictionary.Load("Assets/Textures/Menu/gameMenuBG");
@@ -331,10 +332,6 @@ namespace GDGame
                 Color.White, new Vector2(1, 1));
         }
 
-        private void LoadSounds()
-        {
-        }
-
         #endregion
 
         #region Initialization - Managers, Cameras, Effects, Textures
@@ -366,7 +363,6 @@ namespace GDGame
             LoadVertices();
             LoadModels();
             LoadFonts();
-            LoadSounds();
 
             //ui
             InitUI(); 
@@ -428,7 +424,7 @@ namespace GDGame
             Texture2D texture = uiTextureDictionary["time_bar"];
 
             Transform2D transform2D = new Transform2D(
-                new Vector2(1350, 28 + texture.Height / 2), 0,
+                new Vector2(1340, 10 + texture.Height / 2), 0,
                 Vector2.One,
                 new Vector2(texture.Width / 2, texture.Height / 2),
                 new Integer2(texture.Width, texture.Height));
@@ -437,11 +433,23 @@ namespace GDGame
                 StatusType.Drawn, transform2D, Color.White, 1, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
+            texture = uiTextureDictionary["score_back"];
+
+            transform2D = new Transform2D(
+                new Vector2(10 + texture.Width/2, 10 + texture.Height / 2), 0,
+                Vector2.One,
+                new Vector2(texture.Width / 2, texture.Height / 2),
+                new Integer2(texture.Width, texture.Height));
+
+            UITextureObject scoreBackground = new UITextureObject("score_back", ActorType.UITextureObject,
+                StatusType.Drawn, transform2D, Color.White, 1, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
             texture = uiTextureDictionary["green_block"];
 
             transform2D = new Transform2D(
-                new Vector2(1350, 28 + texture.Height / 2), 0,
-                new Vector2(70, 70),
+                new Vector2(1341, 10 + texture.Height / 2), 0,
+                new Vector2(69, 70),
                 new Vector2(0.5f, 0.5f),
                 new Integer2(1, 1));
 
@@ -453,21 +461,21 @@ namespace GDGame
             Vector2 originalDimensions = spriteFont.MeasureString(text);
 
             transform2D = new Transform2D(
-                new Vector2(1300 + originalDimensions.X / 2, 280 + originalDimensions.Y / 2), 0,
+                new Vector2(1288 + originalDimensions.X / 2, 298 + originalDimensions.Y / 2), 0,
                 Vector2.One,
                 new Vector2(originalDimensions.X / 2, originalDimensions.Y / 2),
                 new Integer2(originalDimensions));
 
             UITextObject time = new UITextObject("time", ActorType.UIText,
                 StatusType.Drawn, transform2D,
-                Color.White, 0, SpriteEffects.None,
+                Color.White, 3, SpriteEffects.None,
                 text, spriteFont);
 
             text = "Score: 0";
             originalDimensions = spriteFont.MeasureString(text);
 
             transform2D = new Transform2D(
-                new Vector2(originalDimensions.X / 2, originalDimensions.Y / 2), 0,
+                new Vector2(27 + originalDimensions.X / 2, 16 + originalDimensions.Y / 2), 0,
                 Vector2.One,
                 new Vector2(originalDimensions.X / 2, originalDimensions.Y / 2),
                 new Integer2(originalDimensions));
@@ -514,10 +522,11 @@ namespace GDGame
             Texture2D starPerfect = uiTextureDictionary["score_perfect_star"];
 
             GameStateManager gameStateManager = new GameStateManager(this,
-                StatusType.Off, background, progressBar, time, score, starEmpty, starPerfect, star);
+                StatusType.Off, background, scoreBackground, progressBar, time, score, starEmpty, starPerfect, star);
 
             menuManager.Add("score", scoreScroll);
             uiManager.Add(background);
+            uiManager.Add(scoreBackground);
             uiManager.Add(progressBar);
             uiManager.Add(time);
             uiManager.Add(score);
@@ -777,11 +786,8 @@ namespace GDGame
             Components.Add(menuManager);
 
             //sound
-            soundManager = new SoundManager(this, StatusType.Update);
+            soundManager = new MySoundManager(this, StatusType.Update);
             Components.Add(soundManager);
-
-            mySoundManager = new MySoundManager(this, StatusType.Update);
-            Components.Add(mySoundManager);
         }
 
         private void InitCameras3D()
@@ -1030,8 +1036,23 @@ namespace GDGame
                 StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["cauldron"]);
 
+            Texture2D texture = uiTextureDictionary["wrong_display"];
+            PrimitiveObject display = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            display.ID = "wrong_display";
+            display.EffectParameters.Texture = texture;
+            display.StatusType = StatusType.Off;
+            display.ActorType = ActorType.Decorator;
+            display.Transform3D.Scale = new Vector3(texture.Width/6, texture.Height/6, 0);
+            display.Transform3D.RotationInDegrees = new Vector3(-45, 0, 0);
+            display.Transform3D.Translation = GameConstants.cauldronPos + new Vector3(0, 160, 0);
+
+            InvalidInputController controller = new InvalidInputController("invalidInputController", ControllerType.Progress);
+            display.ControllerList.Add(controller);
+
+            objectManager.Add(display);
+
             Cauldron cauldron = new Cauldron(collidableObject, "Cauldron",
-                GameConstants.defualtInteractionDist, InitStirringMinigame());
+                GameConstants.defualtInteractionDist, InitStirringMinigame(), display);
 
             cauldron.AddPrimitive(new Sphere(new Vector3(0, 30, 0), 50), new MaterialProperties(0.2f, 0.8f, 0.7f));
             cauldron.Enable(true, 1);
@@ -1147,7 +1168,7 @@ namespace GDGame
                 { "Green_Liquid", uiTextureDictionary["Green_Liquid"] }
             };
 
-            Texture2D texture = uiTextureDictionary["page"];
+            texture = uiTextureDictionary["page"];
 
             Transform2D transform2D = new Transform2D(screenCentre, 0,
                     Vector2.One,

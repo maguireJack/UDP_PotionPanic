@@ -18,6 +18,7 @@ namespace GDGame.MyGame.Objects
         #region Fields
 
         private StirringMinigameController minigame;
+        PrimitiveObject display;
         private Timer timer;
         private Checklist checklist;
         private int level;
@@ -28,10 +29,11 @@ namespace GDGame.MyGame.Objects
         #region Constructors
 
         public Cauldron(CollidableObject collidableObject, string name, float interactDistance,
-            StirringMinigameController minigame)
+            StirringMinigameController minigame, PrimitiveObject display)
             : base(collidableObject, name, interactDistance)
         {
             this.minigame = minigame;
+            this.display = display;
             this.timer = new Timer();
             this.level = 1;
             this.levelScore = 0;
@@ -189,6 +191,7 @@ namespace GDGame.MyGame.Objects
                         EventActionType.OnScoreChange, new object[] 
                         { -levelScore - (checklist.CheckedCount() * GameConstants.minigameScore/2) }));
                 checklist.Reset();
+                display.StatusType = StatusType.Drawn | StatusType.Update;
             }
         }
         /// <summary>

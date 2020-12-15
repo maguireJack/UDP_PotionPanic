@@ -79,6 +79,12 @@ namespace GDGame.MyGame.Managers
                 Reset(id);
                 soundInstances[id].Play();
             }
+            else if(eventData.EventActionType == EventActionType.OnPitchSet)
+            {
+                string id = eventData.Parameters[0] as string;
+                float pitch = (float)eventData.Parameters[1];
+                soundInstances[id].Pitch = pitch;
+            }
         }
 
         private void Reset(string id)

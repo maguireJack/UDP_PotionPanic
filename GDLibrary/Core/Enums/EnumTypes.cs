@@ -145,6 +145,7 @@
         OnRestart,
         OnVolumeDelta,
         OnVolumeSet,
+        OnPitchSet,
         OnMute,
         OnUnMute,
         OnExit,

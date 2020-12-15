@@ -14,6 +14,7 @@ namespace GDGame.MyGame.Controllers
     public class GameStateManager : PausableGameComponent
     {
         private UITextureObject timeBackground;
+        private UITextureObject scoreBackground;
         private UITextureObject timeBar;
         private UITextObject timeTextObject;
         private UITextObject scoreTextObject;
@@ -26,14 +27,17 @@ namespace GDGame.MyGame.Controllers
         private Texture2D starPerfect;
         private Texture2D star;
 
+        bool soundEvent1;
+        bool soundEvent2;
 
         public GameStateManager(Game game, StatusType statusType,
-            UITextureObject timeBackground, UITextureObject timeBar,
+            UITextureObject timeBackground, UITextureObject scoreBackground, UITextureObject timeBar,
             UITextObject timeTextObject, UITextObject scoreTextObject,
             Texture2D starEmpty, Texture2D starPerfect, Texture2D star)
             : base(game, statusType)
         {
             this.timeBackground = timeBackground;
+            this.scoreBackground = scoreBackground;
             this.timeBar = timeBar;
             this.timeTextObject = timeTextObject;
             this.scoreTextObject = scoreTextObject;
@@ -44,6 +48,9 @@ namespace GDGame.MyGame.Controllers
             this.starEmpty = starEmpty;
             this.starPerfect = starPerfect;
             this.star = star;
+
+            soundEvent1 = false;
+            soundEvent2 = false;
 
             EventDispatcher.Subscribe(EventCategoryType.UI, HandleEvent);
             EventDispatcher.Subscribe(EventCategoryType.Player, HandleEvent);
@@ -100,11 +107,25 @@ namespace GDGame.MyGame.Controllers
 
                 timeBar.Transform2D.Translation = new Vector2(
                     timeBar.Transform2D.Translation.X,
-                    (28 + timeBackground.Transform2D.Bounds.Height / 2) + (244 - timeBar.Transform2D.Scale.Y) / 2);
+                    (15 + timeBackground.Transform2D.Bounds.Height / 2) + (210 - timeBar.Transform2D.Scale.Y) / 2);
 
                 if (timer.ElapsedTime >= startTime)
                 {
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                        EventActionType.OnPitchSet, new object[] { "game_beat", 0f }));
                     EndGame(gameTime);
+                }
+                else if(!soundEvent2 && startTime - timer.ElapsedTime < 10000)
+                {
+                    soundEvent2 = true;
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                        EventActionType.OnPitchSet, new object[] { "game_beat", 0.7f }));
+                }
+                else if (!soundEvent1 && startTime - timer.ElapsedTime < 20000)
+                {
+                    soundEvent1 = true;
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                        EventActionType.OnPitchSet, new object[] { "game_beat", 0.4f }));
                 }
 
                 base.Update(gameTime);
@@ -116,6 +137,7 @@ namespace GDGame.MyGame.Controllers
             timer.StopTimer(gameTime);
             timeTextObject.Text = "0:00";
             StatusType = StatusType.Off;
+            soundEvent1 = soundEvent2 = false;
             ScoreScreen();
         }
 

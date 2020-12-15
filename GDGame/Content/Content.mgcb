@@ -1367,6 +1367,30 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/Interaction/helper_space.png
 
+#begin Assets/Textures/UI/Interaction/wrong_display.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/Interaction/wrong_display.png
+
+#begin Assets/Textures/UI/Interaction/wrong_display.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/Interaction/wrong_display.png
+
 #begin Assets/Textures/UI/Lectern/Blue_Dust.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1546,6 +1570,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/Score/score_star.png
+
+#begin Assets/Textures/UI/score_back.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/score_back.png
 
 #begin Assets/Textures/UI/Sliding/sliding_background.png
 /importer:TextureImporter
