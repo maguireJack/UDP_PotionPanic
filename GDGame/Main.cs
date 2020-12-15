@@ -162,6 +162,7 @@ namespace GDGame
             uiTextureDictionary.Load("Assets/Textures/UI/Interaction/helper_space");
             uiTextureDictionary.Load("Assets/Textures/UI/Interaction/helper_A");
             uiTextureDictionary.Load("Assets/Textures/UI/Interaction/wrong_display");
+            uiTextureDictionary.Load("Assets/Textures/UI/Interaction/arrow");
 
             //Grinding
             uiTextureDictionary.Load("Assets/Textures/UI/Grinding/grinding_A");
@@ -1196,6 +1197,8 @@ namespace GDGame
 
             uiManager.Add(backgroundController);
 
+            SpriteFont spriteFont = fontDictionary["ui"];
+
             /////transform 
             transform3D = new Transform3D(new Vector3(210, 35, 185),
                                 new Vector3(0, 0, 0),       //rotation
@@ -1213,7 +1216,7 @@ namespace GDGame
 
             Lectern lectern = new Lectern(collidableObject, "Lectern",
                 GameConstants.defualtInteractionDist, uiManager, keyboardManager, gamePadManager,
-                background, backgroundController, ingredientUITextures);
+                background, backgroundController, ingredientUITextures, spriteFont);
 
             lectern.AddPrimitive(new Box(new Vector3(0, 50, 0), Matrix.Identity, new Vector3(72, 111, 71)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -1241,8 +1244,20 @@ namespace GDGame
                 StatusType.Drawn, transform3D,
                 effectParameters, modelDictionary["chest"]);
 
+            texture = uiTextureDictionary["arrow"];
+            PrimitiveObject helper = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            helper.ID = "arrow helper";
+            helper.EffectParameters.Texture = texture;
+            helper.StatusType = StatusType.Off;
+            helper.ActorType = ActorType.Decorator;
+            helper.Transform3D.Scale = new Vector3(texture.Width/6, texture.Height/6, 0);
+            helper.Transform3D.RotationInDegrees = new Vector3(0, 0, 0);
+            helper.Transform3D.Translation = transform3D.Translation + new Vector3(50, 100, -20);
+
+            objectManager.Add(helper);
+
             Chest chest = new Chest(collidableObject, "Chest",
-                GameConstants.defualtInteractionDist);
+                GameConstants.defualtInteractionDist, helper);
 
             chest.AddPrimitive(new Box(new Vector3(0, 0, 0), Matrix.Identity, new Vector3(75, 94, 112)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));

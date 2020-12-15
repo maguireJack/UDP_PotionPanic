@@ -26,6 +26,8 @@ namespace GDGame.MyGame.Managers
             soundDictionary.Load("Assets/Music/pestol");
             soundDictionary.Load("Assets/Music/walking");
             soundDictionary.Load("Assets/Music/grabbing");
+            soundDictionary.Load("Assets/Music/page_turn");
+            soundDictionary.Load("Assets/Music/water");
 
             SoundEffectInstance sound = soundDictionary["main_menu"].CreateInstance();
             sound.IsLooped = true;
@@ -57,6 +59,16 @@ namespace GDGame.MyGame.Managers
             sound.IsLooped = true;
             sound.Volume = 0.4f;
             soundInstances.Add("walking", sound);
+
+            sound = soundDictionary["page_turn"].CreateInstance();
+            sound.IsLooped = false;
+            sound.Volume = 1f;
+            soundInstances.Add("page_turn", sound);
+
+            sound = soundDictionary["water"].CreateInstance();
+            sound.IsLooped = true;
+            sound.Volume = 0.1f;
+            soundInstances.Add("water", sound);
 
 
             EventDispatcher.Subscribe(EventCategoryType.Sound, HandleEvent);

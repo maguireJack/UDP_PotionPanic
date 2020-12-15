@@ -2,6 +2,7 @@
 using GDGame.MyGame.Constants;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
+using GDLibrary.Events;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -47,6 +48,9 @@ namespace GDGame.MyGame.Minigames
         /// </summary>
         public override void Start()
         {
+            EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                EventActionType.OnRestart, new object[] { "water" }));
+
             SendLockEvent();
             safeZone.Transform2D.Translation = new Vector2(GameConstants.screenCentre.X, bottom);
             target.Transform2D.Translation = GameConstants.screenCentre;
@@ -67,6 +71,8 @@ namespace GDGame.MyGame.Minigames
         {
             if(progress >= 100)
             {
+                EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                    EventActionType.OnPause, new object[] { "water" }));
                 SendUnlockEvent();
 
                 background.StatusType = StatusType.Off;

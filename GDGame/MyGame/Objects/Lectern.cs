@@ -21,14 +21,15 @@ namespace GDGame.MyGame.Objects
         private UITextureObject background;
         private UITextureObject backgroundController;
         private Dictionary<string, Texture2D> textureDictionary;
-        private List<UITextureObject> loadedTextures;
+        private List<DrawnActor2D> loadedTextures;
         private Timer timer;
         private Checklist checklist;
+        private SpriteFont spriteFont;
 
         public Lectern(CollidableObject modelObject, string name, float interactDistance,
             UIManager uiManager, KeyboardManager keyboardManager, GamePadManager gamePadManager,
             UITextureObject background, UITextureObject backgroundController,
-            Dictionary<string, Texture2D> textureDictionary)
+            Dictionary<string, Texture2D> textureDictionary, SpriteFont spriteFont)
             : base(modelObject, name, interactDistance)
         {
             this.uiManager = uiManager;
@@ -37,7 +38,8 @@ namespace GDGame.MyGame.Objects
             this.background = background;
             this.backgroundController = backgroundController;
             this.textureDictionary = textureDictionary;
-            this.loadedTextures = new List<UITextureObject>();
+            this.spriteFont = spriteFont;
+            this.loadedTextures = new List<DrawnActor2D>();
             this.timer = new Timer(500);
             EventDispatcher.Subscribe(EventCategoryType.Player, HandleEvents);
         }
@@ -63,6 +65,9 @@ namespace GDGame.MyGame.Objects
         {
             EventDispatcher.Publish(new EventData(EventCategoryType.Player,
                 EventActionType.OnLock, null));
+
+            EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                EventActionType.OnRestart, new object[] { "page_turn" }));
 
             if (GamePad.GetCapabilities(PlayerIndex.One).IsConnected)
                 backgroundController.StatusType = StatusType.Drawn;
@@ -93,8 +98,24 @@ namespace GDGame.MyGame.Objects
                 StatusType.Drawn, transform2D, Color.White, 4, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
+                string text = key.Replace('_', ' ');
+                Vector2 originalDimensions = spriteFont.MeasureString(text);
+
+                transform2D = new Transform2D(
+                    new Vector2(translation.X, translation.Y + 140), 0,
+                    Vector2.One,
+                    new Vector2(originalDimensions.X / 2, originalDimensions.Y / 2),
+                    new Integer2(originalDimensions));
+
+                UITextObject textObject = new UITextObject("score", ActorType.UIText,
+                    StatusType.Drawn, transform2D,
+                    Color.Black, 4, SpriteEffects.None,
+                    text, spriteFont);
+
                 loadedTextures.Add(uiTexture);
+                loadedTextures.Add(textObject);
                 uiManager.Add(uiTexture);
+                uiManager.Add(textObject);
             }
         }
         /// <summary>
@@ -106,7 +127,7 @@ namespace GDGame.MyGame.Objects
             if(keyboardManager.IsAnyKeyPressedFirstTime(GameConstants.playerInteractKeys) ||
                 gamePadManager.IsAnyButtonPressed(0, GameConstants.playerInteractButtons))
             {
-                foreach(UITextureObject uiTexture in loadedTextures)
+                foreach(DrawnActor2D uiTexture in loadedTextures)
                 {
                     uiManager.UIObjectList.Remove(uiTexture);
                 }

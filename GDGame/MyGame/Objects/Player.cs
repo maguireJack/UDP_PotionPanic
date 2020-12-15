@@ -226,6 +226,9 @@ namespace GDGame.MyGame.Objects
                             //if potion, unlock the cauldron
                             EventDispatcher.Publish(new EventData(EventCategoryType.Interactable,
                                 EventActionType.OnUnlock, new object[] { "Cauldron" }));
+
+                            EventDispatcher.Publish(new EventData(EventCategoryType.Player,
+                                EventActionType.OnPickup, null));
                         }
                         else if(handItem.PickupType == PickupType.Ingredient)
                         {

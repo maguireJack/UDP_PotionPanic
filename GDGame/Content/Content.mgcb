@@ -725,6 +725,12 @@
 /processorParam:Quality=Best
 /build:Assets/Music/main_menu.wav
 
+#begin Assets/Music/page_turn.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Music/page_turn.wav
+
 #begin Assets/Music/pestol.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -742,6 +748,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Assets/Music/walking.wav
+
+#begin Assets/Music/water.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Music/water.wav
 
 #begin Assets/Textures/Architecture/Walls/backwall.jpg
 /importer:TextureImporter
@@ -1343,6 +1355,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/Grinding/grinding_xbox_B.png
 
+#begin Assets/Textures/UI/Interaction/arrow.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/Interaction/arrow.png
+
 #begin Assets/Textures/UI/Interaction/helper_A.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1366,18 +1390,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/Interaction/helper_space.png
-
-#begin Assets/Textures/UI/Interaction/wrong_display.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/UI/Interaction/wrong_display.png
 
 #begin Assets/Textures/UI/Interaction/wrong_display.png
 /importer:TextureImporter
