@@ -7,6 +7,7 @@ using GDLibrary.Managers;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 
@@ -18,6 +19,7 @@ namespace GDGame.MyGame.Objects
         private KeyboardManager keyboardManager;
         private GamePadManager gamePadManager;
         private UITextureObject background;
+        private UITextureObject backgroundController;
         private Dictionary<string, Texture2D> textureDictionary;
         private List<UITextureObject> loadedTextures;
         private Timer timer;
@@ -25,13 +27,15 @@ namespace GDGame.MyGame.Objects
 
         public Lectern(CollidableObject modelObject, string name, float interactDistance,
             UIManager uiManager, KeyboardManager keyboardManager, GamePadManager gamePadManager,
-            UITextureObject background, Dictionary<string, Texture2D> textureDictionary)
+            UITextureObject background, UITextureObject backgroundController,
+            Dictionary<string, Texture2D> textureDictionary)
             : base(modelObject, name, interactDistance)
         {
             this.uiManager = uiManager;
             this.keyboardManager = keyboardManager;
             this.gamePadManager = gamePadManager;
             this.background = background;
+            this.backgroundController = backgroundController;
             this.textureDictionary = textureDictionary;
             this.loadedTextures = new List<UITextureObject>();
             this.timer = new Timer(500);
@@ -60,7 +64,9 @@ namespace GDGame.MyGame.Objects
             EventDispatcher.Publish(new EventData(EventCategoryType.Player,
                 EventActionType.OnLock, null));
 
-            background.StatusType = StatusType.Drawn;
+            if (GamePad.GetCapabilities(PlayerIndex.One).IsConnected)
+                backgroundController.StatusType = StatusType.Drawn;
+            else background.StatusType = StatusType.Drawn;
             StatusType = StatusType.Drawn | StatusType.Update;
 
             Texture2D texture;
@@ -107,6 +113,7 @@ namespace GDGame.MyGame.Objects
                 loadedTextures.Clear();
 
                 background.StatusType = StatusType.Off;
+                backgroundController.StatusType = StatusType.Off;
                 Lock();
                 EventDispatcher.Publish(new EventData(EventCategoryType.Player,
                 EventActionType.OnUnlock, null));

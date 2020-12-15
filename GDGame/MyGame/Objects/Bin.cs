@@ -39,7 +39,7 @@ namespace GDGame.MyGame.Objects
             {
                 return false;
             }
-            EventDispatcher.Publish(new EventData(EventCategoryType.Player,
+            EventDispatcher.Publish(new EventData(EventCategoryType.UI,
                 EventActionType.OnScoreChange, new object[] { -GameConstants.minigameScore/2 }));
 
             return true;

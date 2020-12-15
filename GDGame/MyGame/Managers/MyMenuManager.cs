@@ -5,6 +5,7 @@ using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace GDGame.MyGame.Managers
 {
@@ -12,6 +13,8 @@ namespace GDGame.MyGame.Managers
     {
         private MouseManager mouseManager;
         private KeyboardManager keyboardManager;
+        private List<DrawnActor2D> loadedTempTexture;
+        private bool batchRemove;
 
         public MyMenuManager(Game game, StatusType statusType, SpriteBatch spriteBatch,
             MouseManager mouseManager, KeyboardManager keyboardManager)
@@ -19,6 +22,9 @@ namespace GDGame.MyGame.Managers
         {
             this.mouseManager = mouseManager;
             this.keyboardManager = keyboardManager;
+            this.loadedTempTexture = new List<DrawnActor2D>();
+            this.batchRemove = false;
+            EventDispatcher.Subscribe(EventCategoryType.Player, HandleEvent);
         }
         /// <summary>
         /// Handles Menu Events
@@ -30,12 +36,25 @@ namespace GDGame.MyGame.Managers
             {
                 if (eventData.EventActionType == EventActionType.OnPause)
                 {
-                    StatusType = StatusType.Drawn | StatusType.Update;
+                    StatusType = StatusType.Update | StatusType.Drawn;
                     SetScene("pause");
                     
                 }
                 else if (eventData.EventActionType == EventActionType.OnPlay)
                     StatusType = StatusType.Off;
+            }
+            else if(eventData.EventCategoryType == EventCategoryType.Player)
+            {
+                if (eventData.EventActionType == EventActionType.OnGameOver)
+                {
+                    StatusType = StatusType.Update | StatusType.Drawn;
+                    loadedTempTexture = (List<DrawnActor2D>)eventData.Parameters[0];
+                    foreach (DrawnActor2D texture in loadedTempTexture)
+                    {
+                        Add("score", texture);
+                    }
+                    SetScene("score");
+                }
             }
         }
         /// <summary>
@@ -44,10 +63,18 @@ namespace GDGame.MyGame.Managers
         /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
         protected override void HandleInput(GameTime gameTime)
         {
+            if(batchRemove)
+            {
+                foreach (DrawnActor2D actor in loadedTempTexture)
+                {
+                    Remove("score", a => a.ID == actor.ID);
+                }
+                batchRemove = false;
+            }
             HandleMouse(gameTime);
             HandleKeyboard(gameTime);
 
-            //base.HandleInput(gameTime); //nothing happening in the base method
+            //base.HandleInput(gameTime);
         }
         /// <summary>
         /// handles mouse interaction with the menu
@@ -83,7 +110,6 @@ namespace GDGame.MyGame.Managers
                     SetScene("game");
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, new object[] { gameTime }));
                     EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPlay, new object[] { "main_menu" }));
-
                     break;
 
                 case "controls_btn":
@@ -99,6 +125,11 @@ namespace GDGame.MyGame.Managers
                     break;
 
                 case "back_btn":
+                    SetScene("main");
+                    break;
+
+                case "score_menu_btn":
+                    batchRemove = true;
                     SetScene("main");
                     break;
 

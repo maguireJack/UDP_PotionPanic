@@ -169,6 +169,7 @@
         OnLose,
 
         OnWin,
+        OnGameOver,
         OnPickup,
 
         //sent whenever we change the opacity of a drawn object - remember ObjectManager has two draw lists (opaque and transparent)

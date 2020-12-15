@@ -22,7 +22,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework.Audio;
 
 namespace GDGame
 {
@@ -64,11 +63,6 @@ namespace GDGame
         private ContentDictionary<Texture2D> uiTextureDictionary;
         private ContentDictionary<SpriteFont> fontDictionary;
         private ContentDictionary<Model> modelDictionary;
-        
-
-        //hashmap (Dictonary in C#) to store useful rails and curves
-        private Dictionary<string, Transform3DCurve> transform3DCurveDictionary;
-        private Dictionary<string, RailParameters> railDictionary;
 
         //defines centre point for the mouse i.e. (w/2, h/2)
         private Vector2 screenCentre;
@@ -78,19 +72,8 @@ namespace GDGame
 
         private VertexPositionColorTexture[] vertices;
 
-        //font used to show debug info
-        private SpriteFont debugFont;
-
-        #region Demo
-
         private PrimitiveObject archetypalTexturedQuad;
-        private Curve1D curve1D;
-
-        #endregion
-
         private PrimitiveObject primitiveObject = null;
-        private Viewport halfSizeViewport;
-        private bool isPaused;
 
         #endregion Fields
 
@@ -198,6 +181,7 @@ namespace GDGame
 
             //Lectern
             uiTextureDictionary.Load("Assets/Textures/UI/Lectern/page");
+            uiTextureDictionary.Load("Assets/Textures/UI/Lectern/page_controller");
             uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Red_Solid");
             uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Blue_Solid");
             uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Green_Solid");
@@ -362,7 +346,6 @@ namespace GDGame
             Window.Title = "Potion Panic";
 
             screenCentre = GameConstants.screenCentre;
-            isPaused = true;
 
             //note that we moved this from LoadContent to allow InitDebug to be called in Initialize
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -395,10 +378,6 @@ namespace GDGame
 
             //drawn collidable content
             InitCollidableDrawnContent();
-
-            //curves and rails used by cameras
-            InitCurves();
-            InitRails();
 
             //cameras - notice we moved the camera creation BELOW where we created the drawn content - see DriveController
             InitCameras3D();
@@ -508,8 +487,26 @@ namespace GDGame
                 new Integer2(texture.Width, texture.Height));
 
             UITextureObject scoreScroll = new UITextureObject("score_scroll", ActorType.UITextureObject,
-                StatusType.Off, transform2D, Color.White, 1, SpriteEffects.None, texture,
+                StatusType.Drawn, transform2D, Color.White, 1, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            texture = uiTextureDictionary["baseButton"];
+
+            transform2D = new Transform2D(screenCentre + new Vector2(0, 160), 0,
+                Vector2.One,
+                new Vector2(texture.Width / 2, texture.Height / 2),
+                new Integer2(texture.Width, texture.Height));
+
+            UIButtonObject button = new UIButtonObject("score_menu_btn", ActorType.UITextureObject,
+                StatusType.Drawn, transform2D, Color.White, 3, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height),
+                "Main Menu",
+                fontDictionary["ui"],
+                Vector2.One,
+                Color.Black,
+                new Vector2(0, 0));
+
+            menuManager.Add("score", button);
 
             Texture2D starEmpty = uiTextureDictionary["score_empty_star"];
 
@@ -518,15 +515,13 @@ namespace GDGame
             Texture2D starPerfect = uiTextureDictionary["score_perfect_star"];
 
             GameStateManager gameStateManager = new GameStateManager(this,
-                StatusType.Off, uiManager, background, progressBar, time, score, scoreScroll,
-                starEmpty, starPerfect, star);
+                StatusType.Off, background, progressBar, time, score, starEmpty, starPerfect, star);
 
+            menuManager.Add("score", scoreScroll);
             uiManager.Add(background);
             uiManager.Add(progressBar);
             uiManager.Add(time);
             uiManager.Add(score);
-
-            uiManager.Add(scoreScroll);
 
             Components.Add(gameStateManager);
         }
@@ -728,27 +723,6 @@ namespace GDGame
             }
         }
 
-        private void InitCurves()
-        {
-            //create the camera curve to be applied to the track controller
-            Transform3DCurve curveA = new Transform3DCurve(CurveLoopType.Oscillate); //experiment with other CurveLoopTypes
-            curveA.Add(new Vector3(-500, 1000, 200), -Vector3.UnitY, Vector3.UnitY, 0); //start
-            curveA.Add(new Vector3(-500, 250, 400), -Vector3.UnitY, Vector3.UnitY, 1000); //start position
-            curveA.Add(new Vector3(-500, 100, 600), -Vector3.UnitZ, Vector3.UnitY, 3000); //start position
-            curveA.Add(new Vector3(-500, 50, 800), -Vector3.UnitZ, Vector3.UnitY, 4000); //start position
-            curveA.Add(new Vector3(-500, 50, 1000), -Vector3.UnitZ, Vector3.UnitY, 6000); //start position
-            //curveA.Add(new Vector3(-500, 50, 2500), -Vector3.UnitZ, Vector3.UnitY, 6000); //start position
-
-            //add to the dictionary
-            transform3DCurveDictionary.Add("headshake1", curveA);
-        }
-
-        private void InitRails()
-        {
-            //create the track to be applied to the non-collidable track camera 1
-            railDictionary.Add("rail1", new RailParameters("rail1 - parallel to z-axis", new Vector3(20, 10, 50), new Vector3(20, 10, -50)));
-        }
-
         private void InitDictionaries()
         {
             //stores effects
@@ -759,13 +733,6 @@ namespace GDGame
             uiTextureDictionary = new ContentDictionary<Texture2D>("uiTextures", Content);
             textureDictionary = new ContentDictionary<Texture2D>("textures", Content);
             fontDictionary = new ContentDictionary<SpriteFont>("fonts", Content);
-            
-
-            //curves - notice we use a basic Dictionary and not a ContentDictionary since curves and rails are NOT media content
-            transform3DCurveDictionary = new Dictionary<string, Transform3DCurve>();
-
-            //rails - store rails used by cameras
-            railDictionary = new Dictionary<string, RailParameters>();
         }
 
         private void InitManagers()
@@ -838,81 +805,6 @@ namespace GDGame
             cameraManager.Add(camera3D);
 
             #endregion
-
-            #region Camera - First Person
-
-            //transform3D = new Transform3D(new Vector3(10, 10, 20),
-            //    new Vector3(0, 0, -1), Vector3.UnitY);
-
-            //camera3D = new Camera3D("1st person",
-            //    ActorType.Camera3D, StatusType.Update, transform3D,
-            //    ProjectionParameters.StandardDeepSixteenTen, new Viewport(5, 5, 502, 374));
-
-            ////attach a controller
-            //camera3D.ControllerList.Add(new FirstPersonController(
-            //    "1st person controller A", ControllerType.FirstPerson,
-            //    keyboardManager, mouseManager,
-            //    GameConstants.moveSpeed, GameConstants.strafeSpeed, GameConstants.rotateSpeed));
-            //cameraManager.Add(camera3D);
-
-            #endregion Camera - First Person
-
-            #region Camera - Flight
-
-            //transform3D = new Transform3D(new Vector3(0, 10, 10),
-            //            new Vector3(0, 0, -1),
-            //            Vector3.UnitY);
-
-            //camera3D = new Camera3D("flight person",
-            //    ActorType.Camera3D, StatusType.Update, transform3D,
-            //    ProjectionParameters.StandardDeepSixteenTen, new Viewport(0, 384, 512, 384));
-
-            ////define move parameters
-            //MoveParameters moveParameters = new MoveParameters(keyboardManager,
-            //    mouseManager, GameConstants.flightMoveSpeed, GameConstants.flightStrafeSpeed,
-            //    GameConstants.flightRotateSpeed,
-            //    GameConstants.MoveKeys[0]);
-
-            //attach a controller
-            //camera3D.ControllerList.Add(new FlightCameraController("flight controller",
-            //                            ControllerType.FlightCamera, moveParameters));
-            //cameraManager.Add(camera3D);
-
-            #endregion Camera - Flight
-
-            #region Camera - Security
-
-            //transform3D = new Transform3D(new Vector3(10, 10, 50),
-            //            new Vector3(0, 0, -1),
-            //            Vector3.UnitY);
-
-            //camera3D = new Camera3D("security",
-            //    ActorType.Camera3D, StatusType.Update, transform3D,
-            //    ProjectionParameters.StandardDeepSixteenTen, new Viewport(512, 384, 512, 384));
-
-            //camera3D.ControllerList.Add(new PanController(
-            //    "pan controller", ControllerType.Pan,
-            //    new Vector3(1, 1, 0), new TrigonometricParameters(30, GameConstants.mediumAngularSpeed, 0)));
-            //cameraManager.Add(camera3D);
-
-            #endregion Camera - Security
-
-            #region Camera - Curve3D
-
-            //notice that it doesnt matter what translation, look, and up are since curve will set these
-            transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, Vector3.Zero);
-
-            camera3D = new Camera3D("curve camera - main arena",
-              ActorType.Camera3D, StatusType.Update, transform3D,
-              ProjectionParameters.StandardDeepSixteenTen, viewPort);
-
-            camera3D.ControllerList.Add(new Curve3DController("main arena - fly through - 1",
-                ControllerType.Curve,
-                        transform3DCurveDictionary["headshake1"])); //use the curve dictionary to retrieve a transform3DCurve by id
-
-            cameraManager.Add(camera3D);
-
-            #endregion Camera - Curve3D
 
             cameraManager.ActiveCameraIndex = 0; //0, 1, 2, 3
         }
@@ -1264,11 +1156,25 @@ namespace GDGame
                     new Integer2(texture.Width, texture.Height));
 
 
-            UITextureObject uiTexture = new UITextureObject("page", ActorType.UITextureObject,
+            UITextureObject background = new UITextureObject("page", ActorType.UITextureObject,
                 StatusType.Off, transform2D, Color.White, 1, SpriteEffects.None, texture,
                 new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
 
-            uiManager.Add(uiTexture);
+            uiManager.Add(background);
+
+            texture = uiTextureDictionary["page_controller"];
+
+            transform2D = new Transform2D(screenCentre, 0,
+                    Vector2.One,
+                    new Vector2(texture.Width / 2, texture.Height / 2),
+                    new Integer2(texture.Width, texture.Height));
+
+
+            UITextureObject backgroundController = new UITextureObject("page_controller", ActorType.UITextureObject,
+                StatusType.Off, transform2D, Color.White, 1, SpriteEffects.None, texture,
+                new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+
+            uiManager.Add(backgroundController);
 
             /////transform 
             transform3D = new Transform3D(new Vector3(210, 35, 185),
@@ -1287,7 +1193,7 @@ namespace GDGame
 
             Lectern lectern = new Lectern(collidableObject, "Lectern",
                 GameConstants.defualtInteractionDist, uiManager, keyboardManager, gamePadManager,
-                uiTexture, ingredientUITextures);
+                background, backgroundController, ingredientUITextures);
 
             lectern.AddPrimitive(new Box(new Vector3(0, 50, 0), Matrix.Identity, new Vector3(72, 111, 71)),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
@@ -1676,7 +1582,7 @@ namespace GDGame
         private void InitPlayer()
         {
             //transform
-            Transform3D transform3D = new Transform3D(new Vector3(0, 50, 0),
+            Transform3D transform3D = new Transform3D(GameConstants.playerPos,
                                 new Vector3(0, 0, 0),       //rotation
                                 new Vector3(1, 1, 1),        //scale
                                     -Vector3.UnitZ,         //look

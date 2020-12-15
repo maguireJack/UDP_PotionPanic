@@ -63,9 +63,28 @@ namespace GDGame.MyGame.Objects
             this.lastListSize = 0;
 
             ControllerList.Add(controller);
+            EventDispatcher.Subscribe(EventCategoryType.Player, HandleEvent);
         }
 
         #endregion
+
+        public void HandleEvent(EventData eventData)
+        {
+            if(eventData.EventCategoryType == EventCategoryType.Player)
+            {
+                if(eventData.EventActionType == EventActionType.OnGameOver)
+                {
+                    Body.MoveTo(GameConstants.playerPos, Body.Orientation);
+                    if (handItem != null)
+                    {
+                        interactableList.Remove(handItem);
+                        EventDispatcher.Publish(new EventData(EventCategoryType.Object,
+                            EventActionType.OnRemoveActor, new object[] { handItem }));
+                        handItem = null;
+                    }
+                }
+            }
+        }
 
         public override void Update(GameTime gameTime)
         {

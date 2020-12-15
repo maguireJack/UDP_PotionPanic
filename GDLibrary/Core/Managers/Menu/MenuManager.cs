@@ -62,7 +62,7 @@ namespace GDLibrary.Managers
         /// <returns>True if set, otherwise an exception is thrown</returns>
         public bool SetScene(string sceneID)
         {
-            if (!dictionary.ContainsKey(sceneID))
+             if (!dictionary.ContainsKey(sceneID))
             {
                 throw new Exception("Invalid scene ID - " + sceneID);
             }

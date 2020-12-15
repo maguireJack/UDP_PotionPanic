@@ -38,7 +38,7 @@ namespace GDGame.MyGame.Objects
 
             EventDispatcher.Subscribe(EventCategoryType.Interactable, HandleEvent);
             EventDispatcher.Subscribe(EventCategoryType.Player, HandleEvent);
-            NewRecipe();
+            EventDispatcher.Subscribe(EventCategoryType.Menu, HandleEvent);
         }
 
         private void HandleEvent(EventData eventData)
@@ -52,11 +52,27 @@ namespace GDGame.MyGame.Objects
             {
                 if (eventData.EventActionType == EventActionType.OnPotionDeposit)
                 {
-                    if(level < 4)
+                    if(level < 2)
                     {
                         NewRecipe();
                     }
-                    //else complete
+                    else
+                    {
+                        EventDispatcher.Publish(new EventData(EventCategoryType.Player,
+                            EventActionType.OnWin, null));
+                    }
+                }
+                else if(eventData.EventActionType == EventActionType.OnGameOver)
+                {
+                    level = 1;
+                    levelScore = 0;
+                }
+            }
+            else if(eventData.EventCategoryType == EventCategoryType.Menu)
+            {
+                if(eventData.EventActionType == EventActionType.OnPlay)
+                {
+                    NewRecipe();
                 }
             }
         }
@@ -98,6 +114,8 @@ namespace GDGame.MyGame.Objects
         /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
         public override void Update(GameTime gameTime)
         {
+            if (checklist == null)
+                NewRecipe();
             if((minigame.StatusType & StatusType.Update) == StatusType.Update)
             {
                 if (!timer.IsRunning)

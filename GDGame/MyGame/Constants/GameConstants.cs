@@ -29,31 +29,6 @@ namespace GDGame.MyGame.Constants
 
         #endregion Common
 
-        #region First Person Camera
-
-        public static readonly float moveSpeed = 0.1f;
-        public static readonly float strafeSpeed = 0.075f;
-        public static readonly float rotateSpeed = 0.01f;
-
-        #endregion First Person Camera
-
-        #region Flight Camera
-
-        public static readonly float flightMoveSpeed = 0.8f;
-        public static readonly float flightStrafeSpeed = 0.6f;
-        public static readonly float flightRotateSpeed = 0.01f;
-
-        #endregion Flight Camera
-
-        #region Security Camera
-
-        private static readonly float angularSpeedMultiplier = 10;
-        public static readonly float lowAngularSpeed = 10;
-        public static readonly float mediumAngularSpeed = lowAngularSpeed * angularSpeedMultiplier;
-        public static readonly float hiAngularSpeed = mediumAngularSpeed * angularSpeedMultiplier;
-
-        #endregion Security Camera
-
         #region Car
 
         public static readonly float carMoveSpeed = 0.08f;
@@ -79,8 +54,9 @@ namespace GDGame.MyGame.Constants
 
         #endregion
 
-        #region Objects
+        #region StartPositions
 
+        public static readonly Vector3 playerPos = new Vector3(0, 50, 0);
         public static readonly Vector3 cauldronPos = new Vector3(-50, 40, 90);
         public static readonly Vector3 binPos = new Vector3(-370, 53, -100);
 
