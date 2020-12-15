@@ -1,13 +1,10 @@
-﻿using GDLibrary.Actors;
-using GDLibrary.Enums;
+﻿using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.Managers;
-using GDLibrary.GameComponents;
-using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
-using System;
 using Microsoft.Xna.Framework.Audio;
 using GDLibrary.Containers;
+using System.Collections.Generic;
 
 namespace GDGame.MyGame.Managers
 {
@@ -15,110 +12,88 @@ namespace GDGame.MyGame.Managers
     class MySoundManager : SoundManager
     {
         private ContentDictionary<SoundEffect> soundDictionary;
-        private SoundEffect effect;
-        private SoundEffectInstance pingSoundEffect;
-        private SoundEffectInstance menuSoundEffect;
-        private SoundEffectInstance pestolSoundEffect;
-        private SoundEffectInstance footStepsSoundEffect;
-        private SoundEffectInstance grabbingSoundEffect;
-        
-
+        private Dictionary<string, SoundEffectInstance> soundInstances;
 
         public MySoundManager(Game game, StatusType statusType)
             : base(game, statusType)
         {
+            soundInstances = new Dictionary<string, SoundEffectInstance>();
             soundDictionary = new ContentDictionary<SoundEffect>("music", Game.Content);
+
             soundDictionary.Load("Assets/Music/main_menu");
+            soundDictionary.Load("Assets/Music/game_beat");
             soundDictionary.Load("Assets/Music/ping");
             soundDictionary.Load("Assets/Music/pestol");
             soundDictionary.Load("Assets/Music/walking");
             soundDictionary.Load("Assets/Music/grabbing");
 
-            effect = soundDictionary["ping"];
-            pingSoundEffect = effect.CreateInstance();
+            SoundEffectInstance sound = soundDictionary["main_menu"].CreateInstance();
+            sound.IsLooped = true;
+            sound.Volume = .1f;
+            soundInstances.Add("main_menu", sound);
+            sound.Play();
 
-            effect = soundDictionary["main_menu"];
-            menuSoundEffect = effect.CreateInstance();
+            sound = soundDictionary["game_beat"].CreateInstance();
+            sound.IsLooped = true;
+            sound.Volume = .08f;
+            soundInstances.Add("game_beat", sound);
 
-            effect = soundDictionary["pestol"];
-            pestolSoundEffect = effect.CreateInstance();
+            sound = soundDictionary["ping"].CreateInstance();
+            sound.Volume = .05f;
+            sound.IsLooped = false;
+            soundInstances.Add("ping", sound);
 
-            effect = soundDictionary["walking"];
-            footStepsSoundEffect = effect.CreateInstance();
+            sound = soundDictionary["pestol"].CreateInstance();
+            sound.IsLooped = true;
+            sound.Volume = .05f;
+            soundInstances.Add("pestol", sound);
 
-            effect = soundDictionary["grabbing"];
-            grabbingSoundEffect = effect.CreateInstance();
+            sound = soundDictionary["grabbing"].CreateInstance();
+            sound.IsLooped = false;
+            sound.Volume = 0.2f;
+            soundInstances.Add("grabbing", sound);
+
+            sound = soundDictionary["walking"].CreateInstance();
+            sound.IsLooped = true;
+            sound.Volume = 0.4f;
+            soundInstances.Add("walking", sound);
+
 
             EventDispatcher.Subscribe(EventCategoryType.Sound, HandleEvent);
-            
         }
+
         protected override void HandleEvent(EventData eventData)
         {
-            
 
-            switch (eventData.EventActionType)
+            if (eventData.EventActionType == EventActionType.OnPlay)
             {
-                case EventActionType.OnPlay:
-                    switch (eventData.Parameters[0] as string)
-                    {
-                        case "ping":
-                            pingSoundEffect.Volume = .05f;
-                            pingSoundEffect.IsLooped = false;
-                            pingSoundEffect.Play();
-                            break;
-                        case "main_menu":
-                            menuSoundEffect.IsLooped = true;
-                            menuSoundEffect.Volume = .1f;
-                            menuSoundEffect.Play();
-                            break;
-                        case "pestol":
-                            pestolSoundEffect.IsLooped = true;
-                            pestolSoundEffect.Volume = .05f;
-                            pestolSoundEffect.Play();
-                            break;
-                        case "walking":
-                            footStepsSoundEffect.IsLooped = true;
-                            footStepsSoundEffect.Volume = 0.4f;
-                            footStepsSoundEffect.Play();
-                            break;
-                        case "grabbing":
-                            grabbingSoundEffect.IsLooped = false;
-                            grabbingSoundEffect.Volume = 0.2f;
-                            grabbingSoundEffect.Play();
-                            break;
-                    }
-                    break;
-
-                case EventActionType.OnPause:
-                    switch (eventData.Parameters[0] as string)
-                    {
-                        case "ping":
-                            pingSoundEffect.Pause();
-                            break;
-                        case "main_menu":
-                            menuSoundEffect.Pause();
-                            break;
-                        case "pestol":
-                            pestolSoundEffect.Pause();
-                            break;
-                        case "walking":
-                            footStepsSoundEffect.Pause();
-                            break;
-                        case "grabbing":
-                            grabbingSoundEffect.Pause();
-                            break;
-                    }
-                    break;
-
+                soundInstances[eventData.Parameters[0] as string].Play();
             }
+            else if (eventData.EventActionType == EventActionType.OnPause)
+            {
+                soundInstances[eventData.Parameters[0] as string].Pause();
+            }
+            else if (eventData.EventActionType == EventActionType.OnRestart)
+            {
+                string id = eventData.Parameters[0] as string;
+                Reset(id);
+                soundInstances[id].Play();
+            }
+        }
 
+        private void Reset(string id)
+        {
+            soundInstances[id].Stop();
+
+            SoundEffectInstance sound = soundDictionary[id].CreateInstance();
+            sound.Volume = soundInstances[id].Volume;
+            sound.IsLooped = soundInstances[id].IsLooped;
+            soundInstances[id] = sound;
         }
 
         public override void Update(GameTime gameTime)
         {
             
         }
-
-        
     }
 }

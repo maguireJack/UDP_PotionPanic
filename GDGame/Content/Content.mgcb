@@ -707,6 +707,12 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Models/wizard.3ds
 
+#begin Assets/Music/game_beat.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Music/game_beat.wav
+
 #begin Assets/Music/grabbing.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

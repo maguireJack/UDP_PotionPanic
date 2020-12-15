@@ -15,6 +15,7 @@ namespace GDGame.MyGame.Managers
         private KeyboardManager keyboardManager;
         private List<DrawnActor2D> loadedTempTexture;
         private bool batchRemove;
+        private bool toMainMenu;
 
         public MyMenuManager(Game game, StatusType statusType, SpriteBatch spriteBatch,
             MouseManager mouseManager, KeyboardManager keyboardManager)
@@ -24,6 +25,7 @@ namespace GDGame.MyGame.Managers
             this.keyboardManager = keyboardManager;
             this.loadedTempTexture = new List<DrawnActor2D>();
             this.batchRemove = false;
+            this.toMainMenu = false;
             EventDispatcher.Subscribe(EventCategoryType.Player, HandleEvent);
         }
         /// <summary>
@@ -47,13 +49,17 @@ namespace GDGame.MyGame.Managers
             {
                 if (eventData.EventActionType == EventActionType.OnGameOver)
                 {
-                    StatusType = StatusType.Update | StatusType.Drawn;
-                    loadedTempTexture = (List<DrawnActor2D>)eventData.Parameters[0];
-                    foreach (DrawnActor2D texture in loadedTempTexture)
+                    if (!toMainMenu)
                     {
-                        Add("score", texture);
+                        StatusType = StatusType.Update | StatusType.Drawn;
+                        loadedTempTexture = (List<DrawnActor2D>)eventData.Parameters[0];
+                        foreach (DrawnActor2D texture in loadedTempTexture)
+                        {
+                            Add("score", texture);
+                        }
+                        SetScene("score");
                     }
-                    SetScene("score");
+                    else toMainMenu = false;
                 }
             }
         }
@@ -108,8 +114,14 @@ namespace GDGame.MyGame.Managers
             {
                 case "play_btn":
                     SetScene("game");
-                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, new object[] { gameTime }));
-                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPlay, new object[] { "main_menu" }));
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu,
+                        EventActionType.OnPlay, new object[] { gameTime }));
+
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                        EventActionType.OnPause, new object[] { "main_menu" }));
+
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                        EventActionType.OnRestart, new object[] { "game_beat" }));
                     break;
 
                 case "controls_btn":
@@ -117,6 +129,9 @@ namespace GDGame.MyGame.Managers
                     break;
 
                 case "menu_btn":
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Player,
+                        EventActionType.OnWin, null));
+                    toMainMenu = true;
                     SetScene("main");
                     break;
 
@@ -129,8 +144,30 @@ namespace GDGame.MyGame.Managers
                     break;
 
                 case "score_menu_btn":
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                        EventActionType.OnRestart, new object[] { "main_menu" }));
+
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                        EventActionType.OnPause, new object[] { "game_beat" }));
+
                     batchRemove = true;
                     SetScene("main");
+                    break;
+
+                case "resume_btn":
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu,
+                        EventActionType.OnResume, new object[] { gameTime }));
+
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu,
+                        EventActionType.OnPlay, new object[] { gameTime }));
+
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                        EventActionType.OnPause, new object[] { "main_menu" }));
+
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                        EventActionType.OnPlay, new object[] { "game_beat" }));
+
+                    SetScene("game");
                     break;
 
                 default:
@@ -150,15 +187,24 @@ namespace GDGame.MyGame.Managers
                     //show menu
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu,
                         EventActionType.OnPause, new object[] { gameTime }));
-                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPause, new object[] { "main_menu" }));
 
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                        EventActionType.OnPause, new object[] { "game_beat" }));
+
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                        EventActionType.OnPlay, new object[] { "main_menu" }));
                 }
                 else
                 {
                     //show game
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu,
                         EventActionType.OnPlay, new object[] { gameTime }));
-                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound, EventActionType.OnPlay, new object[] { "main_menu" }));
+
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                        EventActionType.OnPause, new object[] { "main_menu" }));
+
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                        EventActionType.OnPlay, new object[] { "game_beat" }));
                 }
             }
 

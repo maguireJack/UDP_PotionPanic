@@ -52,7 +52,7 @@ namespace GDGame.MyGame.Objects
             {
                 if (eventData.EventActionType == EventActionType.OnPotionDeposit)
                 {
-                    if(level < 2)
+                    if(level < 4)
                     {
                         NewRecipe();
                     }
@@ -66,13 +66,20 @@ namespace GDGame.MyGame.Objects
                 {
                     level = 1;
                     levelScore = 0;
+                    checklist = null;
                 }
             }
             else if(eventData.EventCategoryType == EventCategoryType.Menu)
             {
-                if(eventData.EventActionType == EventActionType.OnPlay)
+                if(eventData.EventActionType == EventActionType.OnResume)
                 {
-                    NewRecipe();
+                }
+                else if(eventData.EventActionType == EventActionType.OnPlay)
+                {
+                    if (checklist == null)
+                    {
+                        NewRecipe();
+                    }
                 }
             }
         }
@@ -114,8 +121,6 @@ namespace GDGame.MyGame.Objects
         /// <param name="gameTime">Passes time related information, Is required to update Actors</param>
         public override void Update(GameTime gameTime)
         {
-            if (checklist == null)
-                NewRecipe();
             if((minigame.StatusType & StatusType.Update) == StatusType.Update)
             {
                 if (!timer.IsRunning)

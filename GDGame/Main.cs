@@ -7,7 +7,6 @@ using GDGame.MyGame.Minigames;
 using GDGame.MyGame.Objects;
 using GDLibrary.Actors;
 using GDLibrary.Containers;
-using GDLibrary.Controllers;
 using GDLibrary.Debug;
 using GDLibrary.Enums;
 using GDLibrary.Events;
@@ -585,7 +584,7 @@ namespace GDGame
 
             //Pause menu
             transform2D = new Transform2D(screenCentre + new Vector2(0, -150), 0, Vector2.One, origin, imageDimensions);
-            uiObject = new UIButtonObject("play_btn", ActorType.UITextureObject, StatusType.Drawn,
+            uiObject = new UIButtonObject("resume_btn", ActorType.UITextureObject, StatusType.Drawn,
                 transform2D, Color.White, 1, SpriteEffects.None, textureBtn, new Microsoft.Xna.Framework.Rectangle(0, 0, textureBtn.Width, textureBtn.Height),
                 "Resume",
                 fontDictionary["ui"],
