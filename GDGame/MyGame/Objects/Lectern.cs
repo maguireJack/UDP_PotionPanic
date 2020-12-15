@@ -116,6 +116,31 @@ namespace GDGame.MyGame.Objects
                 loadedTextures.Add(textObject);
                 uiManager.Add(uiTexture);
                 uiManager.Add(textObject);
+
+                bool contains = false;
+                if (key.Contains("Dust"))
+                {
+                    contains = true;
+                    texture = textureDictionary["grinder"];
+                }
+                else if (key.Contains("Liquid"))
+                {
+                    contains = true;
+                    texture = textureDictionary["liquid"];
+                }
+                if (contains)
+                {
+                    transform2D = new Transform2D(translation + new Vector2(0, 300), 0,
+                        Vector2.One,
+                        new Vector2(texture.Width / 2, texture.Height / 2),
+                        new Integer2(texture.Width, texture.Height));
+
+                    uiTexture = new UITextureObject("Lectern_UI_" + key, ActorType.UITextureObject,
+                    StatusType.Drawn, transform2D, Color.White, 4, SpriteEffects.None, texture,
+                    new Microsoft.Xna.Framework.Rectangle(0, 0, texture.Width, texture.Height));
+                    loadedTextures.Add(uiTexture);
+                    uiManager.Add(uiTexture);
+                }
             }
         }
         /// <summary>

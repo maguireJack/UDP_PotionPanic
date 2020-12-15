@@ -180,6 +180,8 @@ namespace GDGame
             uiTextureDictionary.Load("Assets/Textures/UI/Sliding/sliding_target");
 
             //Lectern
+            uiTextureDictionary.Load("Assets/Textures/UI/Lectern/liquid");
+            uiTextureDictionary.Load("Assets/Textures/UI/Lectern/grinder");
             uiTextureDictionary.Load("Assets/Textures/UI/Lectern/page");
             uiTextureDictionary.Load("Assets/Textures/UI/Lectern/page_controller");
             uiTextureDictionary.Load("Assets/Textures/UI/Lectern/Red_Solid");
@@ -1166,7 +1168,9 @@ namespace GDGame
                 { "Blue_Liquid", uiTextureDictionary["Blue_Liquid"] },
                 { "Green_Solid", uiTextureDictionary["Green_Solid"] },
                 { "Green_Dust", uiTextureDictionary["Green_Dust"] },
-                { "Green_Liquid", uiTextureDictionary["Green_Liquid"] }
+                { "Green_Liquid", uiTextureDictionary["Green_Liquid"] },
+                { "grinder", uiTextureDictionary["grinder"] },
+                { "liquid", uiTextureDictionary["liquid"] }
             };
 
             texture = uiTextureDictionary["page"];

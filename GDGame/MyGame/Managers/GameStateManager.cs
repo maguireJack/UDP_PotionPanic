@@ -180,6 +180,9 @@ namespace GDGame.MyGame.Controllers
             EventDispatcher.Publish(new EventData(EventCategoryType.Player,
                 EventActionType.OnGameOver, new object[] { loadedTextures }));
 
+            EventDispatcher.Publish(new EventData(EventCategoryType.Sound,
+                EventActionType.OnRestart, new object[] { "game_complete" }));
+
             score = 0;
             scoreTextObject.Text = "Score: " + score;
         }

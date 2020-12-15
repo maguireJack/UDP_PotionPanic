@@ -28,6 +28,7 @@ namespace GDGame.MyGame.Managers
             soundDictionary.Load("Assets/Music/grabbing");
             soundDictionary.Load("Assets/Music/page_turn");
             soundDictionary.Load("Assets/Music/water");
+            soundDictionary.Load("Assets/Music/game_complete");
 
             SoundEffectInstance sound = soundDictionary["main_menu"].CreateInstance();
             sound.IsLooped = true;
@@ -69,6 +70,11 @@ namespace GDGame.MyGame.Managers
             sound.IsLooped = true;
             sound.Volume = 0.1f;
             soundInstances.Add("water", sound);
+
+            sound = soundDictionary["game_complete"].CreateInstance();
+            sound.IsLooped = false;
+            sound.Volume = 0.8f;
+            soundInstances.Add("game_complete", sound);
 
 
             EventDispatcher.Subscribe(EventCategoryType.Sound, HandleEvent);

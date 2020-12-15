@@ -713,6 +713,12 @@
 /processorParam:Quality=Best
 /build:Assets/Music/game_beat.wav
 
+#begin Assets/Music/game_complete.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Music/game_complete.wav
+
 #begin Assets/Music/grabbing.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -1474,6 +1480,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/Lectern/Green_Solid.png
+
+#begin Assets/Textures/UI/Lectern/grinder.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/Lectern/grinder.png
+
+#begin Assets/Textures/UI/Lectern/liquid.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/Lectern/liquid.png
 
 #begin Assets/Textures/UI/Lectern/page.png
 /importer:TextureImporter
